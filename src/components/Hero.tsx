@@ -1,9 +1,19 @@
 import { Upload, Leaf, Users, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthProvider";
 
 const Hero = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handleGetStarted = () => {
+    if (user) {
+      navigate("/upload");
+    } else {
+      navigate("/auth");
+    }
+  };
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-hero">
@@ -41,21 +51,23 @@ const Hero = () => {
             <Button 
               size="xl" 
               variant="hero"
-              onClick={() => navigate('/upload')}
+              onClick={handleGetStarted}
               className="group"
             >
               <Upload className="w-5 h-5 group-hover:scale-110 transition-transform" />
-              Donate an Item
+              {user ? "Donate an Item" : "Get Started"}
             </Button>
-            <Button 
-              size="xl" 
-              variant="outline"
-              onClick={() => navigate('/impact')}
-              className="bg-primary-foreground/10 backdrop-blur-sm border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/20"
-            >
-              <TrendingUp className="w-5 h-5" />
-              View Impact
-            </Button>
+            {user && (
+              <Button 
+                size="xl" 
+                variant="outline"
+                onClick={() => navigate('/impact')}
+                className="bg-primary-foreground/10 backdrop-blur-sm border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/20"
+              >
+                <TrendingUp className="w-5 h-5" />
+                View Impact
+              </Button>
+            )}
           </div>
 
           {/* Stats */}
