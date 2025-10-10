@@ -9,6 +9,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Leaf } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
+import { z } from "zod";
+
+const loginSchema = z.object({
+  email: z.string().trim().email("Invalid email address").max(255),
+  password: z.string().min(6, "Password must be at least 6 characters").max(72),
+});
+
+const signupSchema = z.object({
+  email: z.string().trim().email("Invalid email address").max(255),
+  password: z.string().min(6, "Password must be at least 6 characters").max(72),
+  fullName: z.string().trim().min(1, "Name is required").max(100),
+});
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -22,56 +34,80 @@ const Auth = () => {
     e.preventDefault();
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email: loginData.email,
-      password: loginData.password,
-    });
+    try {
+      const validated = loginSchema.parse(loginData);
 
-    if (error) {
-      toast({
-        variant: "destructive",
-        title: "Login failed",
-        description: error.message,
+      const { error } = await supabase.auth.signInWithPassword({
+        email: validated.email,
+        password: validated.password,
       });
-    } else {
-      toast({
-        title: "Welcome back!",
-        description: "You've successfully logged in.",
-      });
-      navigate("/");
+
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Login failed",
+          description: error.message,
+        });
+      } else {
+        toast({
+          title: "Welcome back!",
+          description: "You've successfully logged in.",
+        });
+        navigate("/");
+      }
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          variant: "destructive",
+          title: "Validation Error",
+          description: error.errors[0].message,
+        });
+      }
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    const { error } = await supabase.auth.signUp({
-      email: signupData.email,
-      password: signupData.password,
-      options: {
-        data: { full_name: signupData.fullName },
-        emailRedirectTo: `${window.location.origin}/`,
-      },
-    });
+    try {
+      const validated = signupSchema.parse(signupData);
 
-    if (error) {
-      toast({
-        variant: "destructive",
-        title: "Signup failed",
-        description: error.message,
+      const { error } = await supabase.auth.signUp({
+        email: validated.email,
+        password: validated.password,
+        options: {
+          data: { full_name: validated.fullName },
+          emailRedirectTo: `${window.location.origin}/`,
+        },
       });
-    } else {
-      toast({
-        title: "Account created!",
-        description: "Welcome to ReHome. Start making an impact today.",
-      });
-      navigate("/");
+
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Signup failed",
+          description: error.message,
+        });
+      } else {
+        toast({
+          title: "Account created!",
+          description: "Welcome to ReHome. Start making an impact today.",
+        });
+        navigate("/");
+      }
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          variant: "destructive",
+          title: "Validation Error",
+          description: error.errors[0].message,
+        });
+      }
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (

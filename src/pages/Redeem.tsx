@@ -8,6 +8,14 @@ import { Navigation } from "@/components/Navigation";
 import { Loader2, Coins, TreePine, Store, Gift, ArrowRight, Sparkles } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { z } from "zod";
+
+const redemptionSchema = z.object({
+  user_id: z.string().uuid(),
+  reward_id: z.string().uuid(),
+  points_spent: z.number().int().positive(),
+  qr_code_data: z.string().min(1).max(500),
+});
 
 interface Reward {
   id: string;
@@ -83,12 +91,22 @@ const Redeem = () => {
         redeemedAt: new Date().toISOString(),
       });
 
-      await supabase.from("redemptions").insert({
+      const redemptionData = {
         user_id: user.id,
         reward_id: reward.id,
         points_spent: reward.points_required,
         qr_code_data: qrData,
-      });
+      };
+
+      try {
+        redemptionSchema.parse(redemptionData);
+      } catch (validationError) {
+        toast.error("Invalid redemption data. Please try again.");
+        setRedeeming(false);
+        return;
+      }
+
+      await supabase.from("redemptions").insert(redemptionData);
 
       await supabase
         .from("impact_metrics")

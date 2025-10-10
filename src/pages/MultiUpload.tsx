@@ -8,6 +8,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { Navigation } from "@/components/Navigation";
 import { Camera, Loader2, Upload, X, CheckCircle, Trash2, ArrowRight } from "lucide-react";
 import { useImageClassifier } from "@/hooks/useImageClassifier";
+import { z } from "zod";
+
+const itemSchema = z.object({
+  category: z.enum(['books', 'clothes', 'electronics', 'ewaste', 'furniture']),
+  confidence: z.number().min(0).max(1),
+  image_url: z.string().max(2048),
+  is_reusable: z.boolean(),
+  user_id: z.string().uuid(),
+});
 
 interface ImageData {
   id: string;
@@ -107,9 +116,15 @@ const MultiUpload = () => {
         
         if (!classification) continue;
 
+        // Validate file size
+        if (file.size > 10 * 1024 * 1024) {
+          throw new Error(`File ${file.name} exceeds 10MB limit`);
+        }
+
         // Upload image to storage
         const fileExt = file.name.split(".").pop();
-        const fileName = `${user.id}/${Date.now()}-${Math.random()}.${fileExt}`;
+        const sanitizedExt = fileExt?.replace(/[^a-zA-Z0-9]/g, '').toLowerCase().slice(0, 10) || 'jpg';
+        const fileName = `${user.id}/${Date.now()}-${Math.random().toString(36).substring(7)}.${sanitizedExt}`;
         
         const { error: uploadError } = await supabase.storage
           .from("item-images")
@@ -121,15 +136,22 @@ const MultiUpload = () => {
           .from("item-images")
           .getPublicUrl(fileName);
 
+        // Validate item data before insertion
+        const itemData = {
+          user_id: user.id,
+          image_url: publicUrl,
+          category: classification.category,
+          confidence: classification.confidence,
+          is_reusable: classification.isReusable,
+        };
+
+        itemSchema.parse(itemData);
+
         // Save item to database
         const { error: itemError } = await supabase
           .from("items")
           .insert({
-            user_id: user.id,
-            image_url: publicUrl,
-            category: classification.category,
-            confidence: classification.confidence,
-            is_reusable: classification.isReusable,
+            ...itemData,
             status: "pending",
           });
 
