@@ -110,19 +110,25 @@ const Redeem = () => {
         .eq("user_id", user.id);
 
       // Generate verification URL for QR code (HashRouter format)
-      // Use Vite's BASE_URL which is set in vite.config.ts
+      // CRITICAL: Must include /#/ for HashRouter to work properly
       const baseUrl = window.location.origin;
-      const basePath = import.meta.env.BASE_URL.replace(/\/$/, ''); // Remove trailing slash
       
+      // Get base path from vite config and ensure no trailing slash
+      let basePath = import.meta.env.BASE_URL || '/';
+      basePath = basePath.replace(/\/$/, ''); // Remove trailing slash if exists
+      
+      // Build URL with explicit /# for HashRouter
+      // Format: https://13la7e.github.io/rehomeht/#/verify?code=xxx
       const verificationUrl = `${baseUrl}${basePath}/#/verify?code=${verificationCode}`;
+      
       console.log("=== QR CODE URL DEBUG ===");
       console.log("window.location.origin:", window.location.origin);
-      console.log("window.location.pathname:", window.location.pathname);
-      console.log("window.location.href:", window.location.href);
       console.log("import.meta.env.BASE_URL:", import.meta.env.BASE_URL);
       console.log("Computed basePath:", basePath);
       console.log("Generated QR verification URL:", verificationUrl);
       console.log("Verification code:", verificationCode);
+      console.log("Expected format: https://13la7e.github.io/rehomeht/#/verify?code=xxx");
+      
       setQrCodeData(verificationUrl);
       setSelectedReward(reward);
       setShowQRDialog(true);
