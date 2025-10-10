@@ -110,18 +110,19 @@ const Redeem = () => {
         .eq("user_id", user.id);
 
       // Generate verification URL for QR code (HashRouter format)
-      // For GitHub Pages: https://13la7e.github.io/rehomeht/#/verify?code=...
-      // For local dev: http://localhost:8080/#/verify?code=...
+      // Use Vite's BASE_URL which is set in vite.config.ts
       const baseUrl = window.location.origin;
+      const basePath = import.meta.env.BASE_URL.replace(/\/$/, ''); // Remove trailing slash
       
-      // Determine if we're on GitHub Pages or local development
-      const isGitHubPages = window.location.hostname === '13la7e.github.io';
-      const pathPrefix = isGitHubPages ? '/rehomeht' : '';
-      
-      const verificationUrl = `${baseUrl}${pathPrefix}/#/verify?code=${verificationCode}`;
+      const verificationUrl = `${baseUrl}${basePath}/#/verify?code=${verificationCode}`;
+      console.log("=== QR CODE URL DEBUG ===");
+      console.log("window.location.origin:", window.location.origin);
+      console.log("window.location.pathname:", window.location.pathname);
+      console.log("window.location.href:", window.location.href);
+      console.log("import.meta.env.BASE_URL:", import.meta.env.BASE_URL);
+      console.log("Computed basePath:", basePath);
       console.log("Generated QR verification URL:", verificationUrl);
       console.log("Verification code:", verificationCode);
-      console.log("Base URL:", baseUrl, "Path prefix:", pathPrefix, "Is GitHub Pages:", isGitHubPages);
       setQrCodeData(verificationUrl);
       setSelectedReward(reward);
       setShowQRDialog(true);
