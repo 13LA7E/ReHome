@@ -84,18 +84,14 @@ const Redeem = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const qrData = JSON.stringify({
-        userId: user.id,
-        rewardId: reward.id,
-        pointsSpent: reward.points_required,
-        redeemedAt: new Date().toISOString(),
-      });
-
+      // Generate a unique verification code
+      const verificationCode = `${user.id.substring(0, 8)}-${reward.id.substring(0, 8)}-${Date.now()}`;
+      
       const redemptionData = {
         user_id: user.id,
         reward_id: reward.id,
         points_spent: reward.points_required,
-        qr_code_data: qrData,
+        qr_code_data: verificationCode,
       };
 
       try {
@@ -113,8 +109,9 @@ const Redeem = () => {
         .update({ community_points: userPoints - reward.points_required })
         .eq("user_id", user.id);
 
-      // Generate a simple redemption code (just the data, not a URL)
-      setQrCodeData(qrData);
+      // Generate verification URL for QR code
+      const verificationUrl = `${window.location.origin}/verify?code=${verificationCode}`;
+      setQrCodeData(verificationUrl);
       setSelectedReward(reward);
       setShowQRDialog(true);
       setUserPoints(userPoints - reward.points_required);
@@ -230,7 +227,7 @@ const Redeem = () => {
               Reward Redeemed! 🎉
             </DialogTitle>
             <DialogDescription className="text-center">
-              Show this QR code to the partner to verify and redeem
+              Show this QR code to the partner. They can scan it to instantly verify!
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-center p-6 bg-white rounded-xl">
@@ -238,10 +235,7 @@ const Redeem = () => {
           </div>
           <div className="space-y-2 text-center">
             <p className="text-sm text-muted-foreground">
-              Partner can scan this QR code and paste the data at:
-            </p>
-            <p className="text-sm font-mono font-semibold text-primary">
-              {window.location.origin}/verify
+              Scanning this QR code will automatically verify the redemption
             </p>
           </div>
           <Button onClick={() => setShowQRDialog(false)} className="w-full font-display">

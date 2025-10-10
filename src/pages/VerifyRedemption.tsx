@@ -1,21 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { CheckCircle, XCircle, Loader2, Gift, Scan } from "lucide-react";
+import { CheckCircle, XCircle, Loader2, Gift, QrCode } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 import { toast } from "sonner";
-
-interface RedemptionData {
-  userId: string;
-  rewardId: string;
-  pointsSpent: number;
-  redeemedAt: string;
-}
+import { useSearchParams } from "react-router-dom";
 
 const VerifyRedemption = () => {
-  const [code, setCode] = useState("");
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [verificationResult, setVerificationResult] = useState<{
     valid: boolean;
@@ -23,18 +15,18 @@ const VerifyRedemption = () => {
     alreadyUsed: boolean;
   } | null>(null);
 
-  const verifyCode = async () => {
-    if (!code.trim()) {
-      toast.error("Please enter a code");
-      return;
+  useEffect(() => {
+    const code = searchParams.get("code");
+    if (code) {
+      verifyCode(code);
     }
+  }, [searchParams]);
 
+  const verifyCode = async (verificationCode: string) => {
     setLoading(true);
     setVerificationResult(null);
 
     try {
-      const redemptionData: RedemptionData = JSON.parse(code);
-      
       // Verify redemption exists and get reward details
       const { data: redemption, error } = await supabase
         .from("redemptions")
@@ -46,9 +38,7 @@ const VerifyRedemption = () => {
             description
           )
         `)
-        .eq("user_id", redemptionData.userId)
-        .eq("reward_id", redemptionData.rewardId)
-        .eq("qr_code_data", code)
+        .eq("qr_code_data", verificationCode)
         .maybeSingle();
 
       if (error) throw error;
@@ -101,11 +91,6 @@ const VerifyRedemption = () => {
     }
   };
 
-  const handleReset = () => {
-    setCode("");
-    setVerificationResult(null);
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5">
       <Navigation />
@@ -115,7 +100,7 @@ const VerifyRedemption = () => {
           <CardHeader className="text-center">
             <div className="flex justify-center mb-4">
               <div className="p-4 rounded-full bg-primary/10">
-                <Scan className="w-12 h-12 text-primary" />
+                <QrCode className="w-12 h-12 text-primary" />
               </div>
             </div>
             <CardTitle className="text-3xl font-display font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
@@ -127,42 +112,12 @@ const VerifyRedemption = () => {
           </CardHeader>
 
           <CardContent className="space-y-6">
-            {!verificationResult ? (
-              <>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Redemption Code</label>
-                  <Input
-                    placeholder="Paste QR code data here..."
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
-                    className="font-mono text-sm"
-                    disabled={loading}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Scan the user's QR code with your phone and paste the data here
-                  </p>
-                </div>
-
-                <Button
-                  onClick={verifyCode}
-                  disabled={loading || !code.trim()}
-                  className="w-full font-display font-semibold"
-                  size="lg"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin mr-2" />
-                      Verifying...
-                    </>
-                  ) : (
-                    <>
-                      <Scan className="w-5 h-5 mr-2" />
-                      Verify Code
-                    </>
-                  )}
-                </Button>
-              </>
-            ) : (
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                <Loader2 className="w-12 h-12 animate-spin text-primary" />
+                <p className="text-lg text-muted-foreground">Verifying redemption...</p>
+              </div>
+            ) : verificationResult ? (
               <div className="space-y-6 text-center">
                 <div className="flex justify-center">
                   <div className={`p-6 rounded-full ${
@@ -184,8 +139,8 @@ const VerifyRedemption = () => {
 
                 {verificationResult.valid ? (
                   <>
-                    <h2 className="text-4xl font-display font-bold bg-gradient-to-r from-green-600 to-green-400 bg-clip-text text-transparent">
-                      REDEEMED!
+                    <h2 className="text-5xl font-display font-bold bg-gradient-to-r from-green-600 to-green-400 bg-clip-text text-transparent animate-bounce">
+                      ✅ VERIFIED
                     </h2>
                     <p className="text-xl text-muted-foreground">
                       <span className="font-semibold text-foreground">{verificationResult.rewardName}</span> has been successfully redeemed!
@@ -225,15 +180,16 @@ const VerifyRedemption = () => {
                     </div>
                   </>
                 )}
-
-                <Button
-                  onClick={handleReset}
-                  variant="outline"
-                  className="w-full font-display"
-                  size="lg"
-                >
-                  Verify Another Code
-                </Button>
+              </div>
+            ) : (
+              <div className="text-center py-12 space-y-4">
+                <Gift className="w-16 h-16 text-muted-foreground mx-auto" />
+                <p className="text-xl text-muted-foreground">
+                  Scan a QR code to verify redemption
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Use your phone's camera to scan the customer's QR code
+                </p>
               </div>
             )}
           </CardContent>
@@ -241,7 +197,7 @@ const VerifyRedemption = () => {
 
         <div className="mt-8 text-center">
           <p className="text-sm text-muted-foreground">
-            💡 Tip: Partners can access this page directly at <span className="font-mono">/verify</span>
+            💡 Tip: Simply scan the customer's QR code with your phone camera to instantly verify
           </p>
         </div>
       </div>
