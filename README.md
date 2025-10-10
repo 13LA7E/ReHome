@@ -62,12 +62,12 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/4b292564-9032-4261-a299-dd11fdfaf67a) and click on Share -> Publish.
+The project is automatically deployed to GitHub Pages at: https://13la7e.github.io/rehomeht/
 
-## Can I connect a custom domain to my Lovable project?
+## Technologies Used
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- React with TypeScript
+- Vite for build tooling
+- Tailwind CSS for styling
+- Supabase for backend services
+- GitHub Pages for deployment
