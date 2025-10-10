@@ -14,16 +14,225 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      impact_metrics: {
+        Row: {
+          co2_saved_kg: number | null
+          community_points: number | null
+          id: string
+          lives_impacted: number | null
+          total_items: number | null
+          updated_at: string | null
+          user_id: string
+          waste_diverted_kg: number | null
+        }
+        Insert: {
+          co2_saved_kg?: number | null
+          community_points?: number | null
+          id?: string
+          lives_impacted?: number | null
+          total_items?: number | null
+          updated_at?: string | null
+          user_id: string
+          waste_diverted_kg?: number | null
+        }
+        Update: {
+          co2_saved_kg?: number | null
+          community_points?: number | null
+          id?: string
+          lives_impacted?: number | null
+          total_items?: number | null
+          updated_at?: string | null
+          user_id?: string
+          waste_diverted_kg?: number | null
+        }
+        Relationships: []
+      }
+      items: {
+        Row: {
+          category: string
+          confidence: number | null
+          created_at: string | null
+          id: string
+          image_url: string
+          is_reusable: boolean | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          category: string
+          confidence?: number | null
+          created_at?: string | null
+          id?: string
+          image_url: string
+          is_reusable?: boolean | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string
+          confidence?: number | null
+          created_at?: string | null
+          id?: string
+          image_url?: string
+          is_reusable?: boolean | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      partners: {
+        Row: {
+          address: string
+          created_at: string | null
+          email: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          name: string
+          phone: string | null
+          rating: number | null
+          type: string
+          verified: boolean | null
+        }
+        Insert: {
+          address: string
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          name: string
+          phone?: string | null
+          rating?: number | null
+          type: string
+          verified?: boolean | null
+        }
+        Update: {
+          address?: string
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          name?: string
+          phone?: string | null
+          rating?: number | null
+          type?: string
+          verified?: boolean | null
+        }
+        Relationships: []
+      }
+      pickup_requests: {
+        Row: {
+          completed_date: string | null
+          created_at: string | null
+          id: string
+          item_id: string
+          partner_id: string
+          scheduled_date: string | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          completed_date?: string | null
+          created_at?: string | null
+          id?: string
+          item_id: string
+          partner_id: string
+          scheduled_date?: string | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          completed_date?: string | null
+          created_at?: string | null
+          id?: string
+          item_id?: string
+          partner_id?: string
+          scheduled_date?: string | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pickup_requests_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pickup_requests_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +359,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
