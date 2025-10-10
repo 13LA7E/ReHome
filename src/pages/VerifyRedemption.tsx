@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { CheckCircle, XCircle, Loader2, Gift, QrCode } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 import { toast } from "sonner";
@@ -17,8 +18,11 @@ const VerifyRedemption = () => {
 
   useEffect(() => {
     const code = searchParams.get("code");
+    console.log("URL code parameter:", code);
     if (code) {
       verifyCode(code);
+    } else {
+      console.log("No code parameter found in URL");
     }
   }, [searchParams]);
 
@@ -27,24 +31,33 @@ const VerifyRedemption = () => {
     setVerificationResult(null);
 
     try {
-      // Verify redemption exists and get reward details
-      const { data: redemption, error } = await supabase
+      console.log("Verifying code:", verificationCode);
+      
+      // First try to get redemption data
+      const { data: redemption, error: redemptionError } = await supabase
         .from("redemptions")
-        .select(`
-          id,
-          status,
-          rewards (
-            name,
-            description
-          )
-        `)
+        .select("id, status, reward_id, points_spent")
         .eq("qr_code_data", verificationCode)
         .maybeSingle();
 
-      if (error) throw error;
+      console.log("Redemption query result:", { redemption, redemptionError });
+
+      if (redemptionError) {
+        console.error("Redemption query error:", redemptionError);
+        throw redemptionError;
+      }
 
       if (redemption) {
-        const rewardName = redemption.rewards?.name || "Reward";
+        // Get reward details separately
+        const { data: reward, error: rewardError } = await supabase
+          .from("rewards")
+          .select("name, description")
+          .eq("id", redemption.reward_id)
+          .single();
+
+        console.log("Reward query result:", { reward, rewardError });
+
+        const rewardName = reward?.name || "Reward";
         
         if (redemption.status === "completed") {
           setVerificationResult({
@@ -55,13 +68,19 @@ const VerifyRedemption = () => {
           toast.error("This code has already been used!");
         } else {
           // Mark as completed
-          await supabase
+          const { error: updateError } = await supabase
             .from("redemptions")
             .update({ 
               status: "completed",
               redeemed_at: new Date().toISOString()
             })
             .eq("id", redemption.id);
+
+          if (updateError) {
+            console.error("Update error:", updateError);
+            toast.error("Failed to update redemption status");
+            return;
+          }
 
           setVerificationResult({
             valid: true,
@@ -85,7 +104,7 @@ const VerifyRedemption = () => {
         rewardName: "",
         alreadyUsed: false,
       });
-      toast.error("Invalid code format!");
+      toast.error("Failed to verify code. Please check your connection.");
     } finally {
       setLoading(false);
     }
@@ -190,6 +209,15 @@ const VerifyRedemption = () => {
                 <p className="text-sm text-muted-foreground">
                   Use your phone's camera to scan the customer's QR code
                 </p>
+                <div className="mt-6">
+                  <Button 
+                    onClick={() => verifyCode("test-code-123")} 
+                    variant="outline"
+                    className="text-sm"
+                  >
+                    Test Verification (Debug)
+                  </Button>
+                </div>
               </div>
             )}
           </CardContent>
