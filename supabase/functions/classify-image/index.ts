@@ -52,8 +52,20 @@ Deno.serve(async (req) => {
     const data = await response.json();
     const content = data.choices[0].message.content;
     
+    // Strip markdown code blocks if present
+    let cleanContent = content.trim();
+    if (cleanContent.startsWith('```json')) {
+      cleanContent = cleanContent.slice(7); // Remove ```json
+    }
+    if (cleanContent.startsWith('```')) {
+      cleanContent = cleanContent.slice(3); // Remove ```
+    }
+    if (cleanContent.endsWith('```')) {
+      cleanContent = cleanContent.slice(0, -3); // Remove trailing ```
+    }
+    
     // Parse the JSON response from the AI
-    const result = JSON.parse(content);
+    const result = JSON.parse(cleanContent.trim());
 
     return new Response(JSON.stringify(result), {
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
