@@ -46,7 +46,37 @@ Deno.serve(async (req) => {
     });
 
     if (!response.ok) {
-      throw new Error(`AI Gateway error: ${response.statusText}`);
+      const errorBody = await response.text();
+      console.error('AI Gateway error:', response.status, errorBody);
+      
+      if (response.status === 429) {
+        return new Response(JSON.stringify({ 
+          error: 'Rate limit exceeded. Please try again in a moment.' 
+        }), {
+          status: 429,
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+      
+      if (response.status === 402) {
+        return new Response(JSON.stringify({ 
+          error: 'AI credits exhausted. Please add credits to continue.' 
+        }), {
+          status: 402,
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+      
+      if (response.status === 503) {
+        return new Response(JSON.stringify({ 
+          error: 'AI service temporarily unavailable. Please try again.' 
+        }), {
+          status: 503,
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+      
+      throw new Error(`AI Gateway error: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();

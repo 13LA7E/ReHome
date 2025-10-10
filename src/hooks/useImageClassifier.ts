@@ -20,7 +20,14 @@ export const useImageClassifier = () => {
         body: { imageBase64: imageUrl }
       });
 
-      if (functionError) throw functionError;
+      if (functionError) {
+        console.error('Function invocation error:', functionError);
+        throw new Error(functionError.message || 'Failed to classify image');
+      }
+
+      if (data?.error) {
+        throw new Error(data.error);
+      }
 
       return {
         category: data.category,
