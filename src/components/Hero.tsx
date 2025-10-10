@@ -1,18 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { supabase } from "@/integrations/supabase/client";
-import { useEffect, useState } from "react";
-import { Leaf } from "lucide-react";
+import { useAuth } from "./AuthProvider";
 
 const Hero = () => {
   const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setIsAuthenticated(!!session);
-    });
-  }, []);
+  const { user } = useAuth();
+  const isAuthenticated = !!user;
 
   const handleGetStarted = () => {
     if (isAuthenticated) {
@@ -24,56 +17,6 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden">
-      {/* Top Navigation Bar */}
-      <nav className="relative z-50 bg-card/95 backdrop-blur-lg border-b border-border shadow-sm">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
-              <div className="bg-primary/15 p-2.5 rounded-full">
-                <Leaf className="h-6 w-6 text-primary" />
-              </div>
-              <span className="text-2xl font-display font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                ReHome
-              </span>
-            </div>
-
-            <div className="flex items-center gap-3">
-              {isAuthenticated ? (
-                <>
-                  <Button 
-                    variant="ghost" 
-                    onClick={() => navigate("/impact")}
-                    className="font-display font-medium"
-                  >
-                    My Impact
-                  </Button>
-                  <Button 
-                    variant="ghost" 
-                    onClick={() => navigate("/redeem")}
-                    className="font-display font-medium"
-                  >
-                    Redeem
-                  </Button>
-                  <Button 
-                    onClick={handleGetStarted}
-                    className="font-display font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg"
-                  >
-                    Donate Items
-                  </Button>
-                </>
-              ) : (
-                <Button 
-                  onClick={handleGetStarted}
-                  className="font-display font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg"
-                >
-                  Get Started
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
-      </nav>
-
       {/* Hero Content */}
       <div className="flex-1 flex items-center justify-center px-4 py-20">
         {/* Animated background elements with enhanced gradients */}
