@@ -1,0 +1,67 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with subtle gradient -->
+  <rect width="1200" height="630" fill="#F8FFFE"/>
+  
+  <!-- Main container -->
+  <g transform="translate(80, 120)">
+    <!-- Logo section -->
+    <g transform="translate(60, 80)">
+      <!-- Circular background for logo -->
+      <circle cx="80" cy="80" r="80" fill="#E0F2F1"/>
+      
+      <!-- ReHome leaf logo - scaled appropriately -->
+      <path d="M80 40C100 40 120 60 120 80C120 100 100 120 80 120C60 120 40 100 40 80C40 55 80 40 80 40Z" 
+            stroke="#00897B" 
+            stroke-width="5" 
+            stroke-linecap="round" 
+            stroke-linejoin="round" 
+            fill="#00897B"
+            fill-opacity="0.15"/>
+      
+      <!-- Leaf vein -->
+      <path d="M100 65L60 25" 
+            stroke="#00897B" 
+            stroke-width="3" 
+            stroke-linecap="round"/>
+    </g>
+    
+    <!-- Text content -->
+    <g transform="translate(220, 40)">
+      <!-- ReHome title -->
+      <text x="0" y="60" font-family="system-ui, -apple-system, sans-serif" font-size="80" font-weight="700" fill="#00897B">
+        ReHome
+      </text>
+      
+      <!-- Subtitle -->
+      <text x="0" y="110" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="500" fill="#374151">
+        Transform Clutter into Community Impact
+      </text>
+      
+      <!-- Description line 1 -->
+      <text x="0" y="150" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#6B7280">
+        AI-powered donation platform helping households
+      </text>
+      
+      <!-- Description line 2 -->
+      <text x="0" y="175" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#6B7280">
+        donate items to verified partners.
+      </text>
+      
+      <!-- Description line 3 -->
+      <text x="0" y="200" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#6B7280">
+        Track your environmental impact in real-time.
+      </text>
+      
+      <!-- Call to action -->
+      <rect x="0" y="240" width="180" height="50" rx="25" fill="#00897B"/>
+      <text x="90" y="270" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600" fill="white" text-anchor="middle">
+        Get Started
+      </text>
+    </g>
+    
+    <!-- Decorative elements -->
+    <circle cx="900" cy="50" r="30" fill="#00897B" opacity="0.1"/>
+    <circle cx="950" cy="280" r="20" fill="#00897B" opacity="0.1"/>
+    <circle cx="850" cy="200" r="15" fill="#00897B" opacity="0.1"/>
+  </g>
+</svg>
