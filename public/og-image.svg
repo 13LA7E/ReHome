@@ -1,51 +1,40 @@
 <svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background gradient -->
-  <defs>
-    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#E0F2F1;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#B2DFDB;stop-opacity:1" />
-    </linearGradient>
-  </defs>
+  <!-- White background -->
+  <rect width="1200" height="630" fill="#FFFFFF"/>
   
-  <!-- Background -->
-  <rect width="1200" height="630" fill="url(#bgGradient)"/>
-  
-  <!-- Main content container -->
-  <g transform="translate(100, 150)">
-    <!-- Logo circle background -->
-    <circle cx="120" cy="165" r="120" fill="#E0F2F1" opacity="0.8"/>
+  <!-- Center the content -->
+  <g transform="translate(300, 165)">
+    <!-- Logo circle background scaled up -->
+    <circle cx="150" cy="150" r="120" fill="#E0F2F1"/>
     
-    <!-- ReHome leaf logo -->
-    <path d="M120 100C150 100 180 130 180 165C180 200 150 230 120 230C90 230 60 200 60 165C60 125 120 100 120 100Z" 
+    <!-- ReHome leaf logo - larger and centered -->
+    <path d="M150 90C180 90 210 120 210 155C210 190 180 220 150 220C120 220 90 190 90 155C90 115 150 90 150 90Z" 
           stroke="#00897B" 
           stroke-width="8" 
           stroke-linecap="round" 
           stroke-linejoin="round" 
           fill="#00897B"
-          fill-opacity="0.2"/>
+          fill-opacity="0.15"/>
     
-    <!-- Leaf vein -->
-    <path d="M155 140L85 70" 
+    <!-- Leaf vein detail -->
+    <path d="M185 135L115 65" 
           stroke="#00897B" 
           stroke-width="6" 
           stroke-linecap="round"/>
     
     <!-- ReHome text -->
-    <text x="280" y="200" font-family="Arial, sans-serif" font-size="120" font-weight="bold" fill="#00897B">
+    <text x="350" y="180" font-family="system-ui, -apple-system, sans-serif" font-size="90" font-weight="700" fill="#00897B">
       ReHome
     </text>
-    
-    <!-- Tagline -->
-    <text x="280" y="250" font-family="Arial, sans-serif" font-size="36" fill="#555">
-      Transform Clutter into Community Impact
-    </text>
-    
-    <!-- Description -->
-    <text x="280" y="300" font-family="Arial, sans-serif" font-size="24" fill="#666">
-      AI-powered donation platform helping households donate items
-    </text>
-    <text x="280" y="330" font-family="Arial, sans-serif" font-size="24" fill="#666">
-      to verified partners. Track your environmental impact in real-time.
-    </text>
   </g>
+  
+  <!-- Subtitle centered below -->
+  <text x="600" y="420" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="500" fill="#374151" text-anchor="middle">
+    Transform Clutter into Community Impact
+  </text>
+  
+  <!-- Description -->
+  <text x="600" y="470" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#6B7280" text-anchor="middle">
+    AI-powered donation platform helping households donate items to verified partners
+  </text>
 </svg>
