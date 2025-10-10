@@ -265,7 +265,7 @@ const Upload = () => {
         {/* Info Section */}
         <div className="mt-12 text-center space-y-4 text-muted-foreground">
           <p className="text-sm">
-            🤖 Powered by Lovable AI with Google Gemini
+            🤖 Powered by ReHome AI with Google Gemini
           </p>
           <p className="text-sm">
             🔒 Secure and accurate image classification

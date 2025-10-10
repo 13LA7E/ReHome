@@ -1,22 +1,22 @@
-# Welcome to your Lovable project
+# ReHome - Transform Clutter into Community Impact
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/4b292564-9032-4261-a299-dd11fdfaf67a
+**URL**: https://13la7e.github.io/rehomeht/
 
-## How can I edit this code?
+## About ReHome
 
-There are several ways of editing your application.
+ReHome is a sustainable donation platform that helps households easily donate clothes, books, furniture, and electronics to verified local partners including charities, recycling centers, and community organizations.
 
-**Use Lovable**
+## Features
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/4b292564-9032-4261-a299-dd11fdfaf67a) and start prompting.
+- 🤖 **AI-Powered Classification**: Automatically categorize donation items
+- 📍 **Partner Mapping**: Find verified donation centers near you  
+- 📊 **Impact Tracking**: Monitor your environmental impact in real-time
+- 🎯 **Smart Matching**: Connect items with the right organizations
+- 🌱 **Sustainability Focus**: Track CO₂ savings and waste diversion
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## How to run locally
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
