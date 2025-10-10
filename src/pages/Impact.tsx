@@ -2,6 +2,9 @@ import { Leaf, TrendingUp, Award, Users, Package, Recycle, TreePine, Heart } fro
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Navigation } from "@/components/Navigation";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/components/AuthProvider";
 
 const impactMetrics = [
   {
@@ -56,6 +59,117 @@ const achievements = [
 ];
 
 const Impact = () => {
+  const { user } = useAuth();
+  const [metrics, setMetrics] = useState({
+    totalItems: 0,
+    wasteDiverted: 0,
+    co2Saved: 0,
+    livesImpacted: 0,
+    communityPoints: 0
+  });
+  const [categories, setCategories] = useState<Array<{ name: string; donated: number; progress: number; color: string }>>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchImpactData = async () => {
+      if (!user) return;
+
+      try {
+        // Fetch impact metrics
+        const { data: impactData } = await supabase
+          .from("impact_metrics")
+          .select("*")
+          .eq("user_id", user.id)
+          .single();
+
+        if (impactData) {
+          setMetrics({
+            totalItems: impactData.total_items || 0,
+            wasteDiverted: impactData.waste_diverted_kg || 0,
+            co2Saved: impactData.co2_saved_kg || 0,
+            livesImpacted: impactData.lives_impacted || 0,
+            communityPoints: impactData.community_points || 0
+          });
+        }
+
+        // Fetch items by category
+        const { data: itemsData } = await supabase
+          .from("items")
+          .select("category")
+          .eq("user_id", user.id);
+
+        if (itemsData) {
+          const categoryCounts: Record<string, number> = {};
+          itemsData.forEach(item => {
+            categoryCounts[item.category] = (categoryCounts[item.category] || 0) + 1;
+          });
+
+          const maxCount = Math.max(...Object.values(categoryCounts), 1);
+          const categoryArray = Object.entries(categoryCounts).map(([name, count], index) => ({
+            name: name.charAt(0).toUpperCase() + name.slice(1),
+            donated: count,
+            progress: (count / maxCount) * 100,
+            color: ["bg-primary", "bg-accent", "bg-primary-glow"][index % 3]
+          }));
+
+          setCategories(categoryArray);
+        }
+      } catch (error) {
+        console.error("Error fetching impact data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchImpactData();
+  }, [user]);
+
+  const impactMetrics = [
+    {
+      icon: Package,
+      label: "Total Items Donated",
+      value: metrics.totalItems.toString(),
+      change: "Keep donating!",
+      color: "text-primary",
+      bgColor: "bg-primary/10"
+    },
+    {
+      icon: Recycle,
+      label: "Waste Diverted",
+      value: `${metrics.wasteDiverted.toFixed(1)} kg`,
+      change: "Making a difference",
+      color: "text-accent",
+      bgColor: "bg-accent/10"
+    },
+    {
+      icon: TreePine,
+      label: "CO₂ Saved",
+      value: `${metrics.co2Saved.toFixed(0)} kg`,
+      change: "Environmental impact",
+      color: "text-primary-glow",
+      bgColor: "bg-primary/10"
+    },
+    {
+      icon: Heart,
+      label: "Lives Impacted",
+      value: metrics.livesImpacted.toString(),
+      change: "Helping others",
+      color: "text-accent",
+      bgColor: "bg-accent/10"
+    }
+  ];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background via-secondary/30 to-background">
+        <Navigation />
+        <div className="py-12 flex items-center justify-center">
+          <p className="text-muted-foreground">Loading your impact...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-secondary/30 to-background">
       <Navigation />
@@ -122,10 +236,9 @@ const Impact = () => {
                 </div>
                 <Award className="w-16 h-16 opacity-80" />
               </div>
-              <div className="text-5xl font-bold mb-4">8,450 pts</div>
+              <div className="text-5xl font-bold mb-4">{metrics.communityPoints.toLocaleString()} pts</div>
               <div className="flex gap-2 text-sm opacity-90">
-                <span className="px-3 py-1 bg-primary-foreground/20 rounded-full">Top 5% this month</span>
-                <span className="px-3 py-1 bg-primary-foreground/20 rounded-full">+450 pts this week</span>
+                <span className="px-3 py-1 bg-primary-foreground/20 rounded-full">Keep up the great work!</span>
               </div>
             </Card>
           </div>

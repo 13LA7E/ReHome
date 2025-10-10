@@ -76,10 +76,12 @@ const Hero = () => {
 
       {/* Hero Content */}
       <div className="flex-1 flex items-center justify-center px-4 py-20">
-        {/* Animated background elements */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-accent/8 to-background" />
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/15 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        {/* Animated background elements with enhanced gradients */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/15 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-background via-transparent to-primary/10" />
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-primary/10 to-accent/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
         
         <div className="relative max-w-6xl mx-auto text-center space-y-8 animate-fade-in">
           <div className="inline-block animate-scale-in">
