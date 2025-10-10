@@ -39,12 +39,17 @@ const Partners = () => {
       setLoading(true);
       const { data, error } = await supabase.rpc('get_partners_safe');
       
-      if (error) throw error;
+      if (error) {
+        console.error('RPC error:', error);
+        throw error;
+      }
       
       setPartners(data || []);
     } catch (error) {
       console.error('Error fetching partners:', error);
       toast.error("Failed to load partners");
+      // Set empty array so page still renders
+      setPartners([]);
     } finally {
       setLoading(false);
     }
@@ -120,11 +125,13 @@ const Partners = () => {
         </div>
 
         {/* Interactive Map */}
-        <Card className="p-4 mb-8 shadow-hover animate-slide-up">
-          <div className="h-96 rounded-2xl overflow-hidden">
-            <PartnersMap partners={partners} />
-          </div>
-        </Card>
+        {partners.length > 0 && (
+          <Card className="p-4 mb-8 shadow-hover animate-slide-up">
+            <div className="h-96 rounded-2xl overflow-hidden">
+              <PartnersMap partners={partners} />
+            </div>
+          </Card>
+        )}
 
           <div className="space-y-6">
           <div className="flex items-center justify-between mb-4">
