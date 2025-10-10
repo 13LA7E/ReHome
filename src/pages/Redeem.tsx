@@ -116,7 +116,7 @@ const Redeem = () => {
   const baseForQr = import.meta.env.PROD ? prodBase : devBase;
 
   // Must include /#/ for HashRouter
-  const verificationUrl = `${baseForQr}/#/verify?code=${verificationCode}`;
+  const verificationUrl = `${window.location.origin}/rehomeht/#/verify?code=${verificationCode}`;
 
   console.log("=== QR CODE URL DEBUG ===");
   console.log("mode:", import.meta.env.PROD ? "production" : "development");
