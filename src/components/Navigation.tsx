@@ -26,7 +26,7 @@ export const Navigation = () => {
             <div className="bg-primary/10 p-2 rounded-full">
               <Leaf className="h-6 w-6 text-primary" />
             </div>
-            <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            <span className="text-2xl font-display font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
               ReHome
             </span>
           </Link>
