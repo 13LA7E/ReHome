@@ -47,9 +47,47 @@ const Partners = () => {
       setPartners(data || []);
     } catch (error) {
       console.error('Error fetching partners:', error);
-      toast.error("Failed to load partners");
-      // Set empty array so page still renders
-      setPartners([]);
+      toast.error("Database unavailable - showing sample partners");
+      
+      // Fallback to mock data when database is unavailable
+      setPartners([
+        {
+          id: '1',
+          name: 'Doha Charity Center',
+          type: 'charity',
+          rating: 4.8,
+          address: 'Al Sadd Street, Doha, Qatar',
+          phone: '+974 4444 1234',
+          email: 'info@dohacharity.org',
+          verified: true,
+          latitude: 25.2854,
+          longitude: 51.5310
+        },
+        {
+          id: '2',
+          name: 'Qatar Red Crescent',
+          type: 'humanitarian',
+          rating: 4.9,
+          address: 'Corniche Road, West Bay, Doha',
+          phone: '+974 4444 5678',
+          email: 'contact@qrcs.org.qa',
+          verified: true,
+          latitude: 25.3548,
+          longitude: 51.5326
+        },
+        {
+          id: '3',
+          name: 'Al Noor Recycling Center',
+          type: 'recycling',
+          rating: 4.5,
+          address: 'Industrial Area, Doha, Qatar',
+          phone: '+974 4444 9012',
+          email: 'info@alnoorrecycling.qa',
+          verified: true,
+          latitude: 25.1866,
+          longitude: 51.4547
+        }
+      ]);
     } finally {
       setLoading(false);
     }
