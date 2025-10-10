@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/components/AuthProvider";
-import { Card } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Coins, Gift, CheckCircle, Download } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { QRCodeSVG } from "qrcode.react";
-import { toast } from "@/hooks/use-toast";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
+import { Navigation } from "@/components/Navigation";
+import { Loader2, Coins, TreePine, Store, Gift, ArrowRight, Sparkles } from "lucide-react";
+import QRCode from "qrcode.react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface Reward {
   id: string;
@@ -15,198 +15,165 @@ interface Reward {
   description: string;
   points_required: number;
   type: string;
-  image_url: string;
+  image_url?: string;
+  partner_id?: string;
 }
 
-interface ImpactMetrics {
-  community_points: number;
-}
-
-export default function Redeem() {
-  const { user } = useAuth();
+const Redeem = () => {
+  const navigate = useNavigate();
   const [rewards, setRewards] = useState<Reward[]>([]);
-  const [points, setPoints] = useState(0);
+  const [userPoints, setUserPoints] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [redeeming, setRedeeming] = useState(false);
+  const [qrCodeData, setQrCodeData] = useState<string | null>(null);
+  const [showQRDialog, setShowQRDialog] = useState(false);
   const [selectedReward, setSelectedReward] = useState<Reward | null>(null);
-  const [qrData, setQrData] = useState<string | null>(null);
-  const [redemptionId, setRedemptionId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchData();
-  }, [user]);
+  }, []);
 
   const fetchData = async () => {
-    if (!user) return;
-
     try {
-      const [rewardsRes, metricsRes] = await Promise.all([
-        supabase.from("rewards").select("*").eq("active", true).order("points_required"),
-        supabase.from("impact_metrics").select("community_points").eq("user_id", user.id).single()
-      ]);
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        navigate("/auth");
+        return;
+      }
 
-      if (rewardsRes.data) setRewards(rewardsRes.data);
-      if (metricsRes.data) setPoints(metricsRes.data.community_points);
+      const { data: metricsData } = await supabase
+        .from("impact_metrics")
+        .select("community_points")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      setUserPoints(metricsData?.community_points || 0);
+
+      const { data: rewardsData } = await supabase
+        .from("rewards")
+        .select("*")
+        .in("type", ["tree_planting", "discount"])
+        .eq("active", true);
+
+      setRewards(rewardsData || []);
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to load rewards",
-        variant: "destructive",
-      });
+      toast.error("Failed to load rewards");
     } finally {
       setLoading(false);
     }
   };
 
   const handleRedeem = async (reward: Reward) => {
-    if (!user || points < reward.points_required) {
-      toast({
-        title: "Insufficient Points",
-        description: `You need ${reward.points_required} points to redeem this reward.`,
-        variant: "destructive",
-      });
+    if (userPoints < reward.points_required) {
+      toast.error("Not enough points!");
       return;
     }
 
+    setRedeeming(true);
+
     try {
-      const qrCodeData = JSON.stringify({
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const qrData = JSON.stringify({
         userId: user.id,
         rewardId: reward.id,
-        points: reward.points_required,
-        timestamp: new Date().toISOString(),
+        pointsSpent: reward.points_required,
+        redeemedAt: new Date().toISOString(),
       });
 
-      const { data: redemption, error: redemptionError } = await supabase
-        .from("redemptions")
-        .insert({
-          user_id: user.id,
-          reward_id: reward.id,
-          points_spent: reward.points_required,
-          qr_code_data: qrCodeData,
-          status: "pending",
-        })
-        .select()
-        .single();
+      await supabase.from("redemptions").insert({
+        user_id: user.id,
+        reward_id: reward.id,
+        points_spent: reward.points_required,
+        qr_code_data: qrData,
+      });
 
-      if (redemptionError) throw redemptionError;
-
-      const { error: updateError } = await supabase
+      await supabase
         .from("impact_metrics")
-        .update({ community_points: points - reward.points_required })
+        .update({ community_points: userPoints - reward.points_required })
         .eq("user_id", user.id);
 
-      if (updateError) throw updateError;
-
-      setPoints(points - reward.points_required);
-      setQrData(qrCodeData);
-      setRedemptionId(redemption.id);
+      setQrCodeData(qrData);
       setSelectedReward(reward);
-
-      toast({
-        title: "Reward Redeemed!",
-        description: "Show this QR code to redeem your reward.",
-      });
+      setShowQRDialog(true);
+      setUserPoints(userPoints - reward.points_required);
+      toast.success("Reward redeemed!");
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to redeem reward",
-        variant: "destructive",
-      });
+      toast.error("Failed to redeem");
+    } finally {
+      setRedeeming(false);
     }
   };
 
-  const downloadQR = () => {
-    const svg = document.getElementById("qr-code");
-    if (!svg) return;
+  const qatarRiyals = (userPoints / 100).toFixed(2);
 
-    const svgData = new XMLSerializer().serializeToString(svg);
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    const img = new Image();
-
-    img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx?.drawImage(img, 0, 0);
-      const pngFile = canvas.toDataURL("image/png");
-      const downloadLink = document.createElement("a");
-      downloadLink.download = `reward-${redemptionId}.png`;
-      downloadLink.href = pngFile;
-      downloadLink.click();
-    };
-
-    img.src = "data:image/svg+xml;base64," + btoa(svgData);
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-glow-pulse text-primary text-xl">Loading rewards...</div>
-      </div>
-    );
-  }
+  if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-12 h-12 animate-spin text-primary" /></div>;
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                Redeem Rewards
-              </h1>
-              <Card className="px-6 py-3 bg-gradient-card border-primary/20">
-                <div className="flex items-center gap-2">
-                  <Coins className="h-6 w-6 text-primary" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Your Points</p>
-                    <p className="text-2xl font-bold text-primary">{points}</p>
-                  </div>
-                </div>
-              </Card>
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5">
+      <Navigation />
+      <div className="container mx-auto px-4 py-12 max-w-7xl">
+        <Card className="mb-12 border-2 border-primary/20 shadow-lg">
+          <CardHeader className="space-y-6">
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-accent">
+                <Coins className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-4xl font-display font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  Your Rewards Balance
+                </CardTitle>
+                <CardDescription className="text-lg">Redeem points for rewards</CardDescription>
+              </div>
             </div>
-            <p className="text-muted-foreground">
-              Convert your community points into real-world rewards
-            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="p-6 rounded-2xl bg-primary/10 border border-primary/20">
+                <p className="text-sm text-muted-foreground mb-2">Community Points</p>
+                <p className="text-6xl font-display font-bold text-primary">{userPoints}</p>
+              </div>
+              <div className="p-6 rounded-2xl bg-accent/10 border border-accent/20">
+                <p className="text-sm text-muted-foreground mb-2">Equivalent Value</p>
+                <p className="text-6xl font-display font-bold text-accent">{qatarRiyals} <span className="text-2xl">QAR</span></p>
+                <p className="text-xs text-muted-foreground mt-2">100 points = 1 QAR</p>
+              </div>
+            </div>
+          </CardHeader>
+        </Card>
+
+        <div className="space-y-8">
+          <div className="flex items-center gap-3">
+            <Sparkles className="w-6 h-6 text-primary" />
+            <h2 className="text-3xl font-display font-bold">Available Rewards</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {rewards.map((reward) => {
-              const canAfford = points >= reward.points_required;
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {rewards.map(reward => {
+              const canAfford = userPoints >= reward.points_required;
               return (
-                <Card
-                  key={reward.id}
-                  className="overflow-hidden hover-scale border-primary/10 bg-card/50 backdrop-blur"
-                >
-                  <div className="aspect-video relative overflow-hidden">
-                    <img
-                      src={reward.image_url}
-                      alt={reward.name}
-                      className="w-full h-full object-cover"
-                    />
-                    <Badge
-                      className="absolute top-2 right-2 bg-primary/90 backdrop-blur"
-                      variant="default"
-                    >
-                      {reward.points_required} pts
-                    </Badge>
-                  </div>
-                  <div className="p-4">
-                    <div className="flex items-start gap-2 mb-2">
-                      <Gift className="h-5 w-5 text-primary mt-1" />
-                      <h3 className="font-semibold text-lg">{reward.name}</h3>
+                <Card key={reward.id} className={`group ${canAfford ? "border-2 border-primary/30 hover:border-primary" : "opacity-60"}`}>
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div className={`p-3 rounded-xl ${reward.type === "tree_planting" ? "bg-gradient-to-br from-green-500 to-emerald-500" : "bg-gradient-to-br from-purple-500 to-pink-500"}`}>
+                        {reward.type === "tree_planting" ? <TreePine className="w-6 h-6 text-white" /> : <Store className="w-6 h-6 text-white" />}
+                      </div>
+                      <CardTitle className="text-2xl font-display">{reward.name}</CardTitle>
                     </div>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      {reward.description}
-                    </p>
-                    <Button
-                      variant="hero"
-                      className="w-full"
-                      onClick={() => handleRedeem(reward)}
-                      disabled={!canAfford}
-                    >
-                      {canAfford ? "Redeem Now" : "Need More Points"}
-                    </Button>
-                  </div>
+                    <CardDescription className="text-base">{reward.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between p-4 rounded-xl bg-primary/10">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Cost</p>
+                        <p className="text-3xl font-display font-bold text-primary">{reward.points_required} <span className="text-sm">pts</span></p>
+                        <p className="text-xs text-muted-foreground">≈ {(reward.points_required / 100).toFixed(2)} QAR</p>
+                      </div>
+                      <Button onClick={() => handleRedeem(reward)} disabled={!canAfford || redeeming} size="lg" className="font-display">
+                        {canAfford ? <></>Redeem <ArrowRight className="w-4 h-4 ml-2" /></> : "Need More"}
+                      </Button>
+                    </div>
+                  </CardContent>
                 </Card>
               );
             })}
@@ -214,43 +181,20 @@ export default function Redeem() {
         </div>
       </div>
 
-      <Dialog open={!!qrData} onOpenChange={() => setQrData(null)}>
-        <DialogContent className="sm:max-w-md">
+      <Dialog open={showQRDialog} onOpenChange={setShowQRDialog}>
+        <DialogContent>
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <CheckCircle className="h-6 w-6 text-primary" />
-              Reward Redeemed!
-            </DialogTitle>
+            <DialogTitle className="text-2xl font-display text-center">Reward Redeemed! 🎉</DialogTitle>
+            <DialogDescription className="text-center">Show this QR code to redeem</DialogDescription>
           </DialogHeader>
-          <div className="flex flex-col items-center gap-4 py-4">
-            <div className="bg-white p-4 rounded-lg">
-              {qrData && (
-                <QRCodeSVG
-                  id="qr-code"
-                  value={qrData}
-                  size={200}
-                  level="H"
-                  includeMargin
-                />
-              )}
-            </div>
-            <div className="text-center">
-              <p className="font-semibold mb-1">{selectedReward?.name}</p>
-              <p className="text-sm text-muted-foreground">
-                Show this QR code to redeem your reward
-              </p>
-            </div>
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={downloadQR}
-            >
-              <Download className="h-4 w-4 mr-2" />
-              Download QR Code
-            </Button>
+          <div className="flex justify-center p-6 bg-white rounded-xl">
+            {qrCodeData && <QRCode value={qrCodeData} size={256} />}
           </div>
+          <Button onClick={() => setShowQRDialog(false)} className="w-full font-display">Done</Button>
         </DialogContent>
       </Dialog>
     </div>
   );
-}
+};
+
+export default Redeem;

@@ -34,9 +34,9 @@ export const Navigation = () => {
           <div className="flex items-center gap-4">
             {user ? (
               <>
-                <Link to="/upload">
+                <Link to="/multi-upload">
                   <Button variant="hero" size="sm">
-                    Donate Item
+                    Donate Items
                   </Button>
                 </Link>
                 <Link to="/redeem">

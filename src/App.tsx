@@ -9,6 +9,7 @@ import { Navigation } from "@/components/Navigation";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Upload from "./pages/Upload";
+import MultiUpload from "./pages/MultiUpload";
 import Partners from "./pages/Partners";
 import Impact from "./pages/Impact";
 import Redeem from "./pages/Redeem";
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
+            <Route path="/multi-upload" element={<ProtectedRoute><MultiUpload /></ProtectedRoute>} />
             <Route path="/partners" element={<ProtectedRoute><Partners /></ProtectedRoute>} />
             <Route path="/redeem" element={<ProtectedRoute><Redeem /></ProtectedRoute>} />
             <Route path="/impact" element={<ProtectedRoute><Impact /></ProtectedRoute>} />

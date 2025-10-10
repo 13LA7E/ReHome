@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 interface ClassificationResult {
   category: string;
   confidence: number;
+  isReusable: boolean;
   reasoning?: string;
 }
 
@@ -32,6 +33,7 @@ export const useImageClassifier = () => {
       return {
         category: data.category,
         confidence: data.confidence,
+        isReusable: data.isReusable || true,
         reasoning: data.reasoning
       };
       
