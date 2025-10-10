@@ -34,28 +34,47 @@ const VerifyRedemption = () => {
       console.log("Verifying code:", verificationCode);
       console.log("Current URL:", window.location.href);
       
-      // Test database connectivity first
+      // Try to get current user first (in case verification needs auth)
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      console.log("Current user:", user?.id || "Anonymous");
+      
+      // Test database connectivity with a simple query
       const { data: testConnection, error: connectionError } = await supabase
         .from("rewards")
-        .select("count")
+        .select("id")
         .limit(1);
       
-      console.log("Database connection test:", { testConnection, connectionError });
+      console.log("Database connection test:", { 
+        success: !connectionError, 
+        error: connectionError?.message,
+        dataCount: testConnection?.length || 0 
+      });
+      
+      if (connectionError) {
+        toast.error(`Database connection failed: ${connectionError.message}`);
+        throw connectionError;
+      }
       
       // First try to get redemption data
       const { data: redemption, error: redemptionError } = await supabase
         .from("redemptions")
-        .select("id, status, reward_id, points_spent")
+        .select("id, status, reward_id, points_spent, user_id")
         .eq("qr_code_data", verificationCode)
         .maybeSingle();
 
-      console.log("Redemption query result:", { redemption, redemptionError });
+      console.log("Redemption query result:", { 
+        found: !!redemption, 
+        redemption, 
+        error: redemptionError?.message 
+      });
 
       if (redemptionError) {
         console.error("Redemption query error:", redemptionError);
         // More specific error handling
         if (redemptionError.code === 'PGRST116') {
-          toast.error("Database access denied - please check authentication");
+          toast.error("Access denied - verification requires authentication");
+        } else if (redemptionError.code === '42501') {
+          toast.error("Permission denied - RLS policy blocks access");
         } else {
           toast.error(`Database error: ${redemptionError.message}`);
         }
@@ -63,6 +82,8 @@ const VerifyRedemption = () => {
       }
 
       if (redemption) {
+        console.log("Found redemption:", redemption.id);
+        
         // Get reward details separately
         const { data: reward, error: rewardError } = await supabase
           .from("rewards")
@@ -70,7 +91,11 @@ const VerifyRedemption = () => {
           .eq("id", redemption.reward_id)
           .single();
 
-        console.log("Reward query result:", { reward, rewardError });
+        console.log("Reward query result:", { 
+          found: !!reward, 
+          reward, 
+          error: rewardError?.message 
+        });
 
         const rewardName = reward?.name || "Reward";
         
@@ -82,6 +107,8 @@ const VerifyRedemption = () => {
           });
           toast.error("This code has already been used!");
         } else {
+          console.log("Attempting to mark redemption as completed...");
+          
           // Mark as completed
           const { error: updateError } = await supabase
             .from("redemptions")
@@ -97,6 +124,7 @@ const VerifyRedemption = () => {
             return;
           }
 
+          console.log("Successfully marked redemption as completed");
           setVerificationResult({
             valid: true,
             rewardName,
