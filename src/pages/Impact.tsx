@@ -1,6 +1,7 @@
 import { Leaf, TrendingUp, Award, Users, Package, Recycle, TreePine, Heart } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Navigation } from "@/components/Navigation";
 
 const impactMetrics = [
   {
@@ -56,8 +57,10 @@ const achievements = [
 
 const Impact = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-secondary/30 to-background py-12">
-      <div className="container mx-auto px-4 max-w-7xl">
+    <div className="min-h-screen bg-gradient-to-b from-background via-secondary/30 to-background">
+      <Navigation />
+      <div className="py-12">
+        <div className="container mx-auto px-4 max-w-7xl">
         {/* Header */}
         <div className="mb-12 space-y-4 animate-fade-in">
           <h1 className="text-4xl md:text-5xl font-bold text-foreground">
@@ -159,6 +162,7 @@ const Impact = () => {
                 ))}
               </div>
             </Card>
+          </div>
           </div>
         </div>
       </div>

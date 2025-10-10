@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Leaf } from "lucide-react";
+import { Navigation } from "@/components/Navigation";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -74,7 +75,9 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-subtle p-4">
+    <>
+      <Navigation />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-subtle p-4">
       <Card className="w-full max-w-md animate-scale-in">
         <CardHeader className="text-center space-y-2">
           <div className="flex justify-center mb-2">
@@ -167,6 +170,7 @@ const Auth = () => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };
 

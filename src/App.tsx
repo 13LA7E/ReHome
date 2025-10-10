@@ -26,60 +26,12 @@ const App = () => (
         <AuthProvider>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route 
-              path="/auth" 
-              element={
-                <>
-                  <Navigation />
-                  <Auth />
-                </>
-              } 
-            />
-            <Route 
-              path="/upload" 
-              element={
-                <ProtectedRoute>
-                  <Navigation />
-                  <Upload />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/multi-upload" 
-              element={
-                <ProtectedRoute>
-                  <Navigation />
-                  <MultiUpload />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/partners" 
-              element={
-                <ProtectedRoute>
-                  <Navigation />
-                  <Partners />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/redeem" 
-              element={
-                <ProtectedRoute>
-                  <Navigation />
-                  <Redeem />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/impact" 
-              element={
-                <ProtectedRoute>
-                  <Navigation />
-                  <Impact />
-                </ProtectedRoute>
-              } 
-            />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
+            <Route path="/multi-upload" element={<ProtectedRoute><MultiUpload /></ProtectedRoute>} />
+            <Route path="/partners" element={<ProtectedRoute><Partners /></ProtectedRoute>} />
+            <Route path="/redeem" element={<ProtectedRoute><Redeem /></ProtectedRoute>} />
+            <Route path="/impact" element={<ProtectedRoute><Impact /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

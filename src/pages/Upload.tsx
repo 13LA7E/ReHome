@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useImageClassifier } from "@/hooks/useImageClassifier";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
+import { Navigation } from "@/components/Navigation";
 
 const Upload = () => {
   const { user } = useAuth();
@@ -137,8 +138,10 @@ const Upload = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/30 py-12">
-      <div className="container mx-auto px-4 max-w-4xl">
+    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/30">
+      <Navigation />
+      <div className="py-12">
+        <div className="container mx-auto px-4 max-w-4xl">
         {/* Header */}
         <div className="text-center mb-12 space-y-4 animate-fade-in">
           <h1 className="text-4xl md:text-5xl font-bold text-foreground">
@@ -271,6 +274,7 @@ const Upload = () => {
             💡 For best results, ensure good lighting and the item is clearly visible
           </p>
         </div>
+      </div>
       </div>
     </div>
   );

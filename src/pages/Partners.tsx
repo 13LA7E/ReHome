@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { MapPin, Phone, Mail, Calendar, Navigation, Star, Shield } from "lucide-react";
+import { MapPin, Phone, Mail, Calendar, Navigation as NavigationIcon, Star, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
+import { Navigation } from "@/components/Navigation";
 
 interface Partner {
   id: string;
@@ -72,14 +73,19 @@ const Partners = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-glow-pulse text-primary text-xl">Loading partners...</div>
-      </div>
+      <>
+        <Navigation />
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-glow-pulse text-primary text-xl">Loading partners...</div>
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/30 py-12">
+    <>
+      <Navigation />
+      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/30 py-12">
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Header */}
         <div className="mb-12 space-y-4 animate-fade-in">
@@ -200,7 +206,7 @@ const Partners = () => {
                       onClick={() => handleGetDirections(partner)}
                       className="w-full"
                     >
-                      <Navigation className="w-4 h-4" />
+                      <NavigationIcon className="w-4 h-4" />
                       Get Directions
                     </Button>
                   </div>
@@ -212,6 +218,7 @@ const Partners = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
