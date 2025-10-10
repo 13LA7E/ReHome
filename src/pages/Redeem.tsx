@@ -109,27 +109,22 @@ const Redeem = () => {
         .update({ community_points: userPoints - reward.points_required })
         .eq("user_id", user.id);
 
-      // Generate verification URL for QR code (HashRouter format)
-      // CRITICAL: Must include /#/ for HashRouter to work properly
-      const baseUrl = window.location.origin;
-      
-      // Get base path from vite config and ensure no trailing slash
-      let basePath = import.meta.env.BASE_URL || '/';
-      basePath = basePath.replace(/\/$/, ''); // Remove trailing slash if exists
-      
-      // Build URL with explicit /# for HashRouter
-      // Format: https://13la7e.github.io/rehomeht/#/verify?code=xxx
-      const verificationUrl = `${baseUrl}${basePath}/#/verify?code=${verificationCode}`;
-      
-      console.log("=== QR CODE URL DEBUG ===");
-      console.log("window.location.origin:", window.location.origin);
-      console.log("import.meta.env.BASE_URL:", import.meta.env.BASE_URL);
-      console.log("Computed basePath:", basePath);
-      console.log("Generated QR verification URL:", verificationUrl);
-      console.log("Verification code:", verificationCode);
-      console.log("Expected format: https://13la7e.github.io/rehomeht/#/verify?code=xxx");
-      
-      setQrCodeData(verificationUrl);
+  // Generate verification URL for QR code (HashRouter format)
+  // In production (GitHub Pages), force the exact domain + path to avoid any mismatch.
+  const prodBase = "https://13la7e.github.io/rehomeht";
+  const devBase = `${window.location.origin}${(import.meta.env.BASE_URL || "/").replace(/\/$/, "")}`;
+  const baseForQr = import.meta.env.PROD ? prodBase : devBase;
+
+  // Must include /#/ for HashRouter
+  const verificationUrl = `${baseForQr}/#/verify?code=${verificationCode}`;
+
+  console.log("=== QR CODE URL DEBUG ===");
+  console.log("mode:", import.meta.env.PROD ? "production" : "development");
+  console.log("baseForQr:", baseForQr);
+  console.log("Generated QR verification URL:", verificationUrl);
+  console.log("Verification code:", verificationCode);
+
+  setQrCodeData(verificationUrl);
       setSelectedReward(reward);
       setShowQRDialog(true);
       setUserPoints(userPoints - reward.points_required);
