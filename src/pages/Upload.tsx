@@ -18,25 +18,20 @@ const Upload = () => {
     category: string;
     confidence: number;
     isReusable: boolean;
-    allPredictions?: { category: string; confidence: number; }[];
+    reasoning?: string;
   } | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (modelError) {
-      toast.error("Failed to load AI model: " + modelError);
+      toast.error("AI classification error: " + modelError);
     }
   }, [modelError]);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (modelLoading) {
-        toast.info("AI model is still loading, please wait...");
-        return;
-      }
-
       setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = async () => {
@@ -56,17 +51,16 @@ const Upload = () => {
       const result = await classifyImage(imageUrl);
       
       if (result) {
-        // Determine if item is reusable based on category
         const isReusable = !['ewaste'].includes(result.category);
         
         setClassification({
           category: result.category,
           confidence: result.confidence,
           isReusable,
-          allPredictions: result.allPredictions
+          reasoning: result.reasoning
         });
         
-        toast.success(`Classified as ${result.category} with ${(result.confidence * 100).toFixed(1)}% confidence!`);
+        toast.success(`Classified as ${result.category} with ${(result.confidence * 100).toFixed(0)}% confidence!`);
       } else {
         toast.error("Failed to classify image");
       }
@@ -155,20 +149,6 @@ const Upload = () => {
           </p>
         </div>
 
-        {/* Model Loading State */}
-        {modelLoading && (
-          <Card className="p-8 mb-6 bg-gradient-card animate-fade-in">
-            <div className="flex items-center gap-4">
-              <Sparkles className="w-8 h-8 text-primary animate-pulse" />
-              <div>
-                <h3 className="text-lg font-semibold">Loading AI Model...</h3>
-                <p className="text-sm text-muted-foreground">
-                  Preparing high-accuracy image classification (100% validation accuracy)
-                </p>
-              </div>
-            </div>
-          </Card>
-        )}
 
         {/* Upload Card */}
         <Card className="p-8 shadow-hover border-2 border-dashed border-border hover:border-primary transition-all duration-300 animate-slide-up">
@@ -181,7 +161,6 @@ const Upload = () => {
                   accept="image/*"
                   onChange={handleImageUpload}
                   className="hidden"
-                  disabled={modelLoading}
                 />
                 <div className="w-32 h-32 rounded-full bg-gradient-hero flex items-center justify-center mb-6 group-hover:shadow-glow group-hover:scale-110 transition-all duration-300">
                   <UploadIcon className="w-16 h-16 text-primary-foreground" />
@@ -234,7 +213,7 @@ const Upload = () => {
                       </div>
                       <div className="text-right">
                         <p className="text-sm opacity-90 mb-1">Confidence</p>
-                        <p className="text-3xl font-bold">{(classification.confidence * 100).toFixed(1)}%</p>
+                        <p className="text-3xl font-bold">{(classification.confidence * 100).toFixed(0)}%</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2 text-sm flex-wrap">
@@ -242,25 +221,13 @@ const Upload = () => {
                         {classification.isReusable ? '✓ Reusable' : 'ⓘ Recyclable Only'}
                       </div>
                       <div className="px-3 py-1 rounded-full bg-primary-foreground/20">
-                        🎯 100% Validation Accuracy Model
+                        🤖 AI-Powered Classification
                       </div>
                     </div>
+                    {classification.reasoning && (
+                      <p className="text-sm opacity-80 mt-2">{classification.reasoning}</p>
+                    )}
                   </div>
-
-                  {/* All Predictions */}
-                  {classification.allPredictions && classification.allPredictions.length > 1 && (
-                    <Card className="p-4 bg-card/50">
-                      <h4 className="text-sm font-semibold mb-3">All Predictions:</h4>
-                      <div className="space-y-2">
-                        {classification.allPredictions.slice(0, 5).map((pred, idx) => (
-                          <div key={idx} className="flex items-center justify-between text-sm">
-                            <span className="capitalize text-muted-foreground">{pred.category}</span>
-                            <span className="font-mono">{(pred.confidence * 100).toFixed(1)}%</span>
-                          </div>
-                        ))}
-                      </div>
-                    </Card>
-                  )}
 
                   {/* Action Buttons */}
                   <div className="flex gap-4">
@@ -295,10 +262,10 @@ const Upload = () => {
         {/* Info Section */}
         <div className="mt-12 text-center space-y-4 text-muted-foreground">
           <p className="text-sm">
-            🎯 Powered by TensorFlow.js with 100% validation accuracy
+            🤖 Powered by Lovable AI with Google Gemini
           </p>
           <p className="text-sm">
-            🔒 Images processed in your browser - secure and private
+            🔒 Secure and accurate image classification
           </p>
           <p className="text-sm">
             💡 For best results, ensure good lighting and the item is clearly visible
