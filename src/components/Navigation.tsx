@@ -35,7 +35,7 @@ export const Navigation = () => {
             {user ? (
               <>
                 <Link to="/multi-upload">
-                  <Button variant="hero" size="sm">
+                  <Button className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-md" size="sm">
                     Donate Items
                   </Button>
                 </Link>
@@ -65,7 +65,7 @@ export const Navigation = () => {
               </>
             ) : (
               <Link to="/auth">
-                <Button variant="hero" size="sm">
+                <Button className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-md" size="sm">
                   Get Started
                 </Button>
               </Link>

@@ -56,7 +56,7 @@ const Hero = () => {
                   </Button>
                   <Button 
                     onClick={handleGetStarted}
-                    className="font-display font-semibold bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
+                    className="font-display font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg"
                   >
                     Donate Items
                   </Button>
@@ -64,7 +64,7 @@ const Hero = () => {
               ) : (
                 <Button 
                   onClick={handleGetStarted}
-                  className="font-display font-semibold bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
+                  className="font-display font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg"
                 >
                   Get Started
                 </Button>
@@ -105,7 +105,7 @@ const Hero = () => {
             <Button 
               size="lg" 
               onClick={handleGetStarted}
-              className="group relative px-10 py-7 text-lg font-display font-semibold bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 transform hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-glow overflow-hidden"
+              className="group relative px-10 py-7 text-lg font-display font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transform hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-glow overflow-hidden"
             >
               <span className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <span className="relative">
