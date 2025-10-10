@@ -18,11 +18,19 @@ interface PartnersMapProps {
 const PartnersMap = ({ partners }: PartnersMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
+  const [mapError, setMapError] = React.useState(false);
 
   useEffect(() => {
     if (!mapContainer.current) return;
 
-    mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN || '';
+    const mapboxToken = import.meta.env.VITE_MAPBOX_TOKEN;
+    
+    if (!mapboxToken) {
+      setMapError(true);
+      return;
+    }
+
+    mapboxgl.accessToken = mapboxToken;
 
     const validPartners = partners.filter(p => p.latitude && p.longitude);
     
@@ -72,6 +80,17 @@ const PartnersMap = ({ partners }: PartnersMapProps) => {
       map.current?.remove();
     };
   }, [partners]);
+
+  if (mapError) {
+    return (
+      <div className="w-full h-full rounded-2xl bg-muted flex items-center justify-center">
+        <div className="text-center p-8">
+          <p className="text-muted-foreground">Map view temporarily unavailable</p>
+          <p className="text-sm text-muted-foreground mt-2">Partners are listed below</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div ref={mapContainer} className="w-full h-full rounded-2xl" />
