@@ -110,13 +110,18 @@ const Redeem = () => {
         .eq("user_id", user.id);
 
       // Generate verification URL for QR code (HashRouter format)
-      // Handle both local development and GitHub Pages deployment
+      // For GitHub Pages: https://13la7e.github.io/rehomeht/#/verify?code=...
+      // For local dev: http://localhost:8080/#/verify?code=...
       const baseUrl = window.location.origin;
-      const pathPrefix = window.location.pathname === '/' ? '' : window.location.pathname.replace(/\/$/, '');
+      
+      // Determine if we're on GitHub Pages or local development
+      const isGitHubPages = window.location.hostname === '13la7e.github.io';
+      const pathPrefix = isGitHubPages ? '/rehomeht' : '';
+      
       const verificationUrl = `${baseUrl}${pathPrefix}/#/verify?code=${verificationCode}`;
       console.log("Generated QR verification URL:", verificationUrl);
       console.log("Verification code:", verificationCode);
-      console.log("Base URL:", baseUrl, "Path prefix:", pathPrefix);
+      console.log("Base URL:", baseUrl, "Path prefix:", pathPrefix, "Is GitHub Pages:", isGitHubPages);
       setQrCodeData(verificationUrl);
       setSelectedReward(reward);
       setShowQRDialog(true);
