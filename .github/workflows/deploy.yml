@@ -28,15 +28,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
+          cache: 'yarn'
       
       - name: Install dependencies
         run: |
           rm -f bun.lockb
-          npm ci --legacy-peer-deps
+          yarn install --frozen-lockfile
       
       - name: Build
-        run: npm run build
+        run: yarn build
         env:
           NODE_ENV: production
       
