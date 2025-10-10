@@ -246,39 +246,10 @@ const Redeem = () => {
           <div className="flex justify-center p-6 bg-white rounded-xl">
             {qrCodeData && <QRCodeSVG value={qrCodeData} size={256} level="H" />}
           </div>
-          <div className="space-y-3">
-            <p className="text-sm text-muted-foreground text-center">
+          <div className="space-y-2 text-center">
+            <p className="text-sm text-muted-foreground">
               Scanning this QR code will automatically verify the redemption
             </p>
-            {qrCodeData && (
-              <div className="flex flex-col items-center gap-3 p-4 bg-muted/50 rounded-lg">
-                <p className="text-xs font-semibold text-muted-foreground uppercase">Verification Link:</p>
-                <a
-                  href={qrCodeData}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm break-all text-primary underline hover:text-primary/80 max-w-full px-2"
-                >
-                  {qrCodeData}
-                </a>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={async () => {
-                    try {
-                      await navigator.clipboard.writeText(qrCodeData);
-                      toast.success("Verification URL copied to clipboard");
-                    } catch (e) {
-                      toast.error("Failed to copy URL");
-                    }
-                  }}
-                  className="w-full"
-                >
-                  📋 Copy Verification Link
-                </Button>
-              </div>
-            )}
           </div>
           <Button onClick={() => setShowQRDialog(false)} className="w-full font-display">
             Done
