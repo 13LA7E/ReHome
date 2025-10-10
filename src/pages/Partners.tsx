@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { MapPin, Phone, Mail, Calendar, Navigation as NavigationIcon, Star, Shield } from "lucide-react";
+import { MapPin, Phone, Mail, Calendar, Navigation as NavigationIcon, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useLocation } from "react-router-dom";
@@ -53,9 +53,25 @@ const Partners = () => {
     if (!user) return;
     
     try {
-      // Here you would create a pickup_request in the database
+      // Create a pickup request in the database
+      const { data: items } = await supabase
+        .from('items')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('status', 'pending')
+        .limit(1)
+        .maybeSingle();
+      
+      if (items) {
+        await supabase.from('pickup_requests').insert({
+          user_id: user.id,
+          partner_id: partner.id,
+          item_id: items.id,
+          status: 'pending'
+        });
+      }
+      
       toast.success(`Pickup request sent to ${partner.name}!`);
-      toast.info("Contact details will be shared once confirmed");
       setSelectedPartner(partner);
     } catch (error) {
       toast.error("Failed to schedule pickup");
@@ -113,17 +129,12 @@ const Partners = () => {
           </div>
         </Card>
 
-        {/* Partners List */}
-        <div className="space-y-6">
+          <div className="space-y-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
               <MapPin className="w-6 h-6 text-primary" />
               Nearby Partners ({partners.length})
             </h2>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Shield className="w-4 h-4" />
-              <span>Contact info protected</span>
-            </div>
           </div>
 
           {partners.length === 0 ? (
@@ -166,26 +177,20 @@ const Partners = () => {
                         <MapPin className="w-4 h-4" />
                         {partner.address}
                       </div>
-                      {partner.phone ? (
+                      {partner.phone && (
                         <div className="flex items-center gap-2 text-muted-foreground">
                           <Phone className="w-4 h-4" />
-                          {partner.phone}
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-2 text-muted-foreground/60">
-                          <Shield className="w-4 h-4" />
-                          <span className="italic">Contact shared after pickup request</span>
+                          <a href={`tel:${partner.phone}`} className="hover:text-primary transition-colors">
+                            {partner.phone}
+                          </a>
                         </div>
                       )}
-                      {partner.email ? (
+                      {partner.email && (
                         <div className="flex items-center gap-2 text-muted-foreground">
                           <Mail className="w-4 h-4" />
-                          {partner.email}
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-2 text-muted-foreground/60">
-                          <Shield className="w-4 h-4" />
-                          <span className="italic">Contact shared after pickup request</span>
+                          <a href={`mailto:${partner.email}`} className="hover:text-primary transition-colors">
+                            {partner.email}
+                          </a>
                         </div>
                       )}
                     </div>
@@ -194,19 +199,18 @@ const Partners = () => {
                   {/* Action Buttons */}
                   <div className="flex flex-col gap-3 md:min-w-[200px]">
                     <Button 
-                      variant="hero" 
                       onClick={() => handleSchedulePickup(partner)}
-                      className="w-full"
+                      className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-md"
                     >
-                      <Calendar className="w-4 h-4" />
+                      <Calendar className="w-4 h-4 mr-2" />
                       Schedule Pickup
                     </Button>
                     <Button 
                       variant="outline" 
                       onClick={() => handleGetDirections(partner)}
-                      className="w-full"
+                      className="w-full font-semibold"
                     >
-                      <NavigationIcon className="w-4 h-4" />
+                      <NavigationIcon className="w-4 h-4 mr-2" />
                       Get Directions
                     </Button>
                   </div>
