@@ -113,10 +113,8 @@ const Redeem = () => {
         .update({ community_points: userPoints - reward.points_required })
         .eq("user_id", user.id);
 
-      // Create URL for QR code that redirects to verification page
-      const verificationUrl = `${window.location.origin}/redemption-verify?data=${encodeURIComponent(qrData)}`;
-      
-      setQrCodeData(verificationUrl);
+      // Generate a simple redemption code (just the data, not a URL)
+      setQrCodeData(qrData);
       setSelectedReward(reward);
       setShowQRDialog(true);
       setUserPoints(userPoints - reward.points_required);
@@ -232,15 +230,20 @@ const Redeem = () => {
               Reward Redeemed! 🎉
             </DialogTitle>
             <DialogDescription className="text-center">
-              Show this QR code to the partner to redeem your reward
+              Show this QR code to the partner to verify and redeem
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-center p-6 bg-white rounded-xl">
             {qrCodeData && <QRCodeSVG value={qrCodeData} size={256} level="H" />}
           </div>
-          <p className="text-sm text-center text-muted-foreground">
-            Scan this code to verify and complete redemption
-          </p>
+          <div className="space-y-2 text-center">
+            <p className="text-sm text-muted-foreground">
+              Partner can scan this QR code and paste the data at:
+            </p>
+            <p className="text-sm font-mono font-semibold text-primary">
+              {window.location.origin}/verify
+            </p>
+          </div>
           <Button onClick={() => setShowQRDialog(false)} className="w-full font-display">
             Done
           </Button>

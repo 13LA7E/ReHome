@@ -13,7 +13,7 @@ import MultiUpload from "./pages/MultiUpload";
 import Partners from "./pages/Partners";
 import Impact from "./pages/Impact";
 import Redeem from "./pages/Redeem";
-import RedemptionVerify from "./pages/RedemptionVerify";
+import VerifyRedemption from "./pages/VerifyRedemption";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,7 +32,7 @@ const App = () => (
             <Route path="/multi-upload" element={<ProtectedRoute><MultiUpload /></ProtectedRoute>} />
             <Route path="/partners" element={<ProtectedRoute><Partners /></ProtectedRoute>} />
             <Route path="/redeem" element={<ProtectedRoute><Redeem /></ProtectedRoute>} />
-            <Route path="/redemption-verify" element={<RedemptionVerify />} />
+            <Route path="/verify" element={<VerifyRedemption />} />
             <Route path="/impact" element={<ProtectedRoute><Impact /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
