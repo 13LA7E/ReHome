@@ -1,71 +1,82 @@
-import { useState } from "react";
-import { MapPin, Phone, Mail, Calendar, Navigation, Star } from "lucide-react";
+import { useState, useEffect } from "react";
+import { MapPin, Phone, Mail, Calendar, Navigation, Star, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/components/AuthProvider";
 
 interface Partner {
   id: string;
   name: string;
   type: string;
-  distance: string;
   rating: number;
   address: string;
-  phone: string;
-  email: string;
+  phone: string | null;
+  email: string | null;
   verified: boolean;
+  latitude: number | null;
+  longitude: number | null;
 }
 
-const mockPartners: Partner[] = [
-  {
-    id: "1",
-    name: "Hope Foundation",
-    type: "NGO",
-    distance: "1.2 km",
-    rating: 4.8,
-    address: "123 Main St, Community Center",
-    phone: "+1 234-567-8900",
-    email: "contact@hopefoundation.org",
-    verified: true
-  },
-  {
-    id: "2",
-    name: "Green Valley School",
-    type: "School",
-    distance: "2.5 km",
-    rating: 4.6,
-    address: "456 Education Ave, District 2",
-    phone: "+1 234-567-8901",
-    email: "donations@greenvalley.edu",
-    verified: true
-  },
-  {
-    id: "3",
-    name: "EcoRecycle Center",
-    type: "Recycler",
-    distance: "3.8 km",
-    rating: 4.9,
-    address: "789 Industrial Rd, Zone B",
-    phone: "+1 234-567-8902",
-    email: "info@ecorecycle.com",
-    verified: true
-  }
-];
-
 const Partners = () => {
+  const { user } = useAuth();
   const location = useLocation();
   const classification = location.state?.classification;
+  const [partners, setPartners] = useState<Partner[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedPartner, setSelectedPartner] = useState<Partner | null>(null);
 
-  const handleSchedulePickup = (partner: Partner) => {
-    setSelectedPartner(partner);
-    toast.success(`Pickup request sent to ${partner.name}!`);
+  useEffect(() => {
+    fetchPartners();
+  }, []);
+
+  const fetchPartners = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase.rpc('get_partners_safe');
+      
+      if (error) throw error;
+      
+      setPartners(data || []);
+    } catch (error) {
+      console.error('Error fetching partners:', error);
+      toast.error("Failed to load partners");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSchedulePickup = async (partner: Partner) => {
+    if (!user) return;
+    
+    try {
+      // Here you would create a pickup_request in the database
+      toast.success(`Pickup request sent to ${partner.name}!`);
+      toast.info("Contact details will be shared once confirmed");
+      setSelectedPartner(partner);
+    } catch (error) {
+      toast.error("Failed to schedule pickup");
+    }
   };
 
   const handleGetDirections = (partner: Partner) => {
-    toast.info(`Opening directions to ${partner.name}...`);
+    if (partner.latitude && partner.longitude) {
+      const url = `https://www.google.com/maps/dir/?api=1&destination=${partner.latitude},${partner.longitude}`;
+      window.open(url, '_blank');
+    } else {
+      toast.info("Location coordinates not available");
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-glow-pulse text-primary text-xl">Loading partners...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/30 py-12">
@@ -98,13 +109,24 @@ const Partners = () => {
 
         {/* Partners List */}
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <MapPin className="w-6 h-6 text-primary" />
-            Nearby Partners ({mockPartners.length})
-          </h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
+              <MapPin className="w-6 h-6 text-primary" />
+              Nearby Partners ({partners.length})
+            </h2>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Shield className="w-4 h-4" />
+              <span>Contact info protected</span>
+            </div>
+          </div>
 
-          <div className="grid gap-6">
-            {mockPartners.map((partner, index) => (
+          {partners.length === 0 ? (
+            <Card className="p-12 text-center">
+              <p className="text-muted-foreground">No partners found. Check back soon!</p>
+            </Card>
+          ) : (
+            <div className="grid gap-6">
+              {partners.map((partner, index) => (
               <Card 
                 key={partner.id} 
                 className="p-6 hover:shadow-hover transition-all duration-300 hover:-translate-y-1 animate-slide-up"
@@ -124,11 +146,7 @@ const Partners = () => {
                           )}
                         </div>
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span className="px-3 py-1 bg-secondary rounded-full">{partner.type}</span>
-                          <span className="flex items-center gap-1">
-                            <Navigation className="w-4 h-4" />
-                            {partner.distance} away
-                          </span>
+                          <span className="px-3 py-1 bg-secondary rounded-full capitalize">{partner.type}</span>
                         </div>
                       </div>
                       <div className="flex items-center gap-1 text-accent">
@@ -142,14 +160,28 @@ const Partners = () => {
                         <MapPin className="w-4 h-4" />
                         {partner.address}
                       </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Phone className="w-4 h-4" />
-                        {partner.phone}
-                      </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Mail className="w-4 h-4" />
-                        {partner.email}
-                      </div>
+                      {partner.phone ? (
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Phone className="w-4 h-4" />
+                          {partner.phone}
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2 text-muted-foreground/60">
+                          <Shield className="w-4 h-4" />
+                          <span className="italic">Contact shared after pickup request</span>
+                        </div>
+                      )}
+                      {partner.email ? (
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Mail className="w-4 h-4" />
+                          {partner.email}
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2 text-muted-foreground/60">
+                          <Shield className="w-4 h-4" />
+                          <span className="italic">Contact shared after pickup request</span>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -174,8 +206,9 @@ const Partners = () => {
                   </div>
                 </div>
               </Card>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

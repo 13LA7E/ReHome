@@ -311,6 +311,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_partners_safe: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          address: string
+          created_at: string
+          email: string
+          id: string
+          latitude: number
+          longitude: number
+          name: string
+          phone: string
+          rating: number
+          type: string
+          verified: boolean
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
