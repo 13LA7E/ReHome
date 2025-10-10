@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { toast } from "sonner";
 import { Navigation } from "@/components/Navigation";
 import { Loader2, Coins, TreePine, Store, Gift, ArrowRight, Sparkles } from "lucide-react";
-import QRCode from "qrcode.react";
+import { QRCodeSVG } from "qrcode.react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface Reward {
@@ -109,7 +109,13 @@ const Redeem = () => {
 
   const qatarRiyals = (userPoints / 100).toFixed(2);
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-12 h-12 animate-spin text-primary" /></div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-12 h-12 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5">
@@ -135,7 +141,9 @@ const Redeem = () => {
               </div>
               <div className="p-6 rounded-2xl bg-accent/10 border border-accent/20">
                 <p className="text-sm text-muted-foreground mb-2">Equivalent Value</p>
-                <p className="text-6xl font-display font-bold text-accent">{qatarRiyals} <span className="text-2xl">QAR</span></p>
+                <p className="text-6xl font-display font-bold text-accent">
+                  {qatarRiyals} <span className="text-2xl">QAR</span>
+                </p>
                 <p className="text-xs text-muted-foreground mt-2">100 points = 1 QAR</p>
               </div>
             </div>
@@ -166,11 +174,26 @@ const Redeem = () => {
                     <div className="flex items-center justify-between p-4 rounded-xl bg-primary/10">
                       <div>
                         <p className="text-sm text-muted-foreground">Cost</p>
-                        <p className="text-3xl font-display font-bold text-primary">{reward.points_required} <span className="text-sm">pts</span></p>
-                        <p className="text-xs text-muted-foreground">≈ {(reward.points_required / 100).toFixed(2)} QAR</p>
+                        <p className="text-3xl font-display font-bold text-primary">
+                          {reward.points_required} <span className="text-sm">pts</span>
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          ≈ {(reward.points_required / 100).toFixed(2)} QAR
+                        </p>
                       </div>
-                      <Button onClick={() => handleRedeem(reward)} disabled={!canAfford || redeeming} size="lg" className="font-display">
-                        {canAfford ? <></>Redeem <ArrowRight className="w-4 h-4 ml-2" /></> : "Need More"}
+                      <Button 
+                        onClick={() => handleRedeem(reward)} 
+                        disabled={!canAfford || redeeming} 
+                        size="lg" 
+                        className="font-display"
+                      >
+                        {canAfford ? (
+                          <>
+                            Redeem <ArrowRight className="w-4 h-4 ml-2" />
+                          </>
+                        ) : (
+                          "Need More"
+                        )}
                       </Button>
                     </div>
                   </CardContent>
@@ -184,13 +207,19 @@ const Redeem = () => {
       <Dialog open={showQRDialog} onOpenChange={setShowQRDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-2xl font-display text-center">Reward Redeemed! 🎉</DialogTitle>
-            <DialogDescription className="text-center">Show this QR code to redeem</DialogDescription>
+            <DialogTitle className="text-2xl font-display text-center">
+              Reward Redeemed! 🎉
+            </DialogTitle>
+            <DialogDescription className="text-center">
+              Show this QR code to redeem
+            </DialogDescription>
           </DialogHeader>
           <div className="flex justify-center p-6 bg-white rounded-xl">
-            {qrCodeData && <QRCode value={qrCodeData} size={256} />}
+            {qrCodeData && <QRCodeSVG value={qrCodeData} size={256} />}
           </div>
-          <Button onClick={() => setShowQRDialog(false)} className="w-full font-display">Done</Button>
+          <Button onClick={() => setShowQRDialog(false)} className="w-full font-display">
+            Done
+          </Button>
         </DialogContent>
       </Dialog>
     </div>

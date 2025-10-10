@@ -8,52 +8,51 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Earth & Nature Inspired Sustainability Theme */
-    --background: 45 20% 97%;
-    --foreground: 140 60% 12%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 140 60% 12%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 140 60% 12%;
-
-    /* Deep Forest Green - Primary */
-    --primary: 140 65% 28%;
+    /* Base colors - Lighter and more attractive */
+    --background: 180 40% 99%;
+    --foreground: 210 40% 8%;
+    
+    /* Primary colors - More vibrant green */
+    --primary: 156 72% 42%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 140 75% 45%;
-
-    /* Fresh Leaf Green - Secondary */
-    --secondary: 95 55% 92%;
-    --secondary-foreground: 140 60% 20%;
-
-    /* Muted Earth Tones */
-    --muted: 45 25% 94%;
-    --muted-foreground: 140 20% 45%;
-
-    /* Sustainable Blue Accent */
-    --accent: 190 75% 45%;
+    --primary-glow: 156 72% 58%;
+    
+    /* Secondary colors - Soft coral accent */
+    --secondary: 24 80% 94%;
+    --secondary-foreground: 24 80% 30%;
+    
+    /* Muted colors */
+    --muted: 210 40% 96%;
+    --muted-foreground: 210 30% 45%;
+    
+    /* Accent colors - Vibrant teal */
+    --accent: 174 62% 47%;
     --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84.2% 60.2%;
+    
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-
-    --border: 140 20% 88%;
-    --input: 140 20% 88%;
-    --ring: 140 65% 28%;
-
+    
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 156 72% 42%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 210 40% 8%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 40% 8%;
+    
     --radius: 0.75rem;
-
-    /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(140 65% 28%), hsl(190 75% 35%));
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(95 55% 98%));
-    --gradient-impact: linear-gradient(135deg, hsl(95 75% 55%), hsl(140 65% 45%));
-    --gradient-subtle: linear-gradient(180deg, hsl(45 20% 97%), hsl(95 55% 95%));
+    
+    /* Gradients - Lighter and more attractive */
+    --gradient-hero: linear-gradient(180deg, hsl(180, 60%, 97%) 0%, hsl(156, 70%, 95%) 50%, hsl(174, 55%, 96%) 100%);
+    --gradient-card: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%);
+    --gradient-impact: linear-gradient(135deg, hsl(156, 72%, 42%) 0%, hsl(174, 62%, 47%) 100%);
     
     /* Shadows */
-    --shadow-soft: 0 4px 20px hsla(140, 40%, 20%, 0.08);
-    --shadow-hover: 0 8px 30px hsla(140, 40%, 20%, 0.12);
-    --shadow-glow: 0 0 40px hsla(140, 75%, 45%, 0.3);
+    --shadow-soft: 0 4px 20px hsla(156, 40%, 20%, 0.08);
+    --shadow-hover: 0 8px 30px hsla(156, 40%, 20%, 0.12);
+    --shadow-glow: 0 0 40px hsla(156, 72%, 58%, 0.3);
 
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
