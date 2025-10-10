@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 import { Navigation } from "@/components/Navigation";
+import PartnersMap from "@/components/PartnersMap";
 
 interface Partner {
   id: string;
@@ -118,14 +119,10 @@ const Partners = () => {
           )}
         </div>
 
-        {/* Map Placeholder */}
-        <Card className="p-8 mb-8 shadow-hover animate-slide-up">
-          <div className="bg-gradient-to-br from-secondary to-muted rounded-2xl h-96 flex items-center justify-center border border-border">
-            <div className="text-center space-y-4">
-              <MapPin className="w-16 h-16 text-primary mx-auto animate-float" />
-              <p className="text-lg font-semibold text-foreground">Interactive Map</p>
-              <p className="text-muted-foreground">Partner locations will be displayed here</p>
-            </div>
+        {/* Interactive Map */}
+        <Card className="p-4 mb-8 shadow-hover animate-slide-up">
+          <div className="h-96 rounded-2xl overflow-hidden">
+            <PartnersMap partners={partners} />
           </div>
         </Card>
 
