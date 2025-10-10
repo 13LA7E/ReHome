@@ -2,19 +2,18 @@
   <!-- Light green circular background -->
   <circle cx="8" cy="8" r="8" fill="#E0F2F1"/>
   
-  <!-- Green leaf shape - compact and centered -->
-  <path d="M8 5.5C9.25 5.5 10.5 6.75 10.5 8C10.5 9.25 9.25 10.5 8 10.5C6.75 10.5 5.5 9.25 5.5 8C5.5 6.5 8 5.5 8 5.5Z" 
+  <!-- Green leaf shape - very compact -->
+  <path d="M8 6C8.75 6 9.5 6.75 9.5 7.75C9.5 8.75 8.75 9.5 8 9.5C7.25 9.5 6.5 8.75 6.5 7.75C6.5 6.9 8 6 8 6Z" 
         stroke="#00897B" 
-        stroke-width="0.75" 
+        stroke-width="0.65" 
         stroke-linecap="round" 
         stroke-linejoin="round" 
         fill="#00897B"
-        fill-opacity="0.2"/>
+        fill-opacity="0.15"/>
   
-  <!-- Leaf vein detail -->
-  <path d="M9.25 7.25L6.75 4.75" 
+  <!-- Simple leaf vein -->
+  <path d="M8.75 7L7.25 5.5" 
         stroke="#00897B" 
-        stroke-width="0.6" 
-        stroke-linecap="round" 
-        stroke-linejoin="round"/>
+        stroke-width="0.5" 
+        stroke-linecap="round"/>
 </svg>
