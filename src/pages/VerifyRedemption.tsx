@@ -32,6 +32,15 @@ const VerifyRedemption = () => {
 
     try {
       console.log("Verifying code:", verificationCode);
+      console.log("Current URL:", window.location.href);
+      
+      // Test database connectivity first
+      const { data: testConnection, error: connectionError } = await supabase
+        .from("rewards")
+        .select("count")
+        .limit(1);
+      
+      console.log("Database connection test:", { testConnection, connectionError });
       
       // First try to get redemption data
       const { data: redemption, error: redemptionError } = await supabase
@@ -44,6 +53,12 @@ const VerifyRedemption = () => {
 
       if (redemptionError) {
         console.error("Redemption query error:", redemptionError);
+        // More specific error handling
+        if (redemptionError.code === 'PGRST116') {
+          toast.error("Database access denied - please check authentication");
+        } else {
+          toast.error(`Database error: ${redemptionError.message}`);
+        }
         throw redemptionError;
       }
 
@@ -78,7 +93,7 @@ const VerifyRedemption = () => {
 
           if (updateError) {
             console.error("Update error:", updateError);
-            toast.error("Failed to update redemption status");
+            toast.error(`Failed to update redemption: ${updateError.message}`);
             return;
           }
 
@@ -90,12 +105,13 @@ const VerifyRedemption = () => {
           toast.success("Redemption verified successfully!");
         }
       } else {
+        console.log("No redemption found for code:", verificationCode);
         setVerificationResult({
           valid: false,
           rewardName: "",
           alreadyUsed: false,
         });
-        toast.error("Invalid redemption code!");
+        toast.error("Invalid redemption code - no matching record found!");
       }
     } catch (error) {
       console.error("Verification error:", error);
@@ -104,7 +120,7 @@ const VerifyRedemption = () => {
         rewardName: "",
         alreadyUsed: false,
       });
-      toast.error("Failed to verify code. Please check your connection.");
+      toast.error(`Verification failed: ${error.message || 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
@@ -209,13 +225,46 @@ const VerifyRedemption = () => {
                 <p className="text-sm text-muted-foreground">
                   Use your phone's camera to scan the customer's QR code
                 </p>
-                <div className="mt-6">
+                <div className="mt-6 space-y-2">
                   <Button 
                     onClick={() => verifyCode("test-code-123")} 
                     variant="outline"
-                    className="text-sm"
+                    className="text-sm mr-2"
                   >
                     Test Verification (Debug)
+                  </Button>
+                  <Button 
+                    onClick={async () => {
+                      // Create a test redemption
+                      const testCode = `test-${Date.now()}`;
+                      try {
+                        // Get first reward
+                        const { data: rewards } = await supabase
+                          .from("rewards")
+                          .select("id, name")
+                          .limit(1);
+                        
+                        if (rewards && rewards[0]) {
+                          await supabase.from("redemptions").insert({
+                            user_id: "00000000-0000-0000-0000-000000000000", // dummy user
+                            reward_id: rewards[0].id,
+                            points_spent: 100,
+                            qr_code_data: testCode,
+                            status: "pending"
+                          });
+                          
+                          toast.success(`Test redemption created with code: ${testCode}`);
+                          setTimeout(() => verifyCode(testCode), 1000);
+                        }
+                      } catch (error) {
+                        console.error("Test creation error:", error);
+                        toast.error("Failed to create test redemption");
+                      }
+                    }}
+                    variant="secondary"
+                    className="text-sm"
+                  >
+                    Create Test Redemption
                   </Button>
                 </div>
               </div>

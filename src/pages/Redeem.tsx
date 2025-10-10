@@ -109,8 +109,14 @@ const Redeem = () => {
         .update({ community_points: userPoints - reward.points_required })
         .eq("user_id", user.id);
 
-      // Generate verification URL for QR code
-      const verificationUrl = `${window.location.origin}/verify?code=${verificationCode}`;
+      // Generate verification URL for QR code (HashRouter format)
+      // Handle both local development and GitHub Pages deployment
+      const baseUrl = window.location.origin;
+      const pathPrefix = window.location.pathname === '/' ? '' : window.location.pathname.replace(/\/$/, '');
+      const verificationUrl = `${baseUrl}${pathPrefix}/#/verify?code=${verificationCode}`;
+      console.log("Generated QR verification URL:", verificationUrl);
+      console.log("Verification code:", verificationCode);
+      console.log("Base URL:", baseUrl, "Path prefix:", pathPrefix);
       setQrCodeData(verificationUrl);
       setSelectedReward(reward);
       setShowQRDialog(true);
