@@ -39,6 +39,11 @@ export const Navigation = () => {
                     Donate Item
                   </Button>
                 </Link>
+                <Link to="/redeem">
+                  <Button variant="ghost" size="sm">
+                    Redeem
+                  </Button>
+                </Link>
                 <Link to="/impact">
                   <Button variant="ghost" size="sm">
                     My Impact

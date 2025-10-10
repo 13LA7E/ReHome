@@ -11,6 +11,7 @@ import Auth from "./pages/Auth";
 import Upload from "./pages/Upload";
 import Partners from "./pages/Partners";
 import Impact from "./pages/Impact";
+import Redeem from "./pages/Redeem";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
             <Route path="/partners" element={<ProtectedRoute><Partners /></ProtectedRoute>} />
+            <Route path="/redeem" element={<ProtectedRoute><Redeem /></ProtectedRoute>} />
             <Route path="/impact" element={<ProtectedRoute><Impact /></ProtectedRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
