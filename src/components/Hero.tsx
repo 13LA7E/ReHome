@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
-import { Home } from "lucide-react";
+import { Leaf } from "lucide-react";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -24,14 +24,14 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center px-4 py-20 overflow-hidden">
-      {/* Animated home button */}
+      {/* Home button */}
       <Button
         onClick={() => navigate("/")}
         variant="outline"
         size="icon"
-        className="absolute top-6 left-6 z-50 h-12 w-12 rounded-full bg-card/80 backdrop-blur-md border-2 border-primary/20 hover:border-primary hover:bg-primary/10 hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-glow animate-bounce"
+        className="absolute top-6 left-6 z-50 h-12 w-12 rounded-full bg-card/80 backdrop-blur-md border-2 border-primary/20 hover:border-primary hover:bg-primary/10 hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-glow"
       >
-        <Home className="h-5 w-5 text-primary" />
+        <Leaf className="h-5 w-5 text-primary" />
       </Button>
 
       {/* Animated background elements */}
