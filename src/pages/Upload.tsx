@@ -140,23 +140,23 @@ const Upload = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/30">
       <Navigation />
-      <div className="py-12">
+      <div className="py-6 md:py-12">
         <div className="container mx-auto px-4 max-w-4xl">
         {/* Header */}
-        <div className="text-center mb-12 space-y-4 animate-fade-in">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground">
+        <div className="text-center mb-8 md:mb-12 space-y-3 md:space-y-4 animate-fade-in">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground px-2">
             Upload Your Item
           </h1>
-          <p className="text-xl text-muted-foreground">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground px-4">
             Take or upload a photo, and our AI will classify it instantly
           </p>
         </div>
 
 
         {/* Upload Card */}
-        <Card className="p-8 shadow-hover border-2 border-dashed border-border hover:border-primary transition-all duration-300 animate-slide-up">
+        <Card className="p-5 md:p-8 shadow-hover border-2 border-dashed border-border hover:border-primary transition-all duration-300 animate-slide-up">
           {!selectedImage ? (
-            <div className="space-y-8">
+            <div className="space-y-6 md:space-y-8">
               {/* Upload Area */}
               <label className="flex flex-col items-center justify-center cursor-pointer group">
                 <input
@@ -165,19 +165,19 @@ const Upload = () => {
                   onChange={handleImageUpload}
                   className="hidden"
                 />
-                <div className="w-32 h-32 rounded-full bg-gradient-hero flex items-center justify-center mb-6 group-hover:shadow-glow group-hover:scale-110 transition-all duration-300">
-                  <UploadIcon className="w-16 h-16 text-primary-foreground" />
+                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-gradient-hero flex items-center justify-center mb-4 md:mb-6 group-hover:shadow-glow group-hover:scale-110 transition-all duration-300">
+                  <UploadIcon className="w-12 h-12 md:w-16 md:h-16 text-primary-foreground" />
                 </div>
-                <h3 className="text-2xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+                <h3 className="text-xl md:text-2xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
                   Click to Upload Photo
                 </h3>
-                <p className="text-muted-foreground">or drag and drop your image here</p>
+                <p className="text-sm md:text-base text-muted-foreground">or drag and drop your image here</p>
               </label>
 
               {/* Supported Categories */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 pt-8 border-t border-border">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 pt-6 md:pt-8 border-t border-border">
                 {["Clothes", "Books", "Furniture", "Electronics", "E-waste"].map((category) => (
-                  <div key={category} className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div key={category} className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
                     <div className="w-2 h-2 rounded-full bg-primary"></div>
                     {category}
                   </div>
@@ -185,19 +185,19 @@ const Upload = () => {
               </div>
             </div>
           ) : (
-            <div className="space-y-8">
+            <div className="space-y-6 md:space-y-8">
               {/* Image Preview */}
               <div className="relative rounded-2xl overflow-hidden shadow-soft">
                 <img
                   src={selectedImage}
                   alt="Uploaded item"
-                  className="w-full h-96 object-cover"
+                  className="w-full h-64 md:h-96 object-cover"
                 />
                 {isClassifying && (
                   <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center">
-                    <div className="text-center space-y-4">
-                      <Sparkles className="w-16 h-16 text-primary-foreground animate-spin mx-auto" />
-                      <p className="text-primary-foreground font-semibold text-lg">
+                    <div className="text-center space-y-3 md:space-y-4">
+                      <Sparkles className="w-12 h-12 md:w-16 md:h-16 text-primary-foreground animate-spin mx-auto" />
+                      <p className="text-primary-foreground font-semibold text-base md:text-lg">
                         Analyzing your item...
                       </p>
                     </div>
@@ -207,38 +207,38 @@ const Upload = () => {
 
               {/* Classification Result */}
               {classification && (
-                <div className="space-y-6 animate-fade-in">
-                  <div className="bg-gradient-impact rounded-2xl p-6 text-primary-foreground">
-                    <div className="flex items-center justify-between mb-4">
+                <div className="space-y-4 md:space-y-6 animate-fade-in">
+                  <div className="bg-gradient-impact rounded-2xl p-5 md:p-6 text-primary-foreground">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-0 mb-4">
                       <div>
-                        <p className="text-sm opacity-90 mb-1">Classified as</p>
-                        <h3 className="text-3xl font-bold capitalize">{classification.category}</h3>
+                        <p className="text-xs md:text-sm opacity-90 mb-1">Classified as</p>
+                        <h3 className="text-2xl md:text-3xl font-bold capitalize">{classification.category}</h3>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm opacity-90 mb-1">Confidence</p>
-                        <p className="text-3xl font-bold">{(classification.confidence * 100).toFixed(0)}%</p>
+                      <div className="sm:text-right">
+                        <p className="text-xs md:text-sm opacity-90 mb-1">Confidence</p>
+                        <p className="text-2xl md:text-3xl font-bold">{(classification.confidence * 100).toFixed(0)}%</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 text-sm flex-wrap">
-                      <div className={`px-3 py-1 rounded-full ${classification.isReusable ? 'bg-primary-foreground/20' : 'bg-destructive/20'}`}>
+                    <div className="flex items-center gap-2 text-xs md:text-sm flex-wrap">
+                      <div className={`px-2.5 md:px-3 py-1 rounded-full ${classification.isReusable ? 'bg-primary-foreground/20' : 'bg-destructive/20'}`}>
                         {classification.isReusable ? '✓ Reusable' : 'ⓘ Recyclable Only'}
                       </div>
-                      <div className="px-3 py-1 rounded-full bg-primary-foreground/20">
+                      <div className="px-2.5 md:px-3 py-1 rounded-full bg-primary-foreground/20">
                         🤖 AI-Powered Classification
                       </div>
                     </div>
                     {classification.reasoning && (
-                      <p className="text-sm opacity-80 mt-2">{classification.reasoning}</p>
+                      <p className="text-xs md:text-sm opacity-80 mt-2">{classification.reasoning}</p>
                     )}
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex gap-4">
+                  <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                     <Button 
                       size="lg" 
                       variant="hero"
                       onClick={handleSaveAndFindPartners}
-                      className="flex-1"
+                      className="flex-1 w-full sm:w-auto"
                       disabled={isSaving}
                     >
                       {isSaving ? 'Saving...' : 'Save & Find Partners'}
@@ -251,6 +251,7 @@ const Upload = () => {
                         setSelectedImage(null);
                         setClassification(null);
                       }}
+                      className="w-full sm:w-auto"
                     >
                       <Camera className="w-5 h-5" />
                       New Photo
@@ -263,14 +264,14 @@ const Upload = () => {
         </Card>
 
         {/* Info Section */}
-        <div className="mt-12 text-center space-y-4 text-muted-foreground">
-          <p className="text-sm">
+        <div className="mt-8 md:mt-12 text-center space-y-3 md:space-y-4 text-muted-foreground">
+          <p className="text-xs md:text-sm">
             🤖 Powered by ReHome AI with Google Gemini
           </p>
-          <p className="text-sm">
+          <p className="text-xs md:text-sm">
             🔒 Secure and accurate image classification
           </p>
-          <p className="text-sm">
+          <p className="text-xs md:text-sm">
             💡 For best results, ensure good lighting and the item is clearly visible
           </p>
         </div>
