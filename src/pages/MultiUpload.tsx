@@ -194,28 +194,28 @@ const MultiUpload = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5">
       <Navigation />
       
-      <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl">
-        <div className="mb-8 animate-fade-in">
-          <h1 className="text-4xl md:text-5xl font-display font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-3">
+      <div className="container mx-auto px-4 py-6 md:py-8 lg:py-12 max-w-6xl">
+        <div className="mb-6 md:mb-8 animate-fade-in">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-2 md:mb-3">
             Donate Multiple Items
           </h1>
-          <p className="text-xl text-muted-foreground">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground">
             Upload photos of items you want to donate. Each item earns you 10 points!
           </p>
         </div>
 
         {/* Upload Card */}
-        <Card className="mb-8 border-2 border-dashed border-primary/30 hover:border-primary transition-colors duration-300 animate-fade-in">
-          <CardHeader>
-            <CardTitle className="text-2xl font-display flex items-center gap-2">
-              <Camera className="w-6 h-6 text-primary" />
+        <Card className="mb-6 md:mb-8 border-2 border-dashed border-primary/30 hover:border-primary transition-colors duration-300 animate-fade-in">
+          <CardHeader className="p-4 md:p-6">
+            <CardTitle className="text-xl md:text-2xl font-display flex items-center gap-2">
+              <Camera className="w-5 h-5 md:w-6 md:h-6 text-primary" />
               Upload Photos
             </CardTitle>
-            <CardDescription className="text-base">
+            <CardDescription className="text-sm md:text-base">
               Select multiple images at once for faster processing
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 md:p-6">
             <label htmlFor="multi-file-upload" className="block">
               <div className="relative group cursor-pointer">
                 <Input
@@ -226,16 +226,16 @@ const MultiUpload = () => {
                   onChange={handleImageUpload}
                   className="hidden"
                 />
-                <div className="p-12 border-2 border-dashed border-primary/30 rounded-xl hover:border-primary transition-all duration-300 bg-gradient-to-br from-card to-primary/5 group-hover:shadow-lg">
-                  <div className="flex flex-col items-center gap-4">
-                    <div className="p-4 rounded-full bg-gradient-to-br from-primary/10 to-accent/10 group-hover:scale-110 transition-transform duration-300">
-                      <Upload className="w-12 h-12 text-primary" />
+                <div className="p-8 md:p-12 border-2 border-dashed border-primary/30 rounded-xl hover:border-primary transition-all duration-300 bg-gradient-to-br from-card to-primary/5 group-hover:shadow-lg">
+                  <div className="flex flex-col items-center gap-3 md:gap-4">
+                    <div className="p-3 md:p-4 rounded-full bg-gradient-to-br from-primary/10 to-accent/10 group-hover:scale-110 transition-transform duration-300">
+                      <Upload className="w-10 h-10 md:w-12 md:h-12 text-primary" />
                     </div>
                     <div className="text-center">
-                      <p className="text-lg font-display font-semibold text-foreground mb-1">
+                      <p className="text-base md:text-lg font-display font-semibold text-foreground mb-1">
                         Click to upload or drag and drop
                       </p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs md:text-sm text-muted-foreground">
                         PNG, JPG, WEBP up to 10MB each
                       </p>
                     </div>
@@ -248,24 +248,24 @@ const MultiUpload = () => {
 
         {/* Points Summary */}
         {images.length > 0 && (
-          <Card className="mb-8 border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-accent/5 animate-fade-in">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between flex-wrap gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Total Items</p>
-                  <p className="text-3xl font-display font-bold text-primary">
+          <Card className="mb-6 md:mb-8 border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-accent/5 animate-fade-in">
+            <CardContent className="p-4 md:p-6">
+              <div className="grid grid-cols-3 gap-3 md:gap-4">
+                <div className="text-center md:text-left">
+                  <p className="text-xs md:text-sm text-muted-foreground mb-1">Total Items</p>
+                  <p className="text-2xl md:text-3xl font-display font-bold text-primary">
                     {images.length}
                   </p>
                 </div>
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Points to Earn</p>
-                  <p className="text-3xl font-display font-bold text-accent">
+                <div className="text-center md:text-left">
+                  <p className="text-xs md:text-sm text-muted-foreground mb-1">Points to Earn</p>
+                  <p className="text-2xl md:text-3xl font-display font-bold text-accent">
                     {totalValue} pts
                   </p>
                 </div>
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Equivalent Value</p>
-                  <p className="text-3xl font-display font-bold text-primary">
+                <div className="text-center md:text-left">
+                  <p className="text-xs md:text-sm text-muted-foreground mb-1">Equivalent Value</p>
+                  <p className="text-2xl md:text-3xl font-display font-bold text-primary">
                     {(totalValue / 100).toFixed(2)} QAR
                   </p>
                 </div>
@@ -276,8 +276,8 @@ const MultiUpload = () => {
 
         {/* Images Grid */}
         {images.length > 0 && (
-          <div className="space-y-6 animate-fade-in">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="space-y-4 md:space-y-6 animate-fade-in">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {images.map((imageData, index) => (
                 <Card 
                   key={imageData.id} 
@@ -294,8 +294,8 @@ const MultiUpload = () => {
                     {imageData.classifying && (
                       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center">
                         <div className="text-center text-white space-y-2">
-                          <Loader2 className="w-8 h-8 animate-spin mx-auto" />
-                          <p className="text-sm font-medium">Analyzing...</p>
+                          <Loader2 className="w-6 h-6 md:w-8 md:h-8 animate-spin mx-auto" />
+                          <p className="text-xs md:text-sm font-medium">Analyzing...</p>
                         </div>
                       </div>
                     )}
@@ -304,30 +304,30 @@ const MultiUpload = () => {
                       size="icon"
                       variant="destructive"
                       onClick={() => removeImage(imageData.id)}
-                      className="absolute top-2 right-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute top-2 right-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 md:h-10 md:w-10"
                     >
-                      <X className="w-4 h-4" />
+                      <X className="w-3 h-3 md:w-4 md:h-4" />
                     </Button>
                   </div>
 
-                  <CardContent className="p-4 space-y-2">
+                  <CardContent className="p-3 md:p-4 space-y-1.5 md:space-y-2">
                     {imageData.classification && (
                       <>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium text-muted-foreground">Category</span>
-                          <span className="font-display font-semibold text-foreground">
+                          <span className="text-xs md:text-sm font-medium text-muted-foreground">Category</span>
+                          <span className="text-sm md:text-base font-display font-semibold text-foreground">
                             {imageData.classification.category}
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium text-muted-foreground">Confidence</span>
-                          <span className="text-sm text-accent font-semibold">
+                          <span className="text-xs md:text-sm font-medium text-muted-foreground">Confidence</span>
+                          <span className="text-xs md:text-sm text-accent font-semibold">
                             {(imageData.classification.confidence * 100).toFixed(1)}%
                           </span>
                         </div>
-                        <div className="flex items-center gap-2 pt-2">
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                          <span className="text-sm text-green-600 dark:text-green-400 font-medium">
+                        <div className="flex items-center gap-2 pt-1 md:pt-2">
+                          <CheckCircle className="w-3.5 h-3.5 md:w-4 md:h-4 text-green-500" />
+                          <span className="text-xs md:text-sm text-green-600 dark:text-green-400 font-medium">
                             {imageData.classification.isReusable ? "Reusable" : "Recyclable"}
                           </span>
                         </div>
@@ -339,13 +339,13 @@ const MultiUpload = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-4 justify-end pt-4">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-end pt-2 md:pt-4">
               <Button
                 variant="outline"
                 size="lg"
                 onClick={() => setImages([])}
                 disabled={uploading}
-                className="font-display"
+                className="font-display w-full sm:w-auto"
               >
                 <Trash2 className="w-4 h-4 mr-2" />
                 Clear All
@@ -354,7 +354,7 @@ const MultiUpload = () => {
                 size="lg"
                 onClick={handleSaveAll}
                 disabled={uploading || images.some(img => img.classifying)}
-                className="font-display font-semibold bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg hover:shadow-glow px-8"
+                className="font-display font-semibold bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg hover:shadow-glow px-6 md:px-8 w-full sm:w-auto"
               >
                 {uploading ? (
                   <>
@@ -373,12 +373,12 @@ const MultiUpload = () => {
         )}
 
         {images.length === 0 && (
-          <Card className="p-12 text-center animate-fade-in">
-            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
-              <Camera className="w-10 h-10 text-primary" />
+          <Card className="p-8 md:p-12 text-center animate-fade-in">
+            <div className="w-16 h-16 md:w-20 md:h-20 mx-auto mb-4 md:mb-6 rounded-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+              <Camera className="w-8 h-8 md:w-10 md:h-10 text-primary" />
             </div>
-            <CardTitle className="text-2xl font-display mb-3">No items uploaded yet</CardTitle>
-            <CardDescription className="text-lg">
+            <CardTitle className="text-xl md:text-2xl font-display mb-2 md:mb-3">No items uploaded yet</CardTitle>
+            <CardDescription className="text-base md:text-lg">
               Start by uploading photos of items you want to donate
             </CardDescription>
           </Card>
