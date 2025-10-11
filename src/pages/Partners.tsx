@@ -97,27 +97,83 @@ const Partners = () => {
     if (!user) return;
     
     try {
-      // Create a pickup request in the database
-      const { data: items } = await supabase
-        .from('items')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('status', 'pending')
-        .limit(1)
-        .maybeSingle();
-      
-      if (items) {
-        await supabase.from('pickup_requests').insert({
-          user_id: user.id,
-          partner_id: partner.id,
-          item_id: items.id,
-          status: 'pending'
-        });
+      // Get user's current location
+      if (!navigator.geolocation) {
+        toast.error("Geolocation is not supported by your browser");
+        return;
       }
-      
-      toast.success(`Pickup request sent to ${partner.name}!`);
-      setSelectedPartner(partner);
+
+      toast.info("Getting your location...");
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const userLatitude = position.coords.latitude;
+          const userLongitude = position.coords.longitude;
+          const userLocation = `${userLatitude}, ${userLongitude}`;
+          const googleMapsLink = `https://www.google.com/maps?q=${userLatitude},${userLongitude}`;
+
+          try {
+            // Create a pickup request in the database
+            const { data: items } = await supabase
+              .from('items')
+              .select('id')
+              .eq('user_id', user.id)
+              .eq('status', 'pending')
+              .limit(1)
+              .maybeSingle();
+            
+            if (items) {
+              await supabase.from('pickup_requests').insert({
+                user_id: user.id,
+                partner_id: partner.id,
+                item_id: items.id,
+                status: 'pending'
+              });
+            }
+
+            // Send email with pickup details via Supabase Edge Function
+            try {
+              const { data: functionData, error: functionError } = await supabase.functions.invoke('send-pickup-email', {
+                body: {
+                  partnerName: partner.name,
+                  partnerAddress: partner.address,
+                  userEmail: user.email,
+                  userLocation: userLocation,
+                  googleMapsLink: googleMapsLink,
+                  itemId: items?.id || null
+                }
+              });
+
+              if (functionError) {
+                console.error('Email sending failed:', functionError);
+                // Continue anyway as the pickup request was saved
+              } else {
+                console.log('Email sent successfully:', functionData);
+              }
+            } catch (emailError) {
+              console.error('Email error:', emailError);
+              // Continue anyway as the pickup request was saved
+            }
+
+            toast.success(`Pickup request sent to ${partner.name}!`);
+            setSelectedPartner(partner);
+          } catch (error) {
+            console.error('Error:', error);
+            toast.error("Failed to schedule pickup");
+          }
+        },
+        (error) => {
+          console.error('Geolocation error:', error);
+          toast.error("Unable to get your location. Please enable location access.");
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
     } catch (error) {
+      console.error('Error:', error);
       toast.error("Failed to schedule pickup");
     }
   };
