@@ -88,7 +88,7 @@ const ImpactPreview = () => {
               size="xl" 
               variant="impact"
               onClick={() => navigate('/impact')}
-              className="shadow-glow animate-glow-pulse w-full sm:w-auto"
+              className="shadow-glow w-full sm:w-auto hover:shadow-hover transition-all"
             >
               <TrendingUp className="w-5 h-5" />
               View Full Impact Dashboard

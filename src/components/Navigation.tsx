@@ -65,11 +65,6 @@ export const Navigation = () => {
             </Link>
             {user ? (
               <>
-                <Link to="/multi-upload">
-                  <Button className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-md" size="sm">
-                    Donate Items
-                  </Button>
-                </Link>
                 <Link to="/redeem">
                   <Button variant="ghost" size="sm">
                     Redeem
@@ -93,6 +88,11 @@ export const Navigation = () => {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
+                <Link to="/multi-upload">
+                  <Button className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-md" size="sm">
+                    Donate Items
+                  </Button>
+                </Link>
               </>
             ) : (
               <Link to="/auth">
