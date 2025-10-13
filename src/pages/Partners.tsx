@@ -191,8 +191,32 @@ const Partners = () => {
     return (
       <>
         <Navigation />
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="animate-glow-pulse text-primary text-xl">Loading partners...</div>
+        <div className="min-h-screen bg-gradient-to-b from-background to-secondary/30 py-12">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <div className="mb-12 space-y-4">
+              <div className="h-12 w-2/3 bg-muted rounded-lg animate-pulse" />
+              <div className="h-6 w-1/3 bg-muted rounded-lg animate-pulse" />
+            </div>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <Card key={i} className="p-6 space-y-4 animate-pulse">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2 flex-1">
+                      <div className="h-6 w-3/4 bg-muted rounded" />
+                      <div className="h-4 w-1/2 bg-muted rounded" />
+                    </div>
+                    <div className="h-6 w-6 bg-muted rounded-full" />
+                  </div>
+                  <div className="space-y-2">
+                    <div className="h-4 w-full bg-muted rounded" />
+                    <div className="h-4 w-5/6 bg-muted rounded" />
+                    <div className="h-4 w-4/6 bg-muted rounded" />
+                  </div>
+                  <div className="h-10 w-full bg-muted rounded" />
+                </Card>
+              ))}
+            </div>
+          </div>
         </div>
       </>
     );

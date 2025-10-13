@@ -1,20 +1,48 @@
-# ReHome - Transform Clutter into Community Impact
+# ReHomeHT - Transform Clutter into Community Impact
 
-## Project info
+[![Production URL](https://img.shields.io/badge/Production-Live-success)](https://13la7e.github.io/rehomeht/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-**URL**: https://13la7e.github.io/rehomeht/
+## 🌟 Project Info
 
-## About ReHome
+**Live URL**: https://13la7e.github.io/rehomeht/
 
-ReHome is a sustainable donation platform that helps households easily donate clothes, books, furniture, and electronics to verified local partners including charities, recycling centers, and community organizations.
+**Status**: Production Ready | Phase 1 Complete
 
-## Features
+## 📖 About ReHomeHT
 
-- 🤖 **AI-Powered Classification**: Automatically categorize donation items
-- 📍 **Partner Mapping**: Find verified donation centers near you  
-- 📊 **Impact Tracking**: Monitor your environmental impact in real-time
-- 🎯 **Smart Matching**: Connect items with the right organizations
-- 🌱 **Sustainability Focus**: Track CO₂ savings and waste diversion
+ReHomeHT is a comprehensive sustainable donation platform that revolutionizes how households donate items to verified organizations. Using AI-powered classification and real-time impact tracking, we make sustainable giving effortless and rewarding.
+
+## ✨ Features
+
+### Core Functionality
+- 🤖 **AI-Powered Classification**: Google Gemini AI automatically categorizes donation items from photos
+- 📍 **Smart Partner Mapping**: Interactive map to find verified donation centers near you
+- 📊 **Impact Dashboard**: Real-time tracking of environmental impact with detailed metrics
+- 🎁 **Rewards System**: Earn points for donations and redeem exclusive rewards
+- 🔄 **Multi-Upload**: Batch upload multiple items in one session
+- 📧 **Pickup Coordination**: Automated email notifications for pickup scheduling with location tracking
+
+### User Experience
+- 🌐 **Fully Responsive**: Mobile-first design that works seamlessly on all devices
+- ⚡ **Fast Loading**: Skeleton loaders and optimized performance
+- � **Modern UI**: Beautiful gradient designs with smooth animations
+- 🌙 **Dark Mode Support**: Automatic theme detection
+- 🍪 **Cookie Consent**: GDPR-compliant cookie management
+- 🛡️ **Error Boundaries**: Graceful error handling throughout the app
+
+### Security & Legal
+- 🔐 **Strong Password Requirements**: Enforced 8+ character passwords with complexity rules
+- ✅ **Email Verification**: Supabase authentication with email confirmation
+- 📜 **Legal Pages**: Comprehensive Terms of Service and Privacy Policy
+- 🔒 **Row Level Security**: Database-level access control with Supabase RLS
+- 🔑 **Environment Variables**: Secure API key management
+
+### Content Pages
+- ℹ️ **About Page**: Mission, values, and company story
+- ❓ **FAQ Page**: 15+ comprehensive questions with accordion UI
+- 📞 **Contact Page**: Multiple contact methods and quick links
+- 🌱 **Impact Page**: Detailed environmental metrics and visualization
 
 ## How to run locally
 
@@ -64,10 +92,189 @@ This project is built with:
 
 The project is automatically deployed to GitHub Pages at: https://13la7e.github.io/rehomeht/
 
-## Technologies Used
+## 🛠️ Technology Stack
 
-- React with TypeScript
-- Vite for build tooling
-- Tailwind CSS for styling
-- Supabase for backend services
-- GitHub Pages for deployment
+### Frontend
+- **React 18** with TypeScript
+- **Vite 5** for blazing-fast build and HMR
+- **Tailwind CSS** for utility-first styling
+- **shadcn-ui** component library
+- **React Router** (Hash Router for GitHub Pages)
+- **TanStack Query** for data fetching
+- **Zod** for form validation
+
+### Backend & Services
+- **Supabase** 
+  - PostgreSQL database
+  - Authentication & user management
+  - Row Level Security (RLS)
+  - Edge Functions (Deno)
+  - Storage for images
+- **Google Gemini AI** for image classification
+- **Resend** for transactional emails
+
+### Development Tools
+- **ESLint** for code quality
+- **TypeScript** for type safety
+- **PostCSS** for CSS processing
+- **GitHub Actions** for CI/CD
+
+### Deployment
+- **GitHub Pages** for static hosting
+- **Capacitor** for Android app (in `/android` directory)
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js (v18 or higher) - [Install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- npm or yarn
+- Git
+
+### Installation
+
+```sh
+# Clone the repository
+git clone https://github.com/13la7e/rehomeht.git
+cd rehomeht
+
+# Install dependencies
+npm install
+
+# Create .env file from example
+cp .env.example .env
+# Then edit .env and add your API keys
+
+# Start development server
+npm run dev
+```
+
+The app will be available at `http://localhost:8080`
+
+### Environment Variables
+
+Create a `.env` file in the root directory with the following:
+
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_GEMINI_API_KEY=your_google_gemini_api_key
+VITE_APP_URL=https://13la7e.github.io/rehomeht
+VITE_SUPPORT_EMAIL=support@rehomeht.com
+```
+
+**Get API Keys:**
+- Supabase: https://app.supabase.com/project/_/settings/api
+- Gemini: https://makersuite.google.com/app/apikey
+- Resend: https://resend.com/api-keys (for edge functions)
+
+## 📱 Android App
+
+The Android app is built with Capacitor and located in the `/android` directory.
+
+```sh
+# Build the web app
+npm run build
+
+# Sync with Android project
+npx cap sync android
+
+# Open in Android Studio
+npx cap open android
+```
+
+## 🗂️ Project Structure
+
+```
+rehomeht/
+├── src/
+│   ├── components/       # React components
+│   │   ├── ui/          # shadcn-ui components
+│   │   ├── Navigation.tsx
+│   │   ├── Footer.tsx
+│   │   ├── ErrorBoundary.tsx
+│   │   └── CookieConsent.tsx
+│   ├── pages/           # Page components
+│   │   ├── Index.tsx
+│   │   ├── Auth.tsx
+│   │   ├── Upload.tsx
+│   │   ├── Partners.tsx
+│   │   ├── Impact.tsx
+│   │   ├── About.tsx
+│   │   ├── FAQ.tsx
+│   │   ├── Contact.tsx
+│   │   ├── Terms.tsx
+│   │   └── Privacy.tsx
+│   ├── hooks/           # Custom React hooks
+│   ├── lib/             # Utilities
+│   └── integrations/    # Supabase client
+├── supabase/
+│   ├── functions/       # Edge functions
+│   └── migrations/      # Database migrations
+├── android/             # Android app (Capacitor)
+├── public/              # Static assets
+└── .env.example         # Environment variables template
+```
+
+## 🔧 Available Scripts
+
+```sh
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run lint         # Run ESLint
+npm run type-check   # Run TypeScript checks
+```
+
+## 📝 Features Documentation
+
+### Authentication
+- Email/password authentication via Supabase
+- Password requirements: 8+ characters, uppercase, lowercase, number, special character
+- Email verification (configurable in Supabase dashboard)
+- Protected routes for authenticated users
+
+### Donation Flow
+1. User uploads item photo(s)
+2. AI classifies item automatically
+3. User confirms or edits classification
+4. Item added to donations with points awarded
+5. User can find partners and schedule pickup
+6. Partner receives email with pickup details and location
+
+### Rewards System
+- Points awarded based on item type and condition
+- Redeem points for rewards from partner businesses
+- QR code generation for redemption verification
+- Partner verification page at `/verify`
+
+### Impact Tracking
+- Total items donated
+- CO₂ emissions saved
+- Waste diverted from landfills
+- Trees saved equivalent
+- Historical data visualization
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [shadcn-ui](https://ui.shadcn.com/) for the beautiful component library
+- [Supabase](https://supabase.com/) for the backend infrastructure
+- [Google Gemini](https://ai.google.dev/) for AI classification
+- All our donation partners and community members
+
+## 📞 Support
+
+- Email: support@rehomeht.com
+- FAQ: https://13la7e.github.io/rehomeht/#/faq
+- Issues: https://github.com/13la7e/rehomeht/issues
+
+---
+
+Made with 💚 by the ReHomeHT Team | Making the world greener, one donation at a time 🌱

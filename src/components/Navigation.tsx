@@ -48,6 +48,21 @@ export const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-3 lg:gap-4">
+            <Link to="/about">
+              <Button variant="ghost" size="sm">
+                About
+              </Button>
+            </Link>
+            <Link to="/faq">
+              <Button variant="ghost" size="sm">
+                FAQ
+              </Button>
+            </Link>
+            <Link to="/contact">
+              <Button variant="ghost" size="sm">
+                Contact
+              </Button>
+            </Link>
             {user ? (
               <>
                 <Link to="/multi-upload">
@@ -106,28 +121,59 @@ export const Navigation = () => {
                   </SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-4 mt-8">
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide px-2">
+                      General
+                    </p>
+                    <Button 
+                      variant="ghost" 
+                      className="w-full justify-start"
+                      onClick={() => handleNavigation("/about")}
+                    >
+                      About
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      className="w-full justify-start"
+                      onClick={() => handleNavigation("/faq")}
+                    >
+                      FAQ
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      className="w-full justify-start"
+                      onClick={() => handleNavigation("/contact")}
+                    >
+                      Contact
+                    </Button>
+                  </div>
                   {user ? (
                     <>
-                      <Button 
-                        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-md justify-start" 
-                        onClick={() => handleNavigation("/multi-upload")}
-                      >
-                        Donate Items
-                      </Button>
-                      <Button 
-                        variant="ghost" 
-                        className="w-full justify-start"
-                        onClick={() => handleNavigation("/redeem")}
-                      >
-                        Redeem
-                      </Button>
-                      <Button 
-                        variant="ghost" 
-                        className="w-full justify-start"
-                        onClick={() => handleNavigation("/impact")}
-                      >
-                        My Impact
-                      </Button>
+                      <div className="border-t pt-4 space-y-2">
+                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide px-2">
+                          Your Account
+                        </p>
+                        <Button 
+                          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-md justify-start" 
+                          onClick={() => handleNavigation("/multi-upload")}
+                        >
+                          Donate Items
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          className="w-full justify-start"
+                          onClick={() => handleNavigation("/redeem")}
+                        >
+                          Redeem
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          className="w-full justify-start"
+                          onClick={() => handleNavigation("/impact")}
+                        >
+                          My Impact
+                        </Button>
+                      </div>
                       <div className="border-t pt-4 mt-4">
                         <Button 
                           variant="ghost" 
@@ -140,12 +186,14 @@ export const Navigation = () => {
                       </div>
                     </>
                   ) : (
-                    <Button 
-                      className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-md"
-                      onClick={() => handleNavigation("/auth")}
-                    >
-                      Get Started
-                    </Button>
+                    <div className="border-t pt-4">
+                      <Button 
+                        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-md"
+                        onClick={() => handleNavigation("/auth")}
+                      >
+                        Get Started
+                      </Button>
+                    </div>
                   )}
                 </div>
               </SheetContent>
