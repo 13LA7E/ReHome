@@ -58,7 +58,7 @@
 **Route**: `/about`
 - Mission statement and company story
 - Core values with icons (Sustainability, Community, Impact)
-- How ReHomeHT works (4-step process)
+- How ReHome works (4-step process)
 - Professional, engaging content
 
 ### 9. ✅ Created FAQ Page

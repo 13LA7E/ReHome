@@ -6,8 +6,8 @@ Your React web app has been successfully converted to an Android application usi
 
 1. ✅ Installed Capacitor core packages (`@capacitor/core`, `@capacitor/cli`, `@capacitor/android`)
 2. ✅ Initialized Capacitor with:
-   - App Name: **ReHomeHT**
-   - Package ID: **com.rehomeht.app**
+   - App Name: **ReHome**
+   - Package ID: **com.ReHome.app**
 3. ✅ Updated Vite config to work with Capacitor (set base to "/")
 4. ✅ Created Android project structure in `/android` folder
 5. ✅ Added build scripts to package.json

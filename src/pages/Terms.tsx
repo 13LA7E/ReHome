@@ -30,7 +30,7 @@ const Terms = () => {
                 <section>
                   <h2 className="text-2xl font-bold mb-3">1. Agreement to Terms</h2>
                   <p className="text-muted-foreground leading-relaxed">
-                    By accessing or using ReHomeHT ("the Service"), you agree to be bound by these Terms of Service. 
+                    By accessing or using ReHome ("the Service"), you agree to be bound by these Terms of Service. 
                     If you do not agree to these terms, please do not use our service.
                   </p>
                 </section>
@@ -38,7 +38,7 @@ const Terms = () => {
                 <section>
                   <h2 className="text-2xl font-bold mb-3">2. Description of Service</h2>
                   <p className="text-muted-foreground leading-relaxed mb-2">
-                    ReHomeHT is a platform that connects users who wish to donate household items with verified 
+                    ReHome is a platform that connects users who wish to donate household items with verified 
                     donation partners. Our service includes:
                   </p>
                   <ul className="list-disc pl-6 text-muted-foreground space-y-1">
@@ -93,7 +93,7 @@ const Terms = () => {
                 <section>
                   <h2 className="text-2xl font-bold mb-3">6. Intellectual Property</h2>
                   <p className="text-muted-foreground leading-relaxed">
-                    All content, features, and functionality of the Service are owned by ReHomeHT and are 
+                    All content, features, and functionality of the Service are owned by ReHome and are 
                     protected by copyright, trademark, and other intellectual property laws. You may not 
                     copy, modify, distribute, or reproduce any part of our Service without permission.
                   </p>
@@ -102,7 +102,7 @@ const Terms = () => {
                 <section>
                   <h2 className="text-2xl font-bold mb-3">7. User Content</h2>
                   <p className="text-muted-foreground leading-relaxed">
-                    By uploading photos or information about items, you grant ReHomeHT a non-exclusive, 
+                    By uploading photos or information about items, you grant ReHome a non-exclusive, 
                     worldwide license to use, display, and process this content for the purpose of 
                     operating the Service. You retain ownership of your content.
                   </p>
@@ -128,7 +128,7 @@ const Terms = () => {
                 <section>
                   <h2 className="text-2xl font-bold mb-3">10. Limitation of Liability</h2>
                   <p className="text-muted-foreground leading-relaxed">
-                    ReHomeHT and its affiliates shall not be liable for any indirect, incidental, special, 
+                    ReHome and its affiliates shall not be liable for any indirect, incidental, special, 
                     consequential, or punitive damages arising from your use of the Service. Our total 
                     liability shall not exceed the amount you paid to use the Service in the past 12 months.
                   </p>
@@ -165,7 +165,7 @@ const Terms = () => {
                   <h2 className="text-2xl font-bold mb-3">14. Governing Law</h2>
                   <p className="text-muted-foreground leading-relaxed">
                     These Terms shall be governed by and construed in accordance with the laws of the 
-                    jurisdiction in which ReHomeHT operates, without regard to conflict of law principles.
+                    jurisdiction in which ReHome operates, without regard to conflict of law principles.
                   </p>
                 </section>
 
@@ -175,14 +175,14 @@ const Terms = () => {
                     If you have questions about these Terms, please contact us at:
                   </p>
                   <div className="bg-muted/50 p-4 rounded-lg">
-                    <p className="font-semibold">ReHomeHT Support</p>
-                    <p className="text-muted-foreground">Email: support@rehomeht.com</p>
+                    <p className="font-semibold">ReHome Support</p>
+                    <p className="text-muted-foreground">Email: support@ReHome.com</p>
                   </div>
                 </section>
 
                 <section className="border-t pt-6 mt-8">
                   <p className="text-xs text-muted-foreground text-center">
-                    By using ReHomeHT, you acknowledge that you have read, understood, and agree to be 
+                    By using ReHome, you acknowledge that you have read, understood, and agree to be 
                     bound by these Terms of Service.
                   </p>
                 </section>

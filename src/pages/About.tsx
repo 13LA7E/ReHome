@@ -17,7 +17,7 @@ const About = () => {
             </div>
           </div>
           <h1 className="text-4xl md:text-5xl font-display font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            About ReHomeHT
+            About ReHome
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Transforming household clutter into community impact, one donation at a time
@@ -34,7 +34,7 @@ const About = () => {
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
             <p>
-              ReHomeHT is on a mission to make sustainable living effortless and rewarding. We believe 
+              ReHome is on a mission to make sustainable living effortless and rewarding. We believe 
               that every household item deserves a second chance, and every act of giving should be 
               recognized and celebrated.
             </p>
@@ -96,7 +96,7 @@ const About = () => {
           <CardHeader>
             <CardTitle className="text-2xl flex items-center gap-2">
               <Sparkles className="w-6 h-6 text-primary" />
-              How ReHomeHT Works
+              How ReHome Works
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -160,7 +160,7 @@ const About = () => {
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
             <p>
-              ReHomeHT was born from a simple observation: people want to donate their unused items, 
+              ReHome was born from a simple observation: people want to donate their unused items, 
               but the process is often too complicated. We saw perfectly good furniture sitting by the 
               curb, clothes piling up in closets, and electronics gathering dust – all because donating 
               felt like too much work.
@@ -171,7 +171,7 @@ const About = () => {
               visible and celebrated.
             </p>
             <p>
-              Today, ReHomeHT is making that vision a reality. We're building a community of conscious 
+              Today, ReHome is making that vision a reality. We're building a community of conscious 
               consumers who understand that their unwanted items are someone else's treasures. Together, 
               we're creating a more sustainable, connected, and generous world.
             </p>

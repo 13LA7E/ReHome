@@ -111,12 +111,12 @@ const Redeem = () => {
 
   // Generate verification URL for QR code (HashRouter format)
   // In production (GitHub Pages), force the exact domain + path to avoid any mismatch.
-  const prodBase = "https://13la7e.github.io/rehomeht";
+  const prodBase = "https://13la7e.github.io/ReHome";
   const devBase = `${window.location.origin}${(import.meta.env.BASE_URL || "/").replace(/\/$/, "")}`;
   const baseForQr = import.meta.env.PROD ? prodBase : devBase;
 
   // Must include /#/ for HashRouter
-  const verificationUrl = `${baseForQr}/rehomeht/#/verify?code=${verificationCode}`;
+  const verificationUrl = `${baseForQr}/ReHome/#/verify?code=${verificationCode}`;
 
   console.log("=== QR CODE URL DEBUG ===");
   console.log("mode:", import.meta.env.PROD ? "production" : "development");

@@ -1,17 +1,17 @@
-# ReHomeHT - Transform Clutter into Community Impact
+# ReHome - Transform Clutter into Community Impact
 
-[![Production URL](https://img.shields.io/badge/Production-Live-success)](https://13la7e.github.io/rehomeht/)
+[![Production URL](https://img.shields.io/badge/Production-Live-success)](https://13la7e.github.io/ReHome/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ## 🌟 Project Info
 
-**Live URL**: https://13la7e.github.io/rehomeht/
+**Live URL**: https://13la7e.github.io/ReHome/
 
 **Status**: Production Ready | Phase 1 Complete
 
-## 📖 About ReHomeHT
+## 📖 About ReHome
 
-ReHomeHT is a comprehensive sustainable donation platform that revolutionizes how households donate items to verified organizations. Using AI-powered classification and real-time impact tracking, we make sustainable giving effortless and rewarding.
+ReHome is a comprehensive sustainable donation platform that revolutionizes how households donate items to verified organizations. Using AI-powered classification and real-time impact tracking, we make sustainable giving effortless and rewarding.
 
 ## ✨ Features
 
@@ -90,7 +90,7 @@ This project is built with:
 
 ## How can I deploy this project?
 
-The project is automatically deployed to GitHub Pages at: https://13la7e.github.io/rehomeht/
+The project is automatically deployed to GitHub Pages at: https://13la7e.github.io/ReHome/
 
 ## 🛠️ Technology Stack
 
@@ -134,8 +134,8 @@ The project is automatically deployed to GitHub Pages at: https://13la7e.github.
 
 ```sh
 # Clone the repository
-git clone https://github.com/13la7e/rehomeht.git
-cd rehomeht
+git clone https://github.com/13la7e/ReHome.git
+cd ReHome
 
 # Install dependencies
 npm install
@@ -158,8 +158,8 @@ Create a `.env` file in the root directory with the following:
 VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 VITE_GEMINI_API_KEY=your_google_gemini_api_key
-VITE_APP_URL=https://13la7e.github.io/rehomeht
-VITE_SUPPORT_EMAIL=support@rehomeht.com
+VITE_APP_URL=https://13la7e.github.io/ReHome
+VITE_SUPPORT_EMAIL=support@rehome.app
 ```
 
 **Get API Keys:**
@@ -185,7 +185,7 @@ npx cap open android
 ## 🗂️ Project Structure
 
 ```
-rehomeht/
+ReHome/
 ├── src/
 │   ├── components/       # React components
 │   │   ├── ui/          # shadcn-ui components
@@ -271,10 +271,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- Email: support@rehomeht.com
-- FAQ: https://13la7e.github.io/rehomeht/#/faq
-- Issues: https://github.com/13la7e/rehomeht/issues
+- Email: support@rehome.app
+- FAQ: https://13la7e.github.io/ReHome/#/faq
+- Issues: https://github.com/13la7e/ReHome/issues
 
 ---
 
-Made with 💚 by the ReHomeHT Team | Making the world greener, one donation at a time 🌱
+Made with 💚 by the ReHome Team | Making the world greener, one donation at a time 🌱

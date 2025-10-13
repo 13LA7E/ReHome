@@ -1,8 +1,8 @@
-import type { CapacitorConfig } from '@capacitor/cli';
+import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.rehomeht.app',
-  appName: 'ReHomeHT',
+  appId: 'com.rehome.app',
+  appName: 'ReHome',
   webDir: 'dist',
   server: {
     androidScheme: 'https'

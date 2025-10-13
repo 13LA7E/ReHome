@@ -80,8 +80,8 @@ export class ErrorBoundary extends Component<Props, State> {
 
               <p className="text-xs text-center text-muted-foreground">
                 If this problem persists, please contact{" "}
-                <a href="mailto:support@rehomeht.com" className="text-primary hover:underline">
-                  support@rehomeht.com
+                <a href="mailto:support@ReHome.com" className="text-primary hover:underline">
+                  support@ReHome.com
                 </a>
               </p>
             </CardContent>

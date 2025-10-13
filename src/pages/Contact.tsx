@@ -35,10 +35,10 @@ const Contact = () => {
                 <div>
                   <h3 className="font-semibold mb-1">Email</h3>
                   <a 
-                    href="mailto:support@rehomeht.com" 
+                    href="mailto:support@ReHome.com" 
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    support@rehomeht.com
+                    support@ReHome.com
                   </a>
                   <p className="text-sm text-muted-foreground mt-1">
                     We typically respond within 24 hours
@@ -99,7 +99,7 @@ const Contact = () => {
                 onClick={() => window.location.href = "/#/about"}
               >
                 <Info className="mr-2 w-4 h-4" />
-                About ReHomeHT
+                About ReHome
               </Button>
 
               <Button 
@@ -127,7 +127,7 @@ const Contact = () => {
                 </p>
                 <Button 
                   className="w-full bg-gradient-to-r from-primary to-accent"
-                  onClick={() => window.location.href = "mailto:partnerships@rehomeht.com"}
+                  onClick={() => window.location.href = "mailto:partnerships@ReHome.com"}
                 >
                   Partner With Us
                 </Button>
@@ -143,13 +143,13 @@ const Contact = () => {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground mb-4">
-              Your input helps us improve ReHomeHT for everyone. Whether you have suggestions, 
+              Your input helps us improve ReHome for everyone. Whether you have suggestions, 
               found a bug, or want to share your experience, we'd love to hear from you.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Button 
                 className="flex-1"
-                onClick={() => window.location.href = "mailto:support@rehomeht.com?subject=Feedback"}
+                onClick={() => window.location.href = "mailto:support@ReHome.com?subject=Feedback"}
               >
                 <Mail className="mr-2 w-4 h-4" />
                 Send Feedback
@@ -157,7 +157,7 @@ const Contact = () => {
               <Button 
                 variant="outline"
                 className="flex-1"
-                onClick={() => window.location.href = "mailto:support@rehomeht.com?subject=Bug%20Report"}
+                onClick={() => window.location.href = "mailto:support@ReHome.com?subject=Bug%20Report"}
               >
                 <MessageCircle className="mr-2 w-4 h-4" />
                 Report an Issue

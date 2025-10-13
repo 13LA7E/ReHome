@@ -234,7 +234,7 @@ d) **Add Database Indexes** (for performance):
 
 - `/terms` - Terms of Service
 - `/privacy` - Privacy Policy
-- `/about` - About ReHomeHT
+- `/about` - About ReHome
 - `/faq` - Frequently Asked Questions
 - `/contact` - Contact Information
 

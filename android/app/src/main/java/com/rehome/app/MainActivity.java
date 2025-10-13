@@ -1,4 +1,4 @@
-package com.rehomeht.app;
+package com.rehome.app;
 
 import com.getcapacitor.BridgeActivity;
 

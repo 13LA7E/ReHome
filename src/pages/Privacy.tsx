@@ -30,7 +30,7 @@ const Privacy = () => {
                 <section>
                   <h2 className="text-2xl font-bold mb-3">1. Introduction</h2>
                   <p className="text-muted-foreground leading-relaxed">
-                    ReHomeHT ("we," "our," or "us") is committed to protecting your privacy. This Privacy 
+                    ReHome ("we," "our," or "us") is committed to protecting your privacy. This Privacy 
                     Policy explains how we collect, use, disclose, and safeguard your information when you 
                     use our service. Please read this policy carefully.
                   </p>
@@ -134,7 +134,7 @@ const Privacy = () => {
                     <li><strong>Withdraw Consent:</strong> Withdraw previously given consent</li>
                   </ul>
                   <p className="text-muted-foreground leading-relaxed mt-3">
-                    To exercise these rights, please contact us at support@rehomeht.com
+                    To exercise these rights, please contact us at support@ReHome.com
                   </p>
                 </section>
 
@@ -204,14 +204,14 @@ const Privacy = () => {
                     If you have questions or concerns about this Privacy Policy, please contact us:
                   </p>
                   <div className="bg-muted/50 p-4 rounded-lg">
-                    <p className="font-semibold">ReHomeHT Privacy Team</p>
-                    <p className="text-muted-foreground">Email: support@rehomeht.com</p>
+                    <p className="font-semibold">ReHome Privacy Team</p>
+                    <p className="text-muted-foreground">Email: support@ReHome.com</p>
                   </div>
                 </section>
 
                 <section className="border-t pt-6 mt-8">
                   <p className="text-xs text-muted-foreground text-center">
-                    By using ReHomeHT, you acknowledge that you have read and understood this Privacy Policy 
+                    By using ReHome, you acknowledge that you have read and understood this Privacy Policy 
                     and agree to our collection, use, and disclosure of your information as described.
                   </p>
                 </section>

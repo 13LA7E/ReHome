@@ -7,8 +7,8 @@ import { HelpCircle } from "lucide-react";
 const FAQ = () => {
   const faqs = [
     {
-      question: "How does ReHomeHT work?",
-      answer: "ReHomeHT makes donating simple: 1) Take a photo of your item, 2) Our AI classifies it automatically, 3) Earn reward points, 4) Connect with verified donation partners, and 5) Schedule a convenient pickup. It's that easy!"
+      question: "How does ReHome work?",
+      answer: "ReHome makes donating simple: 1) Take a photo of your item, 2) Our AI classifies it automatically, 3) Earn reward points, 4) Connect with verified donation partners, and 5) Schedule a convenient pickup. It's that easy!"
     },
     {
       question: "What items can I donate?",
@@ -48,7 +48,7 @@ const FAQ = () => {
     },
     {
       question: "Do I need to create an account?",
-      answer: "Yes, an account is required to use ReHomeHT. This allows us to track your donations, award points, save your preferences, and provide personalized partner recommendations. Sign up is quick and free!"
+      answer: "Yes, an account is required to use ReHome. This allows us to track your donations, award points, save your preferences, and provide personalized partner recommendations. Sign up is quick and free!"
     },
     {
       question: "What if an organization doesn't pick up my item?",
@@ -56,11 +56,11 @@ const FAQ = () => {
     },
     {
       question: "Can organizations join as partners?",
-      answer: "Yes! We're always looking for verified organizations to join our network. If you represent a charity, NGO, or recycling center, please contact us at support@rehomeht.com to learn about our partnership program."
+      answer: "Yes! We're always looking for verified organizations to join our network. If you represent a charity, NGO, or recycling center, please contact us at support@ReHome.com to learn about our partnership program."
     },
     {
-      question: "Is ReHomeHT free to use?",
-      answer: "Yes, ReHomeHT is completely free for donors. There are no fees to upload items, connect with partners, or redeem rewards. Our mission is to make sustainable donation as accessible as possible."
+      question: "Is ReHome free to use?",
+      answer: "Yes, ReHome is completely free for donors. There are no fees to upload items, connect with partners, or redeem rewards. Our mission is to make sustainable donation as accessible as possible."
     },
     {
       question: "What happens to my uploaded photos?",
@@ -84,7 +84,7 @@ const FAQ = () => {
               Frequently Asked Questions
             </CardTitle>
             <p className="text-muted-foreground mt-2">
-              Find answers to common questions about ReHomeHT
+              Find answers to common questions about ReHome
             </p>
           </CardHeader>
 
@@ -106,8 +106,8 @@ const FAQ = () => {
               <h3 className="font-semibold text-lg mb-2">Still have questions?</h3>
               <p className="text-sm text-muted-foreground">
                 Can't find what you're looking for? Contact our support team at{" "}
-                <a href="mailto:support@rehomeht.com" className="text-primary hover:underline font-medium">
-                  support@rehomeht.com
+                <a href="mailto:support@ReHome.com" className="text-primary hover:underline font-medium">
+                  support@ReHome.com
                 </a>
               </p>
             </div>

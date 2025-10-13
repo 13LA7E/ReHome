@@ -15,7 +15,7 @@ export const Footer = () => {
                 <Leaf className="h-5 w-5 text-primary" />
               </div>
               <span className="text-xl font-display font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                ReHomeHT
+                ReHome
               </span>
             </Link>
             <p className="text-sm text-muted-foreground">
@@ -73,11 +73,11 @@ export const Footer = () => {
             <ul className="space-y-2 text-sm mb-4">
               <li>
                 <a 
-                  href="mailto:support@rehomeht.com" 
+                  href="mailto:support@ReHome.com" 
                   className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
                 >
                   <Mail className="h-4 w-4" />
-                  support@rehomeht.com
+                  support@ReHome.com
                 </a>
               </li>
             </ul>
@@ -100,7 +100,7 @@ export const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t mt-8 pt-8 text-center">
           <p className="text-sm text-muted-foreground">
-            © {currentYear} ReHomeHT. All rights reserved. Making the world greener, one donation at a time. 🌱
+            © {currentYear} ReHome. All rights reserved. Making the world greener, one donation at a time. 🌱
           </p>
         </div>
       </div>

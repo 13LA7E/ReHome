@@ -67,14 +67,14 @@
 ## 🌐 Deployment Status
 
 ### GitHub Pages Deployment
-**URL**: https://13la7e.github.io/rehomeht/
+**URL**: https://13la7e.github.io/ReHome/
 
 **Status**: 🟡 Deployment in progress
 
 The GitHub Actions workflow has been triggered automatically by the push to main branch.
 
 **To check deployment status:**
-1. Visit: https://github.com/13LA7E/rehomeht/actions
+1. Visit: https://github.com/13LA7E/ReHome/actions
 2. Look for the latest "Deploy to GitHub Pages" workflow
 3. Wait for green checkmark ✅ (usually takes 2-5 minutes)
 
@@ -91,7 +91,7 @@ The GitHub Actions workflow has been triggered automatically by the push to main
 2. **Deployment**
    - Uploads build artifacts
    - Deploys to GitHub Pages
-   - Site becomes live at: https://13la7e.github.io/rehomeht/
+   - Site becomes live at: https://13la7e.github.io/ReHome/
 
 3. **Verification**
    - Visit the URL
@@ -159,7 +159,7 @@ Your site has been successfully pushed to GitHub with:
 
 **Next Steps:**
 1. Wait 2-5 minutes for deployment to complete
-2. Visit https://13la7e.github.io/rehomeht/
+2. Visit https://13la7e.github.io/ReHome/
 3. Test all new features
 4. Share with sponsors/partners for demo! 🚀
 
