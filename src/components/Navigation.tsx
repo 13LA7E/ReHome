@@ -1,12 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Leaf, LogOut, User, Menu, X } from "lucide-react";
+import { Leaf, LogOut, User, Menu, Settings as SettingsIcon } from "lucide-react";
 import { useAuth } from "./AuthProvider";
 import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import {
@@ -75,6 +76,11 @@ export const Navigation = () => {
                     My Impact
                   </Button>
                 </Link>
+                <Link to="/multi-upload">
+                  <Button className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-md" size="sm">
+                    Donate Items
+                  </Button>
+                </Link>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="rounded-full">
@@ -82,17 +88,17 @@ export const Navigation = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48 bg-background/95 backdrop-blur">
+                    <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer">
+                      <SettingsIcon className="h-4 w-4 mr-2" />
+                      Settings
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
                       <LogOut className="h-4 w-4 mr-2" />
                       Sign Out
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <Link to="/multi-upload">
-                  <Button className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-md" size="sm">
-                    Donate Items
-                  </Button>
-                </Link>
               </>
             ) : (
               <Link to="/auth">
@@ -154,12 +160,6 @@ export const Navigation = () => {
                           Your Account
                         </p>
                         <Button 
-                          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-md justify-start" 
-                          onClick={() => handleNavigation("/multi-upload")}
-                        >
-                          Donate Items
-                        </Button>
-                        <Button 
                           variant="ghost" 
                           className="w-full justify-start"
                           onClick={() => handleNavigation("/redeem")}
@@ -172,6 +172,20 @@ export const Navigation = () => {
                           onClick={() => handleNavigation("/impact")}
                         >
                           My Impact
+                        </Button>
+                        <Button 
+                          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-md justify-start" 
+                          onClick={() => handleNavigation("/multi-upload")}
+                        >
+                          Donate Items
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          className="w-full justify-start"
+                          onClick={() => handleNavigation("/settings")}
+                        >
+                          <SettingsIcon className="h-4 w-4 mr-2" />
+                          Settings
                         </Button>
                       </div>
                       <div className="border-t pt-4 mt-4">
