@@ -4,6 +4,7 @@ import { Leaf, LogOut, User, Menu, Settings as SettingsIcon } from "lucide-react
 import { useAuth } from "./AuthProvider";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,23 +25,34 @@ export const Navigation = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchUsername = async () => {
+    const fetchProfile = async () => {
       if (!user) return;
 
-      const { data } = await supabase
-        .from("profiles")
-        .select("username")
-        .eq("id", user.id)
-        .single();
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("username, avatar_url")
+          .eq("id", user.id)
+          .single();
 
-      if (data?.username) {
-        setUsername(data.username);
+        if (!error && data) {
+          if ('username' in data && data.username && typeof data.username === 'string') {
+            setUsername(data.username as string);
+          }
+          if ('avatar_url' in data && data.avatar_url && typeof data.avatar_url === 'string') {
+            setAvatarUrl(data.avatar_url as string);
+          }
+        }
+      } catch (error) {
+        // Silently fail if columns don't exist yet
+        console.log("Profile fields not available yet");
       }
     };
 
-    fetchUsername();
+    fetchProfile();
   }, [user]);
 
   const handleSignOut = async () => {
@@ -103,20 +115,31 @@ export const Navigation = () => {
                 </Link>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="rounded-full">
-                      <User className="h-5 w-5" />
+                    <Button variant="ghost" size="icon" className="rounded-full p-0">
+                      <Avatar className="h-9 w-9">
+                        <AvatarImage src={avatarUrl || undefined} alt={username || "User"} />
+                        <AvatarFallback className="bg-primary/10 text-primary">
+                          <User className="h-5 w-5" />
+                        </AvatarFallback>
+                      </Avatar>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56 bg-background/95 backdrop-blur">
-                    {username && (
-                      <>
-                        <div className="px-2 py-2">
+                    <div className="flex items-center gap-3 px-2 py-3">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={avatarUrl || undefined} alt={username || "User"} />
+                        <AvatarFallback className="bg-primary/10 text-primary">
+                          <User className="h-5 w-5" />
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 overflow-hidden">
+                        {username && (
                           <p className="text-sm font-medium">@{username}</p>
-                          <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
-                        </div>
-                        <DropdownMenuSeparator />
-                      </>
-                    )}
+                        )}
+                        <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                      </div>
+                    </div>
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer">
                       <SettingsIcon className="h-4 w-4 mr-2" />
                       Settings

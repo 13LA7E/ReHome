@@ -4,13 +4,14 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/components/AuthProvider";
-import { Moon, Sun, User, Bell, Lock, Mail, AtSign } from "lucide-react";
+import { Moon, Sun, User, Bell, Lock, Mail, AtSign, Camera, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Settings = () => {
   const { theme, toggleTheme } = useTheme();
@@ -20,39 +21,128 @@ const Settings = () => {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [username, setUsername] = useState("");
   const [fullName, setFullName] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
       if (!user) return;
 
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("username, full_name")
-        .eq("id", user.id)
-        .single();
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("username, full_name, avatar_url")
+          .eq("id", user.id)
+          .single();
 
-      if (data) {
-        setUsername(data.username || "");
-        setFullName(data.full_name || "");
+        if (!error && data) {
+          if ('username' in data) setUsername((data.username as string) || "");
+          if ('full_name' in data) setFullName((data.full_name as string) || "");
+          if ('avatar_url' in data) setAvatarUrl((data.avatar_url as string) || "");
+        }
+      } catch (error) {
+        console.log("Profile fields not available yet");
       }
     };
 
     fetchProfile();
   }, [user]);
 
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !user) return;
+
+    // Check file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        variant: "destructive",
+        title: "File too large",
+        description: "Avatar must be less than 5MB",
+      });
+      return;
+    }
+
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        variant: "destructive",
+        title: "Invalid file type",
+        description: "Please upload an image file",
+      });
+      return;
+    }
+
+    setUploadingAvatar(true);
+
+    try {
+      // Delete old avatar if exists
+      if (avatarUrl) {
+        const oldPath = avatarUrl.split('/').pop();
+        if (oldPath) {
+          await supabase.storage.from('avatars').remove([`${user.id}/${oldPath}`]);
+        }
+      }
+
+      // Upload new avatar
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `${user.id}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      // Update profile with new avatar URL
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: publicUrl })
+        .eq('id', user.id);
+
+      if (updateError) throw updateError;
+
+      setAvatarUrl(publicUrl);
+      toast({
+        title: "Avatar updated",
+        description: "Your profile picture has been updated successfully.",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Upload failed",
+        description: error.message || "Failed to upload avatar. Please try again.",
+      });
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
   const handleSaveProfile = async () => {
     if (!user) return;
     setLoading(true);
 
     try {
+      const updateData: any = {
+        full_name: fullName.trim()
+      };
+
+      // Only add username if it's not empty
+      if (username.trim()) {
+        updateData.username = username.toLowerCase().trim();
+      }
+
       const { error } = await supabase
         .from("profiles")
-        .update({ 
-          username: username.toLowerCase().trim(),
-          full_name: fullName.trim()
-        })
+        .update(updateData)
         .eq("id", user.id);
 
       if (error) {
@@ -77,6 +167,15 @@ const Settings = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
   };
 
   const handleSavePreferences = () => {
@@ -164,6 +263,51 @@ const Settings = () => {
                       Edit Profile
                     </Button>
                   )}
+                </div>
+
+                <Separator />
+
+                {/* Avatar Section */}
+                <div className="flex items-center gap-6">
+                  <Avatar className="w-24 h-24">
+                    <AvatarImage src={avatarUrl} alt={fullName || "User"} />
+                    <AvatarFallback className="text-2xl bg-primary/10 text-primary">
+                      {fullName ? getInitials(fullName) : <User className="w-12 h-12" />}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 space-y-2">
+                    <Label className="text-base font-medium">Profile Picture</Label>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      JPG, PNG, or GIF. Max size 5MB.
+                    </p>
+                    <div className="flex gap-2">
+                      <Input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleAvatarUpload}
+                        className="hidden"
+                      />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploadingAvatar}
+                      >
+                        {uploadingAvatar ? (
+                          <>
+                            <Upload className="w-4 h-4 mr-2 animate-pulse" />
+                            Uploading...
+                          </>
+                        ) : (
+                          <>
+                            <Camera className="w-4 h-4 mr-2" />
+                            Change Avatar
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
                 </div>
 
                 <Separator />
