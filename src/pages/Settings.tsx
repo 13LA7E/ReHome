@@ -78,11 +78,31 @@ const Settings = () => {
     setUploadingAvatar(true);
 
     try {
+      // Check if avatars bucket exists
+      const { data: buckets, error: bucketsError } = await supabase.storage.listBuckets();
+      
+      if (bucketsError) throw bucketsError;
+      
+      const avatarsBucket = buckets?.find(b => b.id === 'avatars');
+      
+      if (!avatarsBucket) {
+        toast({
+          variant: "destructive",
+          title: "Storage not configured",
+          description: "Please create the 'avatars' storage bucket in Supabase Dashboard first. See MIGRATION_GUIDE.md for instructions.",
+        });
+        return;
+      }
+
       // Delete old avatar if exists
       if (avatarUrl) {
-        const oldPath = avatarUrl.split('/').pop();
-        if (oldPath) {
-          await supabase.storage.from('avatars').remove([`${user.id}/${oldPath}`]);
+        try {
+          const oldPath = avatarUrl.split('/avatars/')[1];
+          if (oldPath) {
+            await supabase.storage.from('avatars').remove([oldPath]);
+          }
+        } catch (e) {
+          console.log("Could not delete old avatar:", e);
         }
       }
 
@@ -105,7 +125,7 @@ const Settings = () => {
       // Update profile with new avatar URL
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({ avatar_url: publicUrl })
+        .update({ avatar_url: publicUrl } as any)
         .eq('id', user.id);
 
       if (updateError) throw updateError;
@@ -116,10 +136,14 @@ const Settings = () => {
         description: "Your profile picture has been updated successfully.",
       });
     } catch (error: any) {
+      const errorMessage = error.message || "Failed to upload avatar. Please try again.";
+      
       toast({
         variant: "destructive",
         title: "Upload failed",
-        description: error.message || "Failed to upload avatar. Please try again.",
+        description: errorMessage.includes("Bucket not found") 
+          ? "Storage bucket not configured. Please run the database migration first."
+          : errorMessage,
       });
     } finally {
       setUploadingAvatar(false);

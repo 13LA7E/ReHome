@@ -48,65 +48,49 @@ BEGIN
 END;
 $$;
 
--- Create storage bucket for avatars if it doesn't exist
-DO $$
-BEGIN
-  INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-  VALUES (
-    'avatars',
-    'avatars',
-    true,
-    5242880, -- 5MB limit
-    ARRAY['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
-  )
-  ON CONFLICT (id) DO NOTHING;
-END $$;
+-- Create storage bucket for avatars
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+  'avatars',
+  'avatars',
+  true,
+  5242880, -- 5MB limit
+  ARRAY['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
+)
+ON CONFLICT (id) DO NOTHING;
 
 -- Storage policies for avatars
-DO $$
-BEGIN
-  -- Anyone can view avatars
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_policies WHERE schemaname = 'storage' AND tablename = 'objects' AND policyname = 'Anyone can view avatars'
-  ) THEN
-    CREATE POLICY "Anyone can view avatars"
-      ON storage.objects FOR SELECT
-      USING (bucket_id = 'avatars');
-  END IF;
+-- Drop existing policies if they exist to recreate them
+DROP POLICY IF EXISTS "Anyone can view avatars" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated users can upload avatars" ON storage.objects;
+DROP POLICY IF EXISTS "Users can update own avatars" ON storage.objects;
+DROP POLICY IF EXISTS "Users can delete own avatars" ON storage.objects;
 
-  -- Authenticated users can upload avatars
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_policies WHERE schemaname = 'storage' AND tablename = 'objects' AND policyname = 'Authenticated users can upload avatars'
-  ) THEN
-    CREATE POLICY "Authenticated users can upload avatars"
-      ON storage.objects FOR INSERT
-      WITH CHECK (
-        bucket_id = 'avatars' 
-        AND auth.role() = 'authenticated'
-      );
-  END IF;
+-- Anyone can view avatars
+CREATE POLICY "Anyone can view avatars"
+  ON storage.objects FOR SELECT
+  USING (bucket_id = 'avatars');
 
-  -- Users can update own avatars
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_policies WHERE schemaname = 'storage' AND tablename = 'objects' AND policyname = 'Users can update own avatars'
-  ) THEN
-    CREATE POLICY "Users can update own avatars"
-      ON storage.objects FOR UPDATE
-      USING (
-        bucket_id = 'avatars' 
-        AND auth.uid()::text = (storage.foldername(name))[1]
-      );
-  END IF;
+-- Authenticated users can upload avatars
+CREATE POLICY "Authenticated users can upload avatars"
+  ON storage.objects FOR INSERT
+  WITH CHECK (
+    bucket_id = 'avatars' 
+    AND auth.role() = 'authenticated'
+  );
 
-  -- Users can delete own avatars
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_policies WHERE schemaname = 'storage' AND tablename = 'objects' AND policyname = 'Users can delete own avatars'
-  ) THEN
-    CREATE POLICY "Users can delete own avatars"
-      ON storage.objects FOR DELETE
-      USING (
-        bucket_id = 'avatars' 
-        AND auth.uid()::text = (storage.foldername(name))[1]
-      );
-  END IF;
-END $$;
+-- Users can update own avatars
+CREATE POLICY "Users can update own avatars"
+  ON storage.objects FOR UPDATE
+  USING (
+    bucket_id = 'avatars' 
+    AND auth.uid()::text = (storage.foldername(name))[1]
+  );
+
+-- Users can delete own avatars
+CREATE POLICY "Users can delete own avatars"
+  ON storage.objects FOR DELETE
+  USING (
+    bucket_id = 'avatars' 
+    AND auth.uid()::text = (storage.foldername(name))[1]
+  );
