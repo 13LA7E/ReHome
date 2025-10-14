@@ -2,7 +2,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Leaf, LogOut, User, Menu, Settings as SettingsIcon } from "lucide-react";
 import { useAuth } from "./AuthProvider";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,6 +23,25 @@ export const Navigation = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [username, setUsername] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      if (!user) return;
+
+      const { data } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("id", user.id)
+        .single();
+
+      if (data?.username) {
+        setUsername(data.username);
+      }
+    };
+
+    fetchUsername();
+  }, [user]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -87,7 +107,16 @@ export const Navigation = () => {
                       <User className="h-5 w-5" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48 bg-background/95 backdrop-blur">
+                  <DropdownMenuContent align="end" className="w-56 bg-background/95 backdrop-blur">
+                    {username && (
+                      <>
+                        <div className="px-2 py-2">
+                          <p className="text-sm font-medium">@{username}</p>
+                          <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                        </div>
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
                     <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer">
                       <SettingsIcon className="h-4 w-4 mr-2" />
                       Settings
