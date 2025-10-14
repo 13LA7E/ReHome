@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/components/AuthProvider";
-import { Moon, Sun, User, Bell, Lock, Mail, AtSign, Camera, Upload } from "lucide-react";
+import { Moon, Sun, User, Bell, Lock, Mail, AtSign, Camera, Upload, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -12,6 +12,7 @@ import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const Settings = () => {
   const { theme, toggleTheme } = useTheme();
@@ -25,6 +26,7 @@ const Settings = () => {
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [migrationNeeded, setMigrationNeeded] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -32,19 +34,40 @@ const Settings = () => {
       if (!user) return;
 
       try {
+        // Try to fetch all fields, but handle if some don't exist
         const { data, error } = await supabase
           .from("profiles")
-          .select("username, full_name, avatar_url")
+          .select("full_name")
           .eq("id", user.id)
           .single();
 
         if (!error && data) {
-          if ('username' in data) setUsername((data.username as string) || "");
           if ('full_name' in data) setFullName((data.full_name as string) || "");
-          if ('avatar_url' in data) setAvatarUrl((data.avatar_url as string) || "");
+        }
+
+        // Try to get username and avatar separately (they might not exist yet)
+        try {
+          const { data: profileData, error: profileError } = await supabase
+            .from("profiles")
+            .select("username, avatar_url")
+            .eq("id", user.id)
+            .single();
+
+          if (profileData) {
+            if ('username' in profileData) setUsername((profileData.username as string) || "");
+            if ('avatar_url' in profileData) setAvatarUrl((profileData.avatar_url as string) || "");
+            setMigrationNeeded(false);
+          } else if (profileError?.message?.includes("column")) {
+            setMigrationNeeded(true);
+          }
+        } catch (e: any) {
+          // Username/avatar columns don't exist yet
+          if (e.message?.includes("column") || e.code === "PGRST116") {
+            setMigrationNeeded(true);
+          }
         }
       } catch (error) {
-        console.log("Profile fields not available yet");
+        console.log("Could not fetch profile");
       }
     };
 
@@ -155,38 +178,43 @@ const Settings = () => {
     setLoading(true);
 
     try {
-      const updateData: any = {
-        full_name: fullName.trim()
-      };
-
-      // Only add username if it's not empty
-      if (username.trim()) {
-        updateData.username = username.toLowerCase().trim();
-      }
-
-      const { error } = await supabase
+      // First, update the basic profile (full_name always exists)
+      const { error: nameError } = await supabase
         .from("profiles")
-        .update(updateData)
+        .update({ full_name: fullName.trim() })
         .eq("id", user.id);
 
-      if (error) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: error.message,
-        });
-      } else {
-        toast({
-          title: "Profile updated",
-          description: "Your profile has been updated successfully.",
-        });
-        setIsEditing(false);
+      if (nameError) throw nameError;
+
+      // Try to update username if the column exists and user provided one
+      if (username.trim()) {
+        try {
+          const { error: usernameError } = await supabase
+            .from("profiles")
+            .update({ username: username.toLowerCase().trim() } as any)
+            .eq("id", user.id);
+
+          if (usernameError && !usernameError.message.includes("column")) {
+            throw usernameError;
+          }
+        } catch (e: any) {
+          // If column doesn't exist, that's okay - just skip it
+          if (!e.message?.includes("column")) {
+            throw e;
+          }
+        }
       }
-    } catch (error) {
+
+      toast({
+        title: "Profile updated",
+        description: "Your profile has been updated successfully.",
+      });
+      setIsEditing(false);
+    } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to update profile. Please try again.",
+        description: error.message || "Failed to update profile. Please try again.",
       });
     } finally {
       setLoading(false);
@@ -225,6 +253,26 @@ const Settings = () => {
           </div>
 
           <div className="space-y-6">
+            {/* Migration Warning */}
+            {migrationNeeded && (
+              <Alert variant="destructive" className="animate-slide-up">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Database Setup Required</AlertTitle>
+                <AlertDescription>
+                  Username and avatar features are not available yet. Please run the database migration in Supabase.
+                  <br />
+                  <a 
+                    href="https://github.com/13LA7E/ReHome/blob/main/MIGRATION_GUIDE.md" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline font-medium mt-2 inline-block"
+                  >
+                    View Migration Guide →
+                  </a>
+                </AlertDescription>
+              </Alert>
+            )}
+
             {/* Appearance Settings */}
             <Card className="p-6 shadow-soft animate-slide-up">
               <div className="space-y-6">
@@ -300,9 +348,17 @@ const Settings = () => {
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 space-y-2">
-                    <Label className="text-base font-medium">Profile Picture</Label>
+                    <Label className="text-base font-medium flex items-center gap-2">
+                      Profile Picture
+                      {migrationNeeded && (
+                        <span className="text-xs text-muted-foreground font-normal">(Requires migration)</span>
+                      )}
+                    </Label>
                     <p className="text-sm text-muted-foreground mb-2">
-                      JPG, PNG, or GIF. Max size 5MB.
+                      {migrationNeeded 
+                        ? "Avatar upload requires database migration and storage setup"
+                        : "JPG, PNG, or GIF. Max size 5MB."
+                      }
                     </p>
                     <div className="flex gap-2">
                       <Input
@@ -316,7 +372,7 @@ const Settings = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => fileInputRef.current?.click()}
-                        disabled={uploadingAvatar}
+                        disabled={uploadingAvatar || migrationNeeded}
                       >
                         {uploadingAvatar ? (
                           <>
@@ -356,18 +412,24 @@ const Settings = () => {
                     <Label htmlFor="username" className="text-base font-medium flex items-center gap-2">
                       <AtSign className="w-4 h-4" />
                       Username
+                      {migrationNeeded && (
+                        <span className="text-xs text-muted-foreground font-normal">(Requires migration)</span>
+                      )}
                     </Label>
                     <Input
                       id="username"
                       type="text"
                       value={username}
                       onChange={(e) => setUsername(e.target.value.toLowerCase())}
-                      disabled={!isEditing}
-                      className={!isEditing ? "bg-muted" : ""}
-                      placeholder="your_username"
+                      disabled={!isEditing || migrationNeeded}
+                      className={!isEditing || migrationNeeded ? "bg-muted" : ""}
+                      placeholder={migrationNeeded ? "Run migration first" : "your_username"}
                     />
                     <p className="text-xs text-muted-foreground">
-                      Your unique username (lowercase, numbers, and underscores only)
+                      {migrationNeeded 
+                        ? "Username feature requires database migration"
+                        : "Your unique username (lowercase, numbers, and underscores only)"
+                      }
                     </p>
                   </div>
 
