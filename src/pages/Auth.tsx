@@ -143,7 +143,7 @@ const Auth = () => {
             full_name: validated.fullName,
             username: validated.username,
           },
-          emailRedirectTo: `${window.location.origin}/ReHome/#/`,
+          emailRedirectTo: `${window.location.origin}/`,
         },
       });
 
@@ -179,7 +179,7 @@ const Auth = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/ReHome/#/`,
+          redirectTo: `${window.location.origin}/`,
         },
       });
 
