@@ -46,6 +46,43 @@ const Auth = () => {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [signupData, setSignupData] = useState({ email: "", password: "", fullName: "", username: "" });
 
+  // Check for OAuth callback on mount
+  useEffect(() => {
+    const handleOAuthCallback = async () => {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const accessToken = hashParams.get('access_token');
+      const refreshToken = hashParams.get('refresh_token');
+      
+      console.log('OAuth callback check:', { accessToken: !!accessToken, hash: window.location.hash });
+      
+      if (accessToken && refreshToken) {
+        console.log('Setting session from OAuth callback');
+        const { data, error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+        
+        if (error) {
+          console.error('Failed to set session:', error);
+          toast({
+            variant: "destructive",
+            title: "Authentication failed",
+            description: "Failed to complete sign-in. Please try again.",
+          });
+        } else {
+          console.log('Session set successfully:', data.user?.email);
+          toast({
+            title: "Welcome!",
+            description: "You've successfully signed in with Google.",
+          });
+          navigate("/");
+        }
+      }
+    };
+    
+    handleOAuthCallback();
+  }, [navigate, toast]);
+
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
