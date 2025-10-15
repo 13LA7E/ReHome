@@ -30,6 +30,7 @@ import BlogPost from "./pages/BlogPost";
 import Referral from "./pages/Referral";
 import Admin from "./pages/Admin";
 import PartnerDashboard from "./pages/PartnerDashboard";
+import SentryTest from "./pages/SentryTest";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +63,7 @@ const App = () => (
                 <Route path="/referral" element={<ProtectedRoute><Referral /></ProtectedRoute>} />
                 <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
                 <Route path="/partner-dashboard" element={<ProtectedRoute><PartnerDashboard /></ProtectedRoute>} />
+                <Route path="/sentry-test" element={<SentryTest />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <CookieConsent />
