@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      blog_posts: {
+        Row: {
+          author_id: string | null
+          content: string
+          created_at: string | null
+          excerpt: string | null
+          featured_image: string | null
+          id: string
+          published: boolean | null
+          published_at: string | null
+          slug: string
+          tags: string[] | null
+          title: string
+          updated_at: string | null
+          views: number | null
+        }
+        Insert: {
+          author_id?: string | null
+          content: string
+          created_at?: string | null
+          excerpt?: string | null
+          featured_image?: string | null
+          id?: string
+          published?: boolean | null
+          published_at?: string | null
+          slug: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string | null
+          views?: number | null
+        }
+        Update: {
+          author_id?: string | null
+          content?: string
+          created_at?: string | null
+          excerpt?: string | null
+          featured_image?: string | null
+          id?: string
+          published?: boolean | null
+          published_at?: string | null
+          slug?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string | null
+          views?: number | null
+        }
+        Relationships: []
+      }
       impact_metrics: {
         Row: {
           co2_saved_kg: number | null
@@ -79,6 +127,80 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          link: string | null
+          message: string
+          read: boolean | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          link?: string | null
+          message: string
+          read?: boolean | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          link?: string | null
+          message?: string
+          read?: boolean | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      partner_stats: {
+        Row: {
+          average_rating: number | null
+          completed_pickups: number | null
+          id: string
+          partner_id: string
+          pending_pickups: number | null
+          total_pickups: number | null
+          total_weight_kg: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          average_rating?: number | null
+          completed_pickups?: number | null
+          id?: string
+          partner_id: string
+          pending_pickups?: number | null
+          total_pickups?: number | null
+          total_weight_kg?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          average_rating?: number | null
+          completed_pickups?: number | null
+          id?: string
+          partner_id?: string
+          pending_pickups?: number | null
+          total_pickups?: number | null
+          total_weight_kg?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_stats_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       partners: {
         Row: {
@@ -172,28 +294,34 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           created_at: string | null
           email: string | null
           full_name: string | null
           id: string
           phone: string | null
           updated_at: string | null
+          username: string | null
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string | null
           email?: string | null
           full_name?: string | null
           id: string
           phone?: string | null
           updated_at?: string | null
+          username?: string | null
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string | null
           email?: string | null
           full_name?: string | null
           id?: string
           phone?: string | null
           updated_at?: string | null
+          username?: string | null
         }
         Relationships: []
       }
@@ -237,6 +365,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      referrals: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          referral_code: string
+          referred_id: string | null
+          referrer_id: string
+          reward_points: number | null
+          status: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          referral_code: string
+          referred_id?: string | null
+          referrer_id: string
+          reward_points?: number | null
+          status?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          referral_code?: string
+          referred_id?: string | null
+          referrer_id?: string
+          reward_points?: number | null
+          status?: string | null
+        }
+        Relationships: []
       }
       rewards: {
         Row: {
@@ -285,6 +446,42 @@ export type Database = {
           },
         ]
       }
+      testimonials: {
+        Row: {
+          approved: boolean | null
+          content: string
+          created_at: string | null
+          featured: boolean | null
+          id: string
+          rating: number | null
+          user_avatar: string | null
+          user_id: string | null
+          user_name: string
+        }
+        Insert: {
+          approved?: boolean | null
+          content: string
+          created_at?: string | null
+          featured?: boolean | null
+          id?: string
+          rating?: number | null
+          user_avatar?: string | null
+          user_id?: string | null
+          user_name: string
+        }
+        Update: {
+          approved?: boolean | null
+          content?: string
+          created_at?: string | null
+          featured?: boolean | null
+          id?: string
+          rating?: number | null
+          user_avatar?: string | null
+          user_id?: string | null
+          user_name?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -311,6 +508,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_notification: {
+        Args: {
+          p_link?: string
+          p_message: string
+          p_title: string
+          p_type: string
+          p_user_id: string
+        }
+        Returns: string
+      }
+      generate_referral_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_partners_safe: {
         Args: Record<PropertyKey, never>
         Returns: {

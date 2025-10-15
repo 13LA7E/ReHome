@@ -42,6 +42,7 @@ const Redeem = () => {
   }, []);
 
   const fetchData = async () => {
+    setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
@@ -140,8 +141,65 @@ const Redeem = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-12 h-12 animate-spin text-primary" />
+      <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5">
+        <Navigation />
+        <div className="container mx-auto px-4 py-12 max-w-7xl">
+          {/* Balance Card Skeleton */}
+          <Card className="mb-12 border-2 border-primary/20 shadow-lg">
+            <CardHeader className="space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="w-14 h-14 rounded-xl bg-muted animate-pulse" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-8 bg-muted animate-pulse rounded w-64" />
+                  <div className="h-5 bg-muted animate-pulse rounded w-48" />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="p-6 rounded-2xl bg-primary/10 border border-primary/20">
+                  <div className="h-4 bg-muted animate-pulse rounded w-32 mb-4" />
+                  <div className="h-16 bg-muted animate-pulse rounded w-40" />
+                </div>
+                <div className="p-6 rounded-2xl bg-accent/10 border border-accent/20">
+                  <div className="h-4 bg-muted animate-pulse rounded w-32 mb-4" />
+                  <div className="h-16 bg-muted animate-pulse rounded w-40" />
+                </div>
+              </div>
+            </CardHeader>
+          </Card>
+
+          {/* Rewards Grid Skeleton */}
+          <div className="space-y-8">
+            <div className="flex items-center gap-3">
+              <div className="w-6 h-6 bg-muted animate-pulse rounded" />
+              <div className="h-8 bg-muted animate-pulse rounded w-48" />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {[...Array(4)].map((_, i) => (
+                <Card key={i} className="border-2">
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl bg-muted animate-pulse" />
+                      <div className="h-7 bg-muted animate-pulse rounded w-40" />
+                    </div>
+                    <div className="h-4 bg-muted animate-pulse rounded w-full mt-2" />
+                    <div className="h-4 bg-muted animate-pulse rounded w-3/4" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between p-4 rounded-xl bg-primary/10">
+                      <div className="space-y-2">
+                        <div className="h-4 bg-muted animate-pulse rounded w-16" />
+                        <div className="h-10 bg-muted animate-pulse rounded w-24" />
+                        <div className="h-3 bg-muted animate-pulse rounded w-20" />
+                      </div>
+                      <div className="h-11 w-28 bg-muted animate-pulse rounded" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

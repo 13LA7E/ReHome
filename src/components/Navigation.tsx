@@ -91,6 +91,11 @@ export const Navigation = () => {
                 FAQ
               </Button>
             </Link>
+            <Link to="/blog">
+              <Button variant="ghost" size="sm">
+                News
+              </Button>
+            </Link>
             <Link to="/contact">
               <Button variant="ghost" size="sm">
                 Contact
@@ -143,6 +148,10 @@ export const Navigation = () => {
                     <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer">
                       <SettingsIcon className="h-4 w-4 mr-2" />
                       Settings
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/referral')} className="cursor-pointer">
+                      <User className="h-4 w-4 mr-2" />
+                      Referrals
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">

@@ -24,6 +24,11 @@ import About from "./pages/About";
 import FAQ from "./pages/FAQ";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
+import Referral from "./pages/Referral";
+import Admin from "./pages/Admin";
+import PartnerDashboard from "./pages/PartnerDashboard";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +56,11 @@ const App = () => (
                 <Route path="/about" element={<About />} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
+                <Route path="/referral" element={<ProtectedRoute><Referral /></ProtectedRoute>} />
+                <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+                <Route path="/partner-dashboard" element={<ProtectedRoute><PartnerDashboard /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <CookieConsent />

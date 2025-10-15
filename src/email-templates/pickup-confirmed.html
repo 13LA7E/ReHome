@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pickup Confirmed</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f3f4f6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        .header {
+            background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 28px;
+        }
+        .content {
+            padding: 40px 20px;
+        }
+        .content p {
+            color: #374151;
+            line-height: 1.6;
+            margin: 16px 0;
+        }
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            margin: 24px 0;
+        }
+        .info-box h3 {
+            color: #059669;
+            margin: 0 0 12px 0;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid #d1fae5;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            color: #6b7280;
+            font-weight: 600;
+        }
+        .info-value {
+            color: #374151;
+        }
+        .button {
+            display: inline-block;
+            background-color: #10b981;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+        .items-list {
+            background-color: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .item:last-child {
+            border-bottom: none;
+        }
+        .item-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 16px;
+        }
+        .item-details {
+            flex: 1;
+        }
+        .item-name {
+            font-weight: 600;
+            color: #374151;
+            margin: 0 0 4px 0;
+        }
+        .item-category {
+            color: #6b7280;
+            font-size: 14px;
+            margin: 0;
+        }
+        .footer {
+            background-color: #1f2937;
+            color: #9ca3af;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .footer a {
+            color: #10b981;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚚 Pickup Confirmed!</h1>
+        </div>
+        
+        <div class="content">
+            <p>Hi {{username}},</p>
+            
+            <p>Great news! Your donation pickup has been confirmed by {{partner_name}}.</p>
+            
+            <div class="info-box">
+                <h3>Pickup Details</h3>
+                <div class="info-row">
+                    <span class="info-label">Date:</span>
+                    <span class="info-value">{{pickup_date}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Time:</span>
+                    <span class="info-value">{{pickup_time}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Address:</span>
+                    <span class="info-value">{{pickup_address}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Partner:</span>
+                    <span class="info-value">{{partner_name}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Contact:</span>
+                    <span class="info-value">{{partner_contact}}</span>
+                </div>
+            </div>
+            
+            <h3>Items to be Picked Up:</h3>
+            <div class="items-list">
+                {{#items}}
+                <div class="item">
+                    <img src="{{image_url}}" alt="{{name}}" class="item-image">
+                    <div class="item-details">
+                        <p class="item-name">{{name}}</p>
+                        <p class="item-category">{{category}} • Condition: {{condition}}</p>
+                    </div>
+                </div>
+                {{/items}}
+            </div>
+            
+            <h3>What to Expect:</h3>
+            <ul style="color: #6b7280;">
+                <li>Our partner will arrive during the scheduled time window</li>
+                <li>Please have items ready and accessible</li>
+                <li>A receipt will be provided upon pickup</li>
+                <li>Your impact metrics will be updated within 24 hours</li>
+            </ul>
+            
+            <div style="text-align: center;">
+                <a href="{{app_url}}/impact" class="button">View My Impact</a>
+            </div>
+            
+            <p>Need to reschedule or have questions? Contact our support team at <a href="mailto:support@rehome.com">support@rehome.com</a> or reply to this email.</p>
+            
+            <p>Thank you for making a difference!</p>
+            
+            <p>Best regards,<br>The ReHome Team</p>
+        </div>
+        
+        <div class="footer">
+            <p>© 2024 ReHome. All rights reserved.</p>
+            <p>
+                <a href="{{app_url}}/about">About</a> | 
+                <a href="{{app_url}}/privacy">Privacy</a> | 
+                <a href="{{app_url}}/terms">Terms</a> | 
+                <a href="{{unsubscribe_url}}">Unsubscribe</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
