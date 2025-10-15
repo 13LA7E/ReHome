@@ -110,18 +110,13 @@ const Redeem = () => {
         .update({ community_points: userPoints - reward.points_required })
         .eq("user_id", user.id);
 
-  // Generate verification URL for QR code (HashRouter format)
-  // In production (GitHub Pages), force the exact domain + path to avoid any mismatch.
-  const prodBase = "https://13la7e.github.io/ReHome";
-  const devBase = `${window.location.origin}${(import.meta.env.BASE_URL || "/").replace(/\/$/, "")}`;
-  const baseForQr = import.meta.env.PROD ? prodBase : devBase;
-
-  // Must include /#/ for HashRouter
-  const verificationUrl = `${baseForQr}/ReHome/#/verify?code=${verificationCode}`;
+  // Generate verification URL for QR code
+  // Use current domain (works on Vercel, localhost, or any deployment)
+  const verificationUrl = `${window.location.origin}/verify?code=${verificationCode}`;
 
   console.log("=== QR CODE URL DEBUG ===");
   console.log("mode:", import.meta.env.PROD ? "production" : "development");
-  console.log("baseForQr:", baseForQr);
+  console.log("origin:", window.location.origin);
   console.log("Generated QR verification URL:", verificationUrl);
   console.log("Verification code:", verificationCode);
 
