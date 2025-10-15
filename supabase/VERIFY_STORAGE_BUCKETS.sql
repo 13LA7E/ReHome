@@ -63,26 +63,32 @@ SET public = true,
 -- Create/Update storage policies for avatars
 -- =====================================================
 
+-- Drop existing policies first
+DROP POLICY IF EXISTS "Anyone can view avatars" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated users can upload avatars" ON storage.objects;
+DROP POLICY IF EXISTS "Users can update own avatars" ON storage.objects;
+DROP POLICY IF EXISTS "Users can delete own avatars" ON storage.objects;
+
 -- Anyone can view avatars
-CREATE POLICY IF NOT EXISTS "Anyone can view avatars"
+CREATE POLICY "Anyone can view avatars"
   ON storage.objects FOR SELECT
   TO public
   USING (bucket_id = 'avatars');
 
 -- Authenticated users can upload avatars
-CREATE POLICY IF NOT EXISTS "Authenticated users can upload avatars"
+CREATE POLICY "Authenticated users can upload avatars"
   ON storage.objects FOR INSERT
   TO authenticated
   WITH CHECK (bucket_id = 'avatars');
 
 -- Users can update own avatars
-CREATE POLICY IF NOT EXISTS "Users can update own avatars"
+CREATE POLICY "Users can update own avatars"
   ON storage.objects FOR UPDATE
   TO authenticated
   USING (bucket_id = 'avatars' AND (storage.foldername(name))[1] = auth.uid()::text);
 
 -- Users can delete own avatars
-CREATE POLICY IF NOT EXISTS "Users can delete own avatars"
+CREATE POLICY "Users can delete own avatars"
   ON storage.objects FOR DELETE
   TO authenticated
   USING (bucket_id = 'avatars' AND (storage.foldername(name))[1] = auth.uid()::text);
@@ -91,26 +97,32 @@ CREATE POLICY IF NOT EXISTS "Users can delete own avatars"
 -- Create/Update storage policies for item-images
 -- =====================================================
 
+-- Drop existing policies first
+DROP POLICY IF EXISTS "Anyone can view item images" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated users can upload item images" ON storage.objects;
+DROP POLICY IF EXISTS "Users can update own item images" ON storage.objects;
+DROP POLICY IF EXISTS "Users can delete own item images" ON storage.objects;
+
 -- Anyone can view item images
-CREATE POLICY IF NOT EXISTS "Anyone can view item images"
+CREATE POLICY "Anyone can view item images"
   ON storage.objects FOR SELECT
   TO public
   USING (bucket_id = 'item-images');
 
 -- Authenticated users can upload item images
-CREATE POLICY IF NOT EXISTS "Authenticated users can upload item images"
+CREATE POLICY "Authenticated users can upload item images"
   ON storage.objects FOR INSERT
   TO authenticated
   WITH CHECK (bucket_id = 'item-images');
 
 -- Users can update own item images
-CREATE POLICY IF NOT EXISTS "Users can update own item images"
+CREATE POLICY "Users can update own item images"
   ON storage.objects FOR UPDATE
   TO authenticated
   USING (bucket_id = 'item-images' AND (storage.foldername(name))[1] = auth.uid()::text);
 
 -- Users can delete own item images
-CREATE POLICY IF NOT EXISTS "Users can delete own item images"
+CREATE POLICY "Users can delete own item images"
   ON storage.objects FOR DELETE
   TO authenticated
   USING (bucket_id = 'item-images' AND (storage.foldername(name))[1] = auth.uid()::text);
