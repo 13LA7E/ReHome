@@ -1,7 +1,7 @@
 const CACHE_NAME = 'rehome-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
+  '/ReHome/',
+  '/ReHome/index.html',
 ];
 
 // Install service worker

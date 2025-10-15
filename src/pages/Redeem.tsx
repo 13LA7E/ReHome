@@ -110,9 +110,8 @@ const Redeem = () => {
         .update({ community_points: userPoints - reward.points_required })
         .eq("user_id", user.id);
 
-  // Generate verification URL for QR code
-  // Use current domain (works on Vercel, localhost, or any deployment)
-  const verificationUrl = `${window.location.origin}/verify?code=${verificationCode}`;
+  // Generate verification URL for QR code (GitHub Pages with HashRouter)
+  const verificationUrl = `${window.location.origin}/ReHome/#/verify?code=${verificationCode}`;
 
   console.log("=== QR CODE URL DEBUG ===");
   console.log("mode:", import.meta.env.PROD ? "production" : "development");
