@@ -101,22 +101,6 @@ const Settings = () => {
     setUploadingAvatar(true);
 
     try {
-      // Check if avatars bucket exists
-      const { data: buckets, error: bucketsError } = await supabase.storage.listBuckets();
-      
-      if (bucketsError) throw bucketsError;
-      
-      const avatarsBucket = buckets?.find(b => b.id === 'avatars');
-      
-      if (!avatarsBucket) {
-        toast({
-          variant: "destructive",
-          title: "Storage not configured",
-          description: "Please create the 'avatars' storage bucket in Supabase Dashboard first. See MIGRATION_GUIDE.md for instructions.",
-        });
-        return;
-      }
-
       // Delete old avatar if exists
       if (avatarUrl) {
         try {
