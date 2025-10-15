@@ -48,11 +48,15 @@ export default function PartnerDashboard() {
 
     try {
       // Check if user is associated with a partner
-      const { data: partnerData } = await supabase
+      const response = await supabase
         .from("partners")
         .select("id")
         .eq("contact_email", user.email)
-        .single();
+        .maybeSingle();
+
+      if (response.error) throw response.error;
+
+      const partnerData = response.data as { id: string } | null;
 
       if (partnerData) {
         setIsPartner(true);
