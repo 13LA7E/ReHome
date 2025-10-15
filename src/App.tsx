@@ -15,7 +15,7 @@ import Auth from "./pages/Auth";
 import Upload from "./pages/Upload";
 import MultiUpload from "./pages/MultiUpload";
 import Partners from "./pages/Partners";
-import Impact from "./pages/Impact";
+import ImpactNew from "./pages/ImpactNew";
 import Redeem from "./pages/Redeem";
 import VerifyRedemption from "./pages/VerifyRedemption";
 import Settings from "./pages/Settings";
@@ -51,7 +51,7 @@ const App = () => (
                 <Route path="/partners" element={<ProtectedRoute><Partners /></ProtectedRoute>} />
                 <Route path="/redeem" element={<ProtectedRoute><Redeem /></ProtectedRoute>} />
                 <Route path="/verify" element={<VerifyRedemption />} />
-                <Route path="/impact" element={<ProtectedRoute><Impact /></ProtectedRoute>} />
+                <Route path="/impact" element={<ProtectedRoute><ImpactNew /></ProtectedRoute>} />
                 <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/privacy" element={<Privacy />} />
