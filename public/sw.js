@@ -1,9 +1,7 @@
 const CACHE_NAME = 'rehome-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/src/main.tsx',
-  '/src/index.css',
+  '/ReHome/',
+  '/ReHome/index.html',
 ];
 
 // Install service worker
@@ -12,7 +10,9 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Opened cache');
-        return cache.addAll(urlsToCache);
+        return cache.addAll(urlsToCache).catch((err) => {
+          console.error('Cache addAll failed:', err);
+        });
       })
   );
   self.skipWaiting();
