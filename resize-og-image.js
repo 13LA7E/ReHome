@@ -3,15 +3,43 @@ import fs from 'fs';
 
 async function resizeOGImage() {
   try {
-    // Resize to 1200x630 (Open Graph recommended size)
+    // Resize to 1200x630 for Facebook, Twitter, LinkedIn
     await sharp('IMG_3091.PNG')
       .resize(1200, 630, {
         fit: 'contain',
         position: 'center',
         background: { r: 255, g: 255, b: 255, alpha: 1 }
       })
-      .jpeg({ quality: 90 })
+      .png({ quality: 90 })
       .toFile('public/og-image-resized.png');
+    
+    console.log('✅ Standard og-image created (1200x630)');
+    
+    // Create 1080x1080 square for Instagram
+    await sharp('IMG_3091.PNG')
+      .resize(1080, 1080, {
+        fit: 'contain',
+        position: 'center',
+        background: { r: 255, g: 255, b: 255, alpha: 1 }
+      })
+      .png({ quality: 90 })
+      .toFile('public/og-image-square.png');
+    
+    console.log('✅ Instagram square image created (1080x1080)');
+    
+    console.log('✅ Standard og-image created (1200x630)');
+    
+    // Create 1080x1080 square for Instagram
+    await sharp('IMG_3091.PNG')
+      .resize(1080, 1080, {
+        fit: 'contain',
+        position: 'center',
+        background: { r: 255, g: 255, b: 255, alpha: 1 }
+      })
+      .jpeg({ quality: 90 })
+      .toFile('public/og-image-square.png');
+    
+    console.log('✅ Instagram square image created (1080x1080)');
     
     console.log('✅ Image resized successfully!');
     console.log('Size: 1200x630px');
