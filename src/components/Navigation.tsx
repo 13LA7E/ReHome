@@ -5,6 +5,7 @@ import { useAuth } from "./AuthProvider";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { NavLink } from "./NavLink";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -81,43 +82,17 @@ export const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-3 lg:gap-4">
-            <Link to="/about">
-              <Button variant="ghost" size="sm">
-                About
-              </Button>
-            </Link>
-            <Link to="/faq">
-              <Button variant="ghost" size="sm">
-                FAQ
-              </Button>
-            </Link>
-            <Link to="/blog">
-              <Button variant="ghost" size="sm">
-                News
-              </Button>
-            </Link>
-            <Link to="/contact">
-              <Button variant="ghost" size="sm">
-                Contact
-              </Button>
-            </Link>
+            <NavLink to="/about">About</NavLink>
+            <NavLink to="/faq">FAQ</NavLink>
+            <NavLink to="/blog">News</NavLink>
+            <NavLink to="/contact">Contact</NavLink>
             {user ? (
               <>
-                <Link to="/redeem">
-                  <Button variant="ghost" size="sm">
-                    Redeem
-                  </Button>
-                </Link>
-                <Link to="/impact">
-                  <Button variant="ghost" size="sm">
-                    My Impact
-                  </Button>
-                </Link>
-                <Link to="/multi-upload">
-                  <Button className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-md" size="sm">
-                    Donate Items
-                  </Button>
-                </Link>
+                <NavLink to="/redeem">Redeem</NavLink>
+                <NavLink to="/impact">My Impact</NavLink>
+                <NavLink to="/multi-upload" variant="default" className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-md">
+                  Donate Items
+                </NavLink>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="rounded-full p-0">
