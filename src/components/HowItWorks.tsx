@@ -53,7 +53,10 @@ const steps = [
 
 const HowItWorks = () => {
   return (
-    <section className="py-12 md:py-20 lg:py-24 px-4 bg-gradient-to-b from-background via-primary/5 to-accent/5">
+    <section className="py-12 md:py-20 lg:py-24 px-4 bg-gradient-to-b from-primary/5 via-accent/5 to-secondary/30 relative">
+      {/* Add smooth transition overlay */}
+      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-secondary/30 pointer-events-none" />
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-10 md:mb-16 lg:mb-20 space-y-4 md:space-y-6 animate-fade-in">
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent px-4">

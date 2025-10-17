@@ -16,7 +16,7 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative min-h-[calc(100vh-4rem)] md:min-h-screen flex flex-col overflow-hidden">
+    <section className="relative min-h-[calc(100vh-4rem)] md:min-h-screen flex flex-col overflow-hidden bg-gradient-to-b from-background via-background to-primary/5">
       {/* Hero Content */}
       <div className="flex-1 flex items-center justify-center px-4 py-12 md:py-20">
         {/* Animated background elements with enhanced gradients */}

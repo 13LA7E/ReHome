@@ -37,7 +37,10 @@ const ImpactPreview = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-b from-secondary/30 to-background relative overflow-hidden">
+    <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-b from-secondary/30 via-background/50 to-background relative overflow-hidden">
+      {/* Smooth transition overlays */}
+      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-secondary/30 to-transparent pointer-events-none z-10" />
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-background pointer-events-none z-10" />
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden opacity-20">
         <div className="absolute -top-1/2 -right-1/4 w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-primary rounded-full blur-3xl"></div>
