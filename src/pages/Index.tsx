@@ -7,7 +7,7 @@ import { Testimonials } from "@/components/Testimonials";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background via-primary/5 via-30% via-secondary/30 via-70% to-background">
       <Navigation />
       <Hero />
       <HowItWorks />

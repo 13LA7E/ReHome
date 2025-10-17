@@ -109,9 +109,7 @@ export function Testimonials() {
   }
 
   return (
-    <section className="py-20 bg-gradient-to-b from-background via-background to-secondary/20 relative">
-      {/* Smooth transition overlay - larger zone */}
-      <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-background via-background to-transparent pointer-events-none z-10" />
+    <section className="py-20 relative">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
