@@ -61,7 +61,7 @@ const ImpactPreview = () => {
             {metrics.map((metric, index) => (
               <div 
                 key={index}
-                className="bg-gradient-card rounded-xl md:rounded-2xl p-5 md:p-8 shadow-soft hover:shadow-hover transition-all duration-300 hover:-translate-y-2 border border-border animate-slide-up group"
+                className="glass-card rounded-xl md:rounded-2xl p-5 md:p-8 animate-slide-up group"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className={`${metric.color} mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-300`}>

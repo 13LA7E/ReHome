@@ -74,7 +74,7 @@ const HowItWorks = () => {
                 style={{ animationDelay: `${index * 0.15}s` }}
               >
                 <div className="absolute -inset-1 bg-gradient-to-r from-primary via-accent to-primary rounded-3xl blur-lg opacity-20 group-hover:opacity-50 transition duration-500"></div>
-                <div className="relative p-5 sm:p-6 md:p-8 lg:p-10 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm rounded-3xl border-2 border-border hover:border-primary/50 transition-all duration-300 space-y-4 md:space-y-6 h-full shadow-lg hover:shadow-hover">
+                <div className="glass-card relative p-5 sm:p-6 md:p-8 lg:p-10 rounded-3xl space-y-4 md:space-y-6 h-full">
                   <div className="flex items-start justify-between">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-4">
                       <div className={`flex items-center justify-center w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-xl md:rounded-2xl bg-gradient-to-br ${step.color} shadow-lg group-hover:scale-110 transition-transform duration-300 flex-shrink-0`}>
