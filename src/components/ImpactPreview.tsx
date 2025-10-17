@@ -47,11 +47,11 @@ const ImpactPreview = () => {
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-10 md:mb-14 lg:mb-16 space-y-3 md:space-y-4 animate-fade-in">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground px-4">
+          <div className="text-center mb-10 md:mb-14 lg:mb-16 space-y-3 md:space-y-4">
+            <h2 className="fade-in-up text-3xl sm:text-4xl md:text-5xl font-bold text-foreground px-4">
               Track Your Environmental Impact
             </h2>
-            <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
+            <p className="fade-in-up delay-100 text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
               Every donation makes a measurable difference. See your real-time impact on the planet.
             </p>
           </div>
@@ -61,8 +61,7 @@ const ImpactPreview = () => {
             {metrics.map((metric, index) => (
               <div 
                 key={index}
-                className="glass-card rounded-xl md:rounded-2xl p-5 md:p-8 animate-slide-up group"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className={`glass-card rounded-xl md:rounded-2xl p-5 md:p-8 scale-in delay-${(index + 2) * 100} group`}
               >
                 <div className={`${metric.color} mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-300`}>
                   <metric.icon className="w-8 h-8 md:w-10 md:h-10" />

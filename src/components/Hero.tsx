@@ -16,7 +16,7 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative min-h-[calc(100vh-4rem)] md:min-h-screen flex flex-col overflow-hidden">
+    <section className="relative min-h-screen flex flex-col overflow-hidden pt-20">
       {/* Hero Content */}
       <div className="flex-1 flex items-center justify-center px-4 py-12 md:py-20">
         {/* Simplified background */}
@@ -24,39 +24,39 @@ const Hero = () => {
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
         
-        <div className="relative max-w-6xl mx-auto text-center space-y-6 md:space-y-8 animate-fade-in">
-          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-display font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent leading-tight animate-fade-in px-2">
+        <div className="relative max-w-6xl mx-auto text-center space-y-6 md:space-y-8">
+          <h1 className="fade-in-up text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-display font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent leading-tight px-2">
             Give Your Items
             <br />
             A Second Life
           </h1>
           
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-foreground/80 max-w-3xl mx-auto leading-relaxed animate-fade-in font-medium px-4">
+          <p className="fade-in-up delay-100 text-base sm:text-lg md:text-xl lg:text-2xl text-foreground/80 max-w-3xl mx-auto leading-relaxed font-medium px-4">
             Transform unused items into opportunities. Donate, recycle, and make an impact.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center pt-2 md:pt-4 animate-fade-in px-4">
+          <div className="fade-in-up delay-200 flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center pt-2 md:pt-4 px-4">
             <Button 
               size="lg" 
               onClick={handleGetStarted}
-              className="w-full sm:w-auto group px-6 py-5 md:px-10 md:py-7 text-base md:text-lg font-display font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 shadow-lg"
+              className="w-full sm:w-auto group px-6 py-5 md:px-10 md:py-7 text-base md:text-lg font-display font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 shadow-lg rounded-full"
             >
               {isAuthenticated ? "Donate Items Now" : "Get Started"}
-              <span className="ml-2">→</span>
+              <span className="ml-2 inline-block group-hover:translate-x-1 transition-transform">→</span>
             </Button>
             {isAuthenticated && (
               <Button 
                 size="lg" 
                 variant="outline"
                 onClick={() => navigate("/impact")}
-                className="w-full sm:w-auto px-6 py-5 md:px-10 md:py-7 text-base md:text-lg font-display font-semibold border-2 border-primary/40 hover:border-primary hover:bg-primary/10 transition-all duration-300"
+                className="w-full sm:w-auto px-6 py-5 md:px-10 md:py-7 text-base md:text-lg font-display font-semibold border-2 border-primary/40 hover:border-primary hover:bg-primary/10 transition-all duration-300 rounded-full"
               >
                 View My Impact
               </Button>
             )}
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 pt-8 md:pt-16 animate-fade-in px-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 pt-8 md:pt-16 px-4">
             {[
               { value: "10K+", label: "Items Donated", icon: "📦" },
               { value: "500+", label: "Families Helped", icon: "❤️" },
@@ -64,8 +64,7 @@ const Hero = () => {
             ].map((stat, index) => (
               <div 
                 key={index} 
-                className="glass-card group p-5 md:p-8 rounded-2xl"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className={`glass-card group p-5 md:p-8 rounded-2xl scale-in delay-${(index + 3) * 100}`}
               >
                 <div className="text-3xl md:text-4xl mb-2 md:mb-3 group-hover:scale-110 transition-transform duration-300">{stat.icon}</div>
                 <div className="text-3xl md:text-4xl lg:text-5xl font-display font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1 md:mb-2">

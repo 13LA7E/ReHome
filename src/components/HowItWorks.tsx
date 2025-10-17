@@ -55,11 +55,11 @@ const HowItWorks = () => {
   return (
     <section className="py-12 md:py-20 lg:py-24 px-4 relative">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-10 md:mb-16 lg:mb-20 space-y-4 md:space-y-6 animate-fade-in">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent px-4">
+        <div className="text-center mb-10 md:mb-16 lg:mb-20 space-y-4 md:space-y-6">
+          <h2 className="fade-in-up text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent px-4">
             How ReHome Works
           </h2>
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto font-light px-4">
+          <p className="fade-in-up delay-100 text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto font-light px-4">
             A simple, transparent process from donation to impact
           </p>
         </div>
@@ -70,8 +70,7 @@ const HowItWorks = () => {
             return (
               <div
                 key={index}
-                className="relative group animate-fade-in"
-                style={{ animationDelay: `${index * 0.15}s` }}
+                className={`relative group scale-in delay-${(index + 2) * 100}`}
               >
                 <div className="absolute -inset-1 bg-gradient-to-r from-primary via-accent to-primary rounded-3xl blur-lg opacity-20 group-hover:opacity-50 transition duration-500"></div>
                 <div className="glass-card relative p-5 sm:p-6 md:p-8 lg:p-10 rounded-3xl space-y-4 md:space-y-6 h-full">

@@ -67,69 +67,44 @@ export const Navigation = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 glass-nav">
-      <div className="container mx-auto px-4 py-3 md:py-4">
+    <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-7xl">
+      <div className="glass-nav rounded-full px-4 md:px-6 py-2.5 md:py-3">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 hover-scale">
-            <div className="bg-primary/10 p-1.5 md:p-2 rounded-full">
-              <Leaf className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+          <Link to="/" className="flex items-center gap-2 transition-transform hover:scale-105">
+            <div className="bg-primary/10 p-1.5 rounded-full">
+              <Leaf className="h-5 w-5 text-primary" />
             </div>
-            <span className="text-xl md:text-2xl font-display font-bold text-primary">
+            <span className="text-lg md:text-xl font-display font-bold text-primary hidden sm:block">
               ReHome
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-3 lg:gap-4">
-            <Link to="/about">
-              <Button variant="ghost" size="sm">
-                About
-              </Button>
-            </Link>
-            <Link to="/faq">
-              <Button variant="ghost" size="sm">
-                FAQ
-              </Button>
-            </Link>
-            <Link to="/blog">
-              <Button variant="ghost" size="sm">
-                News
-              </Button>
-            </Link>
-            <Link to="/contact">
-              <Button variant="ghost" size="sm">
-                Contact
-              </Button>
-            </Link>
+          <div className="hidden md:flex items-center gap-2">
             {user ? (
               <>
-                <Link to="/redeem">
-                  <Button variant="ghost" size="sm">
-                    Redeem
+                <Link to="/multi-upload">
+                  <Button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full" size="sm">
+                    Donate
                   </Button>
                 </Link>
                 <Link to="/impact">
-                  <Button variant="ghost" size="sm">
-                    My Impact
-                  </Button>
-                </Link>
-                <Link to="/multi-upload">
-                  <Button className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-md" size="sm">
-                    Donate Items
+                  <Button variant="ghost" size="sm" className="rounded-full">
+                    Impact
                   </Button>
                 </Link>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="rounded-full p-0">
-                      <Avatar className="h-9 w-9">
+                    <Button variant="ghost" size="icon" className="rounded-full">
+                      <Avatar className="h-8 w-8">
                         <AvatarImage src={avatarUrl || undefined} alt={username || "User"} />
                         <AvatarFallback className="bg-primary/10 text-primary">
-                          <User className="h-5 w-5" />
+                          <User className="h-4 w-4" />
                         </AvatarFallback>
                       </Avatar>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 bg-background/95 backdrop-blur">
+                  <DropdownMenuContent align="end" className="w-56 glass-card border-0">
                     <div className="flex items-center gap-3 px-2 py-3">
                       <Avatar className="h-10 w-10">
                         <AvatarImage src={avatarUrl || undefined} alt={username || "User"} />
@@ -145,16 +120,15 @@ export const Navigation = () => {
                       </div>
                     </div>
                     <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => navigate('/redeem')} className="cursor-pointer">
+                      Redeem Points
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer">
                       <SettingsIcon className="h-4 w-4 mr-2" />
                       Settings
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/referral')} className="cursor-pointer">
-                      <User className="h-4 w-4 mr-2" />
-                      Referrals
-                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
+                    <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive">
                       <LogOut className="h-4 w-4 mr-2" />
                       Sign Out
                     </DropdownMenuItem>
@@ -162,11 +136,18 @@ export const Navigation = () => {
                 </DropdownMenu>
               </>
             ) : (
-              <Link to="/auth">
-                <Button className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-md" size="sm">
-                  Get Started
-                </Button>
-              </Link>
+              <>
+                <Link to="/about">
+                  <Button variant="ghost" size="sm" className="rounded-full">
+                    About
+                  </Button>
+                </Link>
+                <Link to="/auth">
+                  <Button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full" size="sm">
+                    Get Started
+                  </Button>
+                </Link>
+              </>
             )}
           </div>
 
@@ -174,101 +155,89 @@ export const Navigation = () => {
           <div className="md:hidden">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="h-6 w-6" />
+                <Button variant="ghost" size="icon" className="rounded-full">
+                  <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[280px] sm:w-[350px]">
+              <SheetContent side="right" className="w-[280px] sm:w-[350px] glass-card border-0">
                 <SheetHeader>
                   <SheetTitle className="flex items-center gap-2">
                     <Leaf className="h-5 w-5 text-primary" />
-                    <span className="text-primary">
-                      ReHome Menu
-                    </span>
+                    <span className="text-primary">Menu</span>
                   </SheetTitle>
                 </SheetHeader>
-                <div className="flex flex-col gap-4 mt-8">
-                  <div className="space-y-2">
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide px-2">
-                      General
-                    </p>
-                    <Button 
-                      variant="ghost" 
-                      className="w-full justify-start"
-                      onClick={() => handleNavigation("/about")}
-                    >
-                      About
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      className="w-full justify-start"
-                      onClick={() => handleNavigation("/faq")}
-                    >
-                      FAQ
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      className="w-full justify-start"
-                      onClick={() => handleNavigation("/contact")}
-                    >
-                      Contact
-                    </Button>
-                  </div>
+                <div className="flex flex-col gap-3 mt-8">
                   {user ? (
                     <>
-                      <div className="border-t pt-4 space-y-2">
-                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide px-2">
-                          Your Account
-                        </p>
-                        <Button 
-                          variant="ghost" 
-                          className="w-full justify-start"
-                          onClick={() => handleNavigation("/redeem")}
-                        >
-                          Redeem
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          className="w-full justify-start"
-                          onClick={() => handleNavigation("/impact")}
-                        >
-                          My Impact
-                        </Button>
-                        <Button 
-                          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-md justify-start" 
-                          onClick={() => handleNavigation("/multi-upload")}
-                        >
-                          Donate Items
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          className="w-full justify-start"
-                          onClick={() => handleNavigation("/settings")}
-                        >
-                          <SettingsIcon className="h-4 w-4 mr-2" />
-                          Settings
-                        </Button>
-                      </div>
-                      <div className="border-t pt-4 mt-4">
-                        <Button 
-                          variant="ghost" 
-                          className="w-full justify-start text-destructive hover:text-destructive"
-                          onClick={handleSignOut}
-                        >
-                          <LogOut className="h-4 w-4 mr-2" />
-                          Sign Out
-                        </Button>
-                      </div>
+                      <Button 
+                        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 justify-start" 
+                        onClick={() => handleNavigation("/multi-upload")}
+                      >
+                        Donate Items
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-start"
+                        onClick={() => handleNavigation("/impact")}
+                      >
+                        My Impact
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-start"
+                        onClick={() => handleNavigation("/redeem")}
+                      >
+                        Redeem Points
+                      </Button>
+                      <div className="border-t my-2" />
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-start"
+                        onClick={() => handleNavigation("/settings")}
+                      >
+                        <SettingsIcon className="h-4 w-4 mr-2" />
+                        Settings
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-start text-destructive hover:text-destructive"
+                        onClick={handleSignOut}
+                      >
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Sign Out
+                      </Button>
                     </>
                   ) : (
-                    <div className="border-t pt-4">
+                    <>
                       <Button 
-                        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-md"
+                        variant="ghost" 
+                        className="w-full justify-start"
+                        onClick={() => handleNavigation("/about")}
+                      >
+                        About
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-start"
+                        onClick={() => handleNavigation("/faq")}
+                      >
+                        FAQ
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-start"
+                        onClick={() => handleNavigation("/contact")}
+                      >
+                        Contact
+                      </Button>
+                      <div className="border-t my-2" />
+                      <Button 
+                        className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
                         onClick={() => handleNavigation("/auth")}
                       >
                         Get Started
                       </Button>
-                    </div>
+                    </>
                   )}
                 </div>
               </SheetContent>

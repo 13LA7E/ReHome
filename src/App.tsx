@@ -44,6 +44,7 @@ const App = () => (
           <Sonner />
           <HashRouter>
             <AuthProvider>
+              <Navigation />
               <PageTransition>
                 <Routes>
                   <Route path="/" element={<Index />} />
