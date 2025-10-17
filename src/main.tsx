@@ -3,6 +3,15 @@ import * as Sentry from "@sentry/react";
 import App from "./App.tsx";
 import "./index.css";
 
+// Add global error handler for debugging
+window.addEventListener('error', (event) => {
+  console.error('Global error:', event.error);
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('Unhandled promise rejection:', event.reason);
+});
+
 // Initialize Sentry for error tracking
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN || "",
@@ -22,7 +31,18 @@ Sentry.init({
   enabled: import.meta.env.PROD, // Only enable in production
 });
 
-createRoot(document.getElementById("root")!).render(<App />);
+const rootElement = document.getElementById("root");
+
+if (!rootElement) {
+  document.body.innerHTML = '<div style="padding: 20px; font-family: sans-serif;"><h1>Error: Root element not found</h1><p>Please check your HTML file.</p></div>';
+} else {
+  try {
+    createRoot(rootElement).render(<App />);
+  } catch (error) {
+    console.error('Failed to render app:', error);
+    document.body.innerHTML = '<div style="padding: 20px; font-family: sans-serif;"><h1>Failed to load app</h1><p>' + (error as Error).message + '</p></div>';
+  }
+}
 
 // Register service worker for PWA
 if ('serviceWorker' in navigator) {

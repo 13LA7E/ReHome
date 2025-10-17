@@ -462,6 +462,13 @@ html {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
+/* Fallback for browsers that don't support backdrop-filter */
+@supports not (backdrop-filter: blur(12px)) {
+  .glass {
+    background: rgba(255, 255, 255, 0.9);
+  }
+}
+
 .glass-card {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(16px);
@@ -470,6 +477,12 @@ html {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12),
               inset 0 1px 0 rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
+}
+
+@supports not (backdrop-filter: blur(16px)) {
+  .glass-card {
+    background: rgba(255, 255, 255, 0.95);
+  }
 }
 
 .glass-card:hover {
@@ -494,6 +507,16 @@ html {
               inset 0 -1px 1px rgba(0, 0, 0, 0.1);
 }
 
+@supports not (backdrop-filter: blur(20px)) {
+  .liquid-glass {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 255, 255, 0.9) 100%
+    );
+  }
+}
+
 .glass-nav {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(32px) saturate(180%);
@@ -503,15 +526,34 @@ html {
               0 1px 0 rgba(255, 255, 255, 0.5) inset;
 }
 
+@supports not (backdrop-filter: blur(32px)) {
+  .glass-nav {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+}
+
 /* Dark mode glassmorphism */
 .dark .glass {
   background: rgba(0, 0, 0, 0.3);
   border-color: rgba(255, 255, 255, 0.05);
 }
 
+@supports not (backdrop-filter: blur(12px)) {
+  .dark .glass {
+    background: rgba(0, 0, 0, 0.85);
+  }
+}
+
 .dark .glass-card {
   background: rgba(0, 0, 0, 0.4);
   border-color: rgba(255, 255, 255, 0.08);
+}
+
+@supports not (backdrop-filter: blur(16px)) {
+  .dark .glass-card {
+    background: rgba(0, 0, 0, 0.9);
+  }
 }
 
 .dark .glass-card:hover {
@@ -528,11 +570,28 @@ html {
   border-color: rgba(255, 255, 255, 0.1);
 }
 
+@supports not (backdrop-filter: blur(20px)) {
+  .dark .liquid-glass {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.9) 0%,
+      rgba(0, 0, 0, 0.85) 100%
+    );
+  }
+}
+
 .dark .glass-nav {
   background: rgba(0, 0, 0, 0.7);
   border-color: rgba(255, 255, 255, 0.08);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
               0 1px 0 rgba(255, 255, 255, 0.05) inset;
+}
+
+@supports not (backdrop-filter: blur(32px)) {
+  .dark .glass-nav {
+    background: rgba(0, 0, 0, 0.95);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  }
 }
 
 /* On-page scroll animations */
