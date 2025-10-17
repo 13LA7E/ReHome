@@ -10,7 +10,6 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Navigation } from "@/components/Navigation";
 import { CookieConsent } from "@/components/CookieConsent";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { PageTransition } from "@/components/PageTransition";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Upload from "./pages/Upload";
@@ -44,31 +43,29 @@ const App = () => (
           <Sonner />
           <HashRouter>
             <AuthProvider>
-              <PageTransition>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/auth" element={<Auth />} />
-                  <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
-                  <Route path="/multi-upload" element={<ProtectedRoute><MultiUpload /></ProtectedRoute>} />
-                  <Route path="/partners" element={<ProtectedRoute><Partners /></ProtectedRoute>} />
-                  <Route path="/redeem" element={<ProtectedRoute><Redeem /></ProtectedRoute>} />
-                  <Route path="/verify" element={<VerifyRedemption />} />
-                  <Route path="/impact" element={<ProtectedRoute><ImpactNew /></ProtectedRoute>} />
-                  <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-                  <Route path="/terms" element={<Terms />} />
-                  <Route path="/privacy" element={<Privacy />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/faq" element={<FAQ />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/blog" element={<Blog />} />
-                  <Route path="/blog/:slug" element={<BlogPost />} />
-                  <Route path="/referral" element={<ProtectedRoute><Referral /></ProtectedRoute>} />
-                  <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
-                  <Route path="/partner-dashboard" element={<ProtectedRoute><PartnerDashboard /></ProtectedRoute>} />
-                  <Route path="/sentry-test" element={<SentryTest />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </PageTransition>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
+                <Route path="/multi-upload" element={<ProtectedRoute><MultiUpload /></ProtectedRoute>} />
+                <Route path="/partners" element={<ProtectedRoute><Partners /></ProtectedRoute>} />
+                <Route path="/redeem" element={<ProtectedRoute><Redeem /></ProtectedRoute>} />
+                <Route path="/verify" element={<VerifyRedemption />} />
+                <Route path="/impact" element={<ProtectedRoute><ImpactNew /></ProtectedRoute>} />
+                <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
+                <Route path="/referral" element={<ProtectedRoute><Referral /></ProtectedRoute>} />
+                <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+                <Route path="/partner-dashboard" element={<ProtectedRoute><PartnerDashboard /></ProtectedRoute>} />
+                <Route path="/sentry-test" element={<SentryTest />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
               <CookieConsent />
             </AuthProvider>
           </HashRouter>

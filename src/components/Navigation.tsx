@@ -5,7 +5,6 @@ import { useAuth } from "./AuthProvider";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { NavLink } from "./NavLink";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -75,24 +74,50 @@ export const Navigation = () => {
             <div className="bg-primary/10 p-1.5 md:p-2 rounded-full">
               <Leaf className="h-5 w-5 md:h-6 md:w-6 text-primary" />
             </div>
-            <span className="text-xl md:text-2xl font-display font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+            <span className="text-xl md:text-2xl font-display font-bold text-primary">
               ReHome
             </span>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-3 lg:gap-4">
-            <NavLink to="/about">About</NavLink>
-            <NavLink to="/faq">FAQ</NavLink>
-            <NavLink to="/blog">News</NavLink>
-            <NavLink to="/contact">Contact</NavLink>
+            <Link to="/about">
+              <Button variant="ghost" size="sm">
+                About
+              </Button>
+            </Link>
+            <Link to="/faq">
+              <Button variant="ghost" size="sm">
+                FAQ
+              </Button>
+            </Link>
+            <Link to="/blog">
+              <Button variant="ghost" size="sm">
+                News
+              </Button>
+            </Link>
+            <Link to="/contact">
+              <Button variant="ghost" size="sm">
+                Contact
+              </Button>
+            </Link>
             {user ? (
               <>
-                <NavLink to="/redeem">Redeem</NavLink>
-                <NavLink to="/impact">My Impact</NavLink>
-                <NavLink to="/multi-upload" variant="default" className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-md">
-                  Donate Items
-                </NavLink>
+                <Link to="/redeem">
+                  <Button variant="ghost" size="sm">
+                    Redeem
+                  </Button>
+                </Link>
+                <Link to="/impact">
+                  <Button variant="ghost" size="sm">
+                    My Impact
+                  </Button>
+                </Link>
+                <Link to="/multi-upload">
+                  <Button className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-md" size="sm">
+                    Donate Items
+                  </Button>
+                </Link>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="rounded-full p-0">
@@ -157,7 +182,7 @@ export const Navigation = () => {
                 <SheetHeader>
                   <SheetTitle className="flex items-center gap-2">
                     <Leaf className="h-5 w-5 text-primary" />
-                    <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                    <span className="text-primary">
                       ReHome Menu
                     </span>
                   </SheetTitle>
