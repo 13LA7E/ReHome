@@ -4,7 +4,8 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/components/AuthProvider";
-import { Moon, Sun, User, Bell, Lock, Mail, AtSign, Camera, Upload, AlertCircle } from "lucide-react";
+import { ThemeSelector } from "@/components/ThemeSelector";
+import { Moon, Sun, User, Bell, Lock, Mail, AtSign, Camera, Upload, AlertCircle, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -262,11 +263,7 @@ const Settings = () => {
               <div className="space-y-6">
                 <div>
                   <h2 className="text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
-                    {theme === "dark" ? (
-                      <Moon className="w-6 h-6 text-primary" />
-                    ) : (
-                      <Sun className="w-6 h-6 text-primary" />
-                    )}
+                    <Palette className="w-6 h-6 text-primary" />
                     Appearance
                   </h2>
                   <p className="text-sm text-muted-foreground">
@@ -276,9 +273,15 @@ const Settings = () => {
 
                 <Separator />
 
+                {/* Theme Mode Toggle */}
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
-                    <Label htmlFor="dark-mode" className="text-base font-medium">
+                    <Label htmlFor="dark-mode" className="text-base font-medium flex items-center gap-2">
+                      {theme === "dark" ? (
+                        <Moon className="w-4 h-4" />
+                      ) : (
+                        <Sun className="w-4 h-4" />
+                      )}
                       Dark Mode
                     </Label>
                     <p className="text-sm text-muted-foreground">
@@ -293,6 +296,24 @@ const Settings = () => {
                     checked={theme === "dark"}
                     onCheckedChange={toggleTheme}
                   />
+                </div>
+
+                <Separator />
+
+                {/* Element Theme Selector */}
+                <div className="space-y-3">
+                  <div>
+                    <Label className="text-base font-medium">Element Theme</Label>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Choose a theme inspired by the elements
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between pt-2">
+                    <p className="text-sm text-muted-foreground">
+                      Current theme and mode controls
+                    </p>
+                    <ThemeSelector />
+                  </div>
                 </div>
               </div>
             </Card>

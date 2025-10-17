@@ -94,6 +94,254 @@ All colors MUST be HSL.
     --gradient-card: linear-gradient(180deg, hsl(140 40% 11%), hsl(140 35% 14%));
     --gradient-impact: linear-gradient(135deg, hsl(95 60% 35%), hsl(140 65% 35%));
   }
+
+  /* 🔥 FIRE THEME - Light Mode */
+  :root.fire {
+    --background: 30 80% 98%;
+    --foreground: 15 60% 12%;
+    
+    --primary: 15 85% 55%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 25 95% 60%;
+    
+    --secondary: 35 90% 92%;
+    --secondary-foreground: 15 70% 25%;
+    
+    --muted: 35 60% 95%;
+    --muted-foreground: 20 40% 45%;
+    
+    --accent: 5 90% 58%;
+    --accent-foreground: 0 0% 100%;
+    
+    --card: 30 85% 99%;
+    --card-foreground: 15 60% 12%;
+    
+    --border: 30 50% 88%;
+    --input: 30 50% 88%;
+    --ring: 15 85% 55%;
+    
+    --gradient-hero: linear-gradient(180deg, hsl(30, 90%, 96%) 0%, hsl(15, 85%, 92%) 50%, hsl(5, 80%, 94%) 100%);
+    --gradient-card: linear-gradient(135deg, rgba(255, 245, 235, 0.95) 0%, rgba(255, 240, 220, 0.85) 100%);
+    --gradient-impact: linear-gradient(135deg, hsl(15, 85%, 55%) 0%, hsl(5, 90%, 58%) 100%);
+    --shadow-glow: 0 0 40px hsla(15, 85%, 55%, 0.4);
+  }
+
+  /* 🔥 FIRE THEME - Dark Mode */
+  .dark.fire {
+    --background: 15 60% 8%;
+    --foreground: 35 40% 92%;
+    
+    --primary: 15 90% 60%;
+    --primary-foreground: 15 80% 10%;
+    --primary-glow: 25 100% 65%;
+    
+    --secondary: 20 50% 15%;
+    --secondary-foreground: 35 40% 92%;
+    
+    --muted: 20 45% 18%;
+    --muted-foreground: 30 25% 60%;
+    
+    --accent: 5 95% 62%;
+    --accent-foreground: 15 80% 10%;
+    
+    --card: 15 55% 10%;
+    --card-foreground: 35 40% 92%;
+    
+    --border: 20 40% 20%;
+    --input: 20 40% 20%;
+    --ring: 15 90% 60%;
+    
+    --gradient-hero: linear-gradient(135deg, hsl(15 80% 20%), hsl(5 85% 25%));
+    --gradient-card: linear-gradient(180deg, hsl(15 55% 10%), hsl(20 50% 14%));
+    --gradient-impact: linear-gradient(135deg, hsl(15 85% 45%), hsl(5 90% 50%));
+    --shadow-glow: 0 0 40px hsla(15, 90%, 50%, 0.5);
+  }
+
+  /* 💧 WATER THEME - Light Mode */
+  :root.water {
+    --background: 200 70% 98%;
+    --foreground: 210 50% 10%;
+    
+    --primary: 200 85% 50%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 195 90% 60%;
+    
+    --secondary: 195 75% 92%;
+    --secondary-foreground: 210 65% 25%;
+    
+    --muted: 200 50% 95%;
+    --muted-foreground: 205 35% 45%;
+    
+    --accent: 185 80% 52%;
+    --accent-foreground: 0 0% 100%;
+    
+    --card: 200 75% 99%;
+    --card-foreground: 210 50% 10%;
+    
+    --border: 200 40% 88%;
+    --input: 200 40% 88%;
+    --ring: 200 85% 50%;
+    
+    --gradient-hero: linear-gradient(180deg, hsl(200, 85%, 96%) 0%, hsl(195, 80%, 93%) 50%, hsl(185, 75%, 95%) 100%);
+    --gradient-card: linear-gradient(135deg, rgba(235, 248, 255, 0.95) 0%, rgba(225, 245, 255, 0.85) 100%);
+    --gradient-impact: linear-gradient(135deg, hsl(200, 85%, 50%) 0%, hsl(185, 80%, 52%) 100%);
+    --shadow-glow: 0 0 40px hsla(200, 85%, 50%, 0.4);
+  }
+
+  /* 💧 WATER THEME - Dark Mode */
+  .dark.water {
+    --background: 210 65% 8%;
+    --foreground: 195 35% 92%;
+    
+    --primary: 200 90% 55%;
+    --primary-foreground: 210 80% 10%;
+    --primary-glow: 195 95% 65%;
+    
+    --secondary: 205 55% 15%;
+    --secondary-foreground: 195 35% 92%;
+    
+    --muted: 205 50% 18%;
+    --muted-foreground: 200 25% 60%;
+    
+    --accent: 185 85% 56%;
+    --accent-foreground: 210 80% 10%;
+    
+    --card: 210 60% 10%;
+    --card-foreground: 195 35% 92%;
+    
+    --border: 205 45% 20%;
+    --input: 205 45% 20%;
+    --ring: 200 90% 55%;
+    
+    --gradient-hero: linear-gradient(135deg, hsl(210 75% 20%), hsl(200 80% 25%));
+    --gradient-card: linear-gradient(180deg, hsl(210 60% 10%), hsl(205 55% 14%));
+    --gradient-impact: linear-gradient(135deg, hsl(200 85% 45%), hsl(185 80% 48%));
+    --shadow-glow: 0 0 40px hsla(200, 90%, 50%, 0.5);
+  }
+
+  /* 🌍 EARTH THEME - Light Mode */
+  :root.earth {
+    --background: 40 50% 98%;
+    --foreground: 30 40% 12%;
+    
+    --primary: 35 65% 45%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 40 70% 55%;
+    
+    --secondary: 45 55% 90%;
+    --secondary-foreground: 30 60% 25%;
+    
+    --muted: 40 40% 94%;
+    --muted-foreground: 35 30% 45%;
+    
+    --accent: 25 75% 48%;
+    --accent-foreground: 0 0% 100%;
+    
+    --card: 42 55% 99%;
+    --card-foreground: 30 40% 12%;
+    
+    --border: 40 35% 86%;
+    --input: 40 35% 86%;
+    --ring: 35 65% 45%;
+    
+    --gradient-hero: linear-gradient(180deg, hsl(45, 70%, 95%) 0%, hsl(35, 60%, 92%) 50%, hsl(25, 55%, 93%) 100%);
+    --gradient-card: linear-gradient(135deg, rgba(252, 248, 240, 0.95) 0%, rgba(248, 244, 235, 0.85) 100%);
+    --gradient-impact: linear-gradient(135deg, hsl(35, 65%, 45%) 0%, hsl(25, 75%, 48%) 100%);
+    --shadow-glow: 0 0 40px hsla(35, 65%, 45%, 0.3);
+  }
+
+  /* 🌍 EARTH THEME - Dark Mode */
+  .dark.earth {
+    --background: 30 45% 8%;
+    --foreground: 45 35% 90%;
+    
+    --primary: 35 70% 48%;
+    --primary-foreground: 30 70% 10%;
+    --primary-glow: 40 75% 58%;
+    
+    --secondary: 35 40% 16%;
+    --secondary-foreground: 45 35% 90%;
+    
+    --muted: 35 38% 18%;
+    --muted-foreground: 40 25% 58%;
+    
+    --accent: 25 80% 52%;
+    --accent-foreground: 30 70% 10%;
+    
+    --card: 30 42% 10%;
+    --card-foreground: 45 35% 90%;
+    
+    --border: 35 35% 22%;
+    --input: 35 35% 22%;
+    --ring: 35 70% 48%;
+    
+    --gradient-hero: linear-gradient(135deg, hsl(30 60% 18%), hsl(35 65% 22%));
+    --gradient-card: linear-gradient(180deg, hsl(30 42% 10%), hsl(35 40% 14%));
+    --gradient-impact: linear-gradient(135deg, hsl(35 65% 40%), hsl(25 75% 44%));
+    --shadow-glow: 0 0 40px hsla(35, 70%, 45%, 0.4);
+  }
+
+  /* 💨 AIR THEME - Light Mode */
+  :root.air {
+    --background: 190 60% 98%;
+    --foreground: 215 45% 12%;
+    
+    --primary: 210 75% 58%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 205 80% 68%;
+    
+    --secondary: 205 60% 92%;
+    --secondary-foreground: 215 60% 25%;
+    
+    --muted: 205 45% 95%;
+    --muted-foreground: 210 30% 45%;
+    
+    --accent: 175 70% 55%;
+    --accent-foreground: 0 0% 100%;
+    
+    --card: 195 65% 99%;
+    --card-foreground: 215 45% 12%;
+    
+    --border: 205 35% 88%;
+    --input: 205 35% 88%;
+    --ring: 210 75% 58%;
+    
+    --gradient-hero: linear-gradient(180deg, hsl(205, 80%, 97%) 0%, hsl(210, 75%, 95%) 50%, hsl(195, 70%, 96%) 100%);
+    --gradient-card: linear-gradient(135deg, rgba(240, 250, 255, 0.95) 0%, rgba(235, 248, 255, 0.85) 100%);
+    --gradient-impact: linear-gradient(135deg, hsl(210, 75%, 58%) 0%, hsl(175, 70%, 55%) 100%);
+    --shadow-glow: 0 0 40px hsla(210, 75%, 58%, 0.3);
+  }
+
+  /* 💨 AIR THEME - Dark Mode */
+  .dark.air {
+    --background: 215 50% 8%;
+    --foreground: 205 30% 92%;
+    
+    --primary: 210 80% 62%;
+    --primary-foreground: 215 75% 10%;
+    --primary-glow: 205 85% 70%;
+    
+    --secondary: 212 45% 16%;
+    --secondary-foreground: 205 30% 92%;
+    
+    --muted: 212 42% 18%;
+    --muted-foreground: 208 25% 60%;
+    
+    --accent: 175 75% 58%;
+    --accent-foreground: 215 75% 10%;
+    
+    --card: 215 48% 10%;
+    --card-foreground: 205 30% 92%;
+    
+    --border: 212 40% 22%;
+    --input: 212 40% 22%;
+    --ring: 210 80% 62%;
+    
+    --gradient-hero: linear-gradient(135deg, hsl(215 70% 20%), hsl(210 75% 25%));
+    --gradient-card: linear-gradient(180deg, hsl(215 48% 10%), hsl(212 45% 14%));
+    --gradient-impact: linear-gradient(135deg, hsl(210 75% 50%), hsl(175 70% 48%));
+    --shadow-glow: 0 0 40px hsla(210, 80%, 55%, 0.4);
+  }
 }
 
 @layer base {
