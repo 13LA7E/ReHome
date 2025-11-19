@@ -454,7 +454,7 @@ export default function ImpactNew() {
           <p className="text-muted-foreground mb-6">
             Every item you donate makes a real difference in someone's life and our environment
           </p>
-          <Button size="lg" className="button-ripple">
+          <Button size="lg" className="button-ripple" onClick={() => navigate("/multi-upload")}>
             Donate More Items
           </Button>
         </Card>
