@@ -93,41 +93,22 @@ const Upload = () => {
         .from('item-images')
         .getPublicUrl(fileName);
 
-      // Save item to database
-      const { error: insertError } = await supabase
-        .from('items')
-        .insert({
-          user_id: user.id,
-          category: classification.category,
-          image_url: publicUrl,
-          confidence: classification.confidence,
-          is_reusable: classification.isReusable,
-          status: 'pending'
-        });
+      // Use secure server-side function to add item and points
+      const { data, error } = await (supabase.rpc as any)('add_item_points', {
+        item_category: classification.category,
+        item_confidence: classification.confidence,
+        item_image_url: publicUrl,
+        item_is_reusable: classification.isReusable
+      });
 
-      if (insertError) throw insertError;
+      if (error) throw error;
 
-      // Update impact metrics - fetch current values first
-      const { data: currentMetrics } = await supabase
-        .from('impact_metrics')
-        .select('total_items, community_points')
-        .eq('user_id', user.id)
-        .single();
-
-      if (currentMetrics) {
-        const { error: metricsError } = await supabase
-          .from('impact_metrics')
-          .update({ 
-            total_items: currentMetrics.total_items + 1,
-            community_points: currentMetrics.community_points + 10
-          })
-          .eq('user_id', user.id);
-
-        if (metricsError) console.error('Metrics update error:', metricsError);
+      if (data && data[0]?.success) {
+        toast.success(`Item saved successfully! +${data[0].points_earned} points`);
+        navigate('/partners', { state: { classification } });
+      } else {
+        throw new Error(data?.[0]?.message || "Failed to save item");
       }
-
-      toast.success("Item saved successfully! +10 points");
-      navigate('/partners', { state: { classification } });
       
     } catch (error) {
       console.error('Save error:', error);
@@ -158,21 +139,51 @@ const Upload = () => {
           {!selectedImage ? (
             <div className="space-y-6 md:space-y-8">
               {/* Upload Area */}
-              <label className="flex flex-col items-center justify-center cursor-pointer group">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                />
-                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-gradient-hero flex items-center justify-center mb-4 md:mb-6 group-hover:shadow-glow group-hover:scale-110 transition-all duration-300">
-                  <UploadIcon className="w-12 h-12 md:w-16 md:h-16 text-primary-foreground" />
+              <div className="space-y-4">
+                {/* Camera Capture Button */}
+                <label className="flex flex-col items-center justify-center cursor-pointer group">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    id="camera-input"
+                  />
+                  <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-gradient-hero flex items-center justify-center mb-4 md:mb-6 group-hover:shadow-glow group-hover:scale-110 transition-all duration-300">
+                    <Camera className="w-12 h-12 md:w-16 md:h-16 text-primary-foreground" />
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+                    Take a Photo
+                  </h3>
+                  <p className="text-sm md:text-base text-muted-foreground">Use your camera to capture the item</p>
+                </label>
+
+                {/* Divider */}
+                <div className="flex items-center gap-4">
+                  <div className="flex-1 h-px bg-border"></div>
+                  <span className="text-sm text-muted-foreground">or</span>
+                  <div className="flex-1 h-px bg-border"></div>
                 </div>
-                <h3 className="text-xl md:text-2xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                  Click to Upload Photo
-                </h3>
-                <p className="text-sm md:text-base text-muted-foreground">or drag and drop your image here</p>
-              </label>
+
+                {/* Gallery Upload Button */}
+                <label className="flex flex-col items-center justify-center cursor-pointer group">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    id="gallery-input"
+                  />
+                  <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-secondary flex items-center justify-center mb-3 md:mb-4 group-hover:shadow-lg group-hover:scale-110 transition-all duration-300">
+                    <UploadIcon className="w-10 h-10 md:w-12 md:h-12 text-primary" />
+                  </div>
+                  <h3 className="text-lg md:text-xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+                    Upload from Gallery
+                  </h3>
+                  <p className="text-sm md:text-base text-muted-foreground">Choose an existing photo</p>
+                </label>
+              </div>
 
               {/* Supported Categories */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 pt-6 md:pt-8 border-t border-border">

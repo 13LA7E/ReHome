@@ -55,91 +55,66 @@ const VerifyRedemption = () => {
         throw connectionError;
       }
       
-      // First try to get redemption data
-      const { data: redemption, error: redemptionError } = await supabase
-        .from("redemptions")
-        .select("id, status, reward_id, points_spent, user_id")
-        .eq("qr_code_data", verificationCode)
-        .maybeSingle();
+      // Get partner_id from URL or session (for now using URL param)
+      // In production, this should come from authenticated partner session
+      const partnerId = new URLSearchParams(window.location.search).get("partner_id") || 
+                       "00000000-0000-0000-0000-000000000000"; // Default for testing
 
-      console.log("Redemption query result:", { 
-        found: !!redemption, 
-        redemption, 
-        error: redemptionError?.message 
+      console.log("Partner ID:", partnerId);
+
+      // Use secure server-side function to verify redemption
+      const { data: verificationData, error: verifyError } = await (supabase.rpc as any)('verify_redemption', {
+        verification_code_param: verificationCode,
+        partner_id_param: partnerId
       });
 
-      if (redemptionError) {
-        console.error("Redemption query error:", redemptionError);
-        // More specific error handling
-        if (redemptionError.code === 'PGRST116') {
-          toast.error("Access denied - verification requires authentication");
-        } else if (redemptionError.code === '42501') {
-          toast.error("Permission denied - RLS policy blocks access");
-        } else {
-          toast.error(`Database error: ${redemptionError.message}`);
-        }
-        throw redemptionError;
-      }
+      console.log("Verification result:", { 
+        data: verificationData, 
+        error: verifyError?.message 
+      });
 
-      if (redemption) {
-        console.log("Found redemption:", redemption.id);
-        
-        // Get reward details separately
-        const { data: reward, error: rewardError } = await supabase
-          .from("rewards")
-          .select("name, description")
-          .eq("id", redemption.reward_id)
-          .single();
-
-        console.log("Reward query result:", { 
-          found: !!reward, 
-          reward, 
-          error: rewardError?.message 
-        });
-
-        const rewardName = reward?.name || "Reward";
-        
-        if (redemption.status === "completed") {
-          setVerificationResult({
-            valid: false,
-            rewardName,
-            alreadyUsed: true,
-          });
-          toast.error("This code has already been used!");
-        } else {
-          console.log("Attempting to mark redemption as completed...");
-          
-          // Mark as completed
-          const { error: updateError } = await supabase
-            .from("redemptions")
-            .update({ 
-              status: "completed",
-              redeemed_at: new Date().toISOString()
-            })
-            .eq("id", redemption.id);
-
-          if (updateError) {
-            console.error("Update error:", updateError);
-            toast.error(`Failed to update redemption: ${updateError.message}`);
-            return;
-          }
-
-          console.log("Successfully marked redemption as completed");
-          setVerificationResult({
-            valid: true,
-            rewardName,
-            alreadyUsed: false,
-          });
-          toast.success("Redemption verified successfully!");
-        }
-      } else {
-        console.log("No redemption found for code:", verificationCode);
+      if (verifyError) {
+        console.error("Verification error:", verifyError);
+        toast.error(`Verification failed: ${verifyError.message}`);
         setVerificationResult({
           valid: false,
           rewardName: "",
           alreadyUsed: false,
         });
-        toast.error("Invalid redemption code - no matching record found!");
+        throw verifyError;
+      }
+
+      if (verificationData && verificationData[0]) {
+        const result = verificationData[0];
+        console.log("Verification result details:", result);
+        
+        if (result.success) {
+          console.log("Successfully verified redemption");
+          setVerificationResult({
+            valid: true,
+            rewardName: result.reward_name,
+            alreadyUsed: false,
+          });
+          toast.success("Redemption verified successfully!");
+        } else {
+          // Handle failure cases (already redeemed, invalid code, wrong partner, etc.)
+          const alreadyUsed = result.message.includes("already been redeemed");
+          console.log("Verification failed:", result.message);
+          setVerificationResult({
+            valid: false,
+            rewardName: result.reward_name || "",
+            alreadyUsed: alreadyUsed,
+          });
+          toast.error(result.message);
+        }
+      } else {
+        console.log("No verification result returned");
+        setVerificationResult({
+          valid: false,
+          rewardName: "",
+          alreadyUsed: false,
+        });
+        toast.error("Verification failed - no result returned");
       }
     } catch (error) {
       console.error("Verification error:", error);

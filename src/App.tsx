@@ -14,6 +14,8 @@ import Partners from "./pages/Partners";
 import Impact from "./pages/Impact";
 import Redeem from "./pages/Redeem";
 import VerifyRedemption from "./pages/VerifyRedemption";
+import Profile from "./pages/Profile";
+import History from "./pages/History";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +36,8 @@ const App = () => (
             <Route path="/redeem" element={<ProtectedRoute><Redeem /></ProtectedRoute>} />
             <Route path="/verify" element={<VerifyRedemption />} />
             <Route path="/impact" element={<ProtectedRoute><Impact /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

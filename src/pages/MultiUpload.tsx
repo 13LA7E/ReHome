@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Navigation } from "@/components/Navigation";
 import { Camera, Loader2, Upload, X, CheckCircle, Trash2, ArrowRight } from "lucide-react";
 import { useImageClassifier } from "@/hooks/useImageClassifier";
+import { compressImage, compressImageToBase64 } from "@/lib/imageCompression";
 import { z } from "zod";
 
 const itemSchema = z.object({
@@ -41,12 +42,31 @@ const MultiUpload = () => {
     
     if (files.length === 0) return;
 
-    const newImages: ImageData[] = files.map(file => ({
-      id: Math.random().toString(36),
-      file,
-      preview: URL.createObjectURL(file),
-      classifying: true,
-    }));
+    // Compress images and create preview entries
+    const newImages: ImageData[] = [];
+    
+    for (const file of files) {
+      try {
+        // Compress the image for faster upload
+        const compressedFile = await compressImage(file, 1200, 0.8);
+        
+        newImages.push({
+          id: Math.random().toString(36),
+          file: compressedFile,
+          preview: URL.createObjectURL(compressedFile),
+          classifying: true,
+        });
+      } catch (error) {
+        console.error("Compression error:", error);
+        // Fallback to original file if compression fails
+        newImages.push({
+          id: Math.random().toString(36),
+          file,
+          preview: URL.createObjectURL(file),
+          classifying: true,
+        });
+      }
+    }
 
     setImages(prev => [...prev, ...newImages]);
 
@@ -136,47 +156,22 @@ const MultiUpload = () => {
           .from("item-images")
           .getPublicUrl(fileName);
 
-        // Validate item data before insertion
-        const itemData = {
-          user_id: user.id,
-          image_url: publicUrl,
-          category: classification.category,
-          confidence: classification.confidence,
-          is_reusable: classification.isReusable,
-        };
+        // Use secure server-side function to add item and points
+        const { data, error } = await (supabase.rpc as any)('add_item_points', {
+          item_category: classification.category,
+          item_confidence: classification.confidence,
+          item_image_url: publicUrl,
+          item_is_reusable: classification.isReusable
+        });
 
-        itemSchema.parse(itemData);
+        if (error) throw error;
 
-        // Save item to database
-        const { error: itemError } = await supabase
-          .from("items")
-          .insert({
-            ...itemData,
-            status: "pending",
-          });
-
-        if (itemError) throw itemError;
-
-        // Each item earns 10 points
-        totalPointsEarned += 10;
+        if (data && data[0]?.success) {
+          totalPointsEarned += data[0].points_earned;
+        } else {
+          throw new Error(data?.[0]?.message || "Failed to save item");
+        }
       }
-
-      // Update impact metrics
-      const { data: currentMetrics } = await supabase
-        .from("impact_metrics")
-        .select("total_items, community_points")
-        .eq("user_id", user.id)
-        .maybeSingle();
-
-      const { error: metricsError } = await supabase
-        .from("impact_metrics")
-        .update({
-          total_items: (currentMetrics?.total_items || 0) + images.length,
-          community_points: (currentMetrics?.community_points || 0) + totalPointsEarned,
-        })
-        .eq("user_id", user.id);
-
-      if (metricsError) throw metricsError;
 
       toast.success(`Successfully uploaded ${images.length} items! Earned ${totalPointsEarned} points!`);
       navigate("/partners");
@@ -216,33 +211,66 @@ const MultiUpload = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="p-4 md:p-6">
-            <label htmlFor="multi-file-upload" className="block">
-              <div className="relative group cursor-pointer">
-                <Input
-                  id="multi-file-upload"
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleImageUpload}
-                  className="hidden"
-                />
-                <div className="p-8 md:p-12 border-2 border-dashed border-primary/30 rounded-xl hover:border-primary transition-all duration-300 bg-gradient-to-br from-card to-primary/5 group-hover:shadow-lg">
-                  <div className="flex flex-col items-center gap-3 md:gap-4">
-                    <div className="p-3 md:p-4 rounded-full bg-gradient-to-br from-primary/10 to-accent/10 group-hover:scale-110 transition-transform duration-300">
-                      <Upload className="w-10 h-10 md:w-12 md:h-12 text-primary" />
-                    </div>
-                    <div className="text-center">
-                      <p className="text-base md:text-lg font-display font-semibold text-foreground mb-1">
-                        Click to upload or drag and drop
-                      </p>
-                      <p className="text-xs md:text-sm text-muted-foreground">
-                        PNG, JPG, WEBP up to 10MB each
-                      </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Camera Capture */}
+              <label htmlFor="multi-camera-capture" className="block">
+                <div className="relative group cursor-pointer">
+                  <Input
+                    id="multi-camera-capture"
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    multiple
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                  <div className="p-6 md:p-8 border-2 border-dashed border-primary/30 rounded-xl hover:border-primary transition-all duration-300 bg-gradient-to-br from-card to-primary/5 group-hover:shadow-lg h-full">
+                    <div className="flex flex-col items-center gap-2 md:gap-3">
+                      <div className="p-3 md:p-4 rounded-full bg-gradient-to-br from-primary/10 to-accent/10 group-hover:scale-110 transition-transform duration-300">
+                        <Camera className="w-8 h-8 md:w-10 md:h-10 text-primary" />
+                      </div>
+                      <div className="text-center">
+                        <p className="text-sm md:text-base font-display font-semibold text-foreground mb-1">
+                          Take Photos
+                        </p>
+                        <p className="text-xs md:text-sm text-muted-foreground">
+                          Use your camera
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </label>
+              </label>
+
+              {/* Gallery Upload */}
+              <label htmlFor="multi-file-upload" className="block">
+                <div className="relative group cursor-pointer">
+                  <Input
+                    id="multi-file-upload"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                  <div className="p-6 md:p-8 border-2 border-dashed border-primary/30 rounded-xl hover:border-primary transition-all duration-300 bg-gradient-to-br from-card to-primary/5 group-hover:shadow-lg h-full">
+                    <div className="flex flex-col items-center gap-2 md:gap-3">
+                      <div className="p-3 md:p-4 rounded-full bg-gradient-to-br from-primary/10 to-accent/10 group-hover:scale-110 transition-transform duration-300">
+                        <Upload className="w-8 h-8 md:w-10 md:h-10 text-primary" />
+                      </div>
+                      <div className="text-center">
+                        <p className="text-sm md:text-base font-display font-semibold text-foreground mb-1">
+                          Upload from Gallery
+                        </p>
+                        <p className="text-xs md:text-sm text-muted-foreground">
+                          Select existing photos
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </label>
+            </div>
           </CardContent>
         </Card>
 

@@ -84,50 +84,40 @@ const Redeem = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      // Generate a unique verification code
-      const verificationCode = `${user.id.substring(0, 8)}-${reward.id.substring(0, 8)}-${Date.now()}`;
-      
-      const redemptionData = {
-        user_id: user.id,
-        reward_id: reward.id,
-        points_spent: reward.points_required,
-        qr_code_data: verificationCode,
-      };
+      // Use secure server-side function to redeem reward
+      const { data, error } = await (supabase.rpc as any)('redeem_reward', {
+        reward_id_param: reward.id,
+        partner_id_param: reward.partner_id
+      });
 
-      try {
-        redemptionSchema.parse(redemptionData);
-      } catch (validationError) {
-        toast.error("Invalid redemption data. Please try again.");
-        setRedeeming(false);
-        return;
+      if (error) throw error;
+
+      if (!data || !data[0]?.success) {
+        throw new Error(data?.[0]?.message || "Failed to redeem reward");
       }
 
-      await supabase.from("redemptions").insert(redemptionData);
+      const verificationCode = data[0].verification_code;
+      const newPoints = data[0].points_remaining;
 
-      await supabase
-        .from("impact_metrics")
-        .update({ community_points: userPoints - reward.points_required })
-        .eq("user_id", user.id);
+      // Generate verification URL for QR code (HashRouter format)
+      // In production (GitHub Pages), force the exact domain + path to avoid any mismatch.
+      const prodBase = "https://13la7e.github.io/rehomeht";
+      const devBase = `${window.location.origin}${(import.meta.env.BASE_URL || "/").replace(/\/$/, "")}`;
+      const baseForQr = import.meta.env.PROD ? prodBase : devBase;
 
-  // Generate verification URL for QR code (HashRouter format)
-  // In production (GitHub Pages), force the exact domain + path to avoid any mismatch.
-  const prodBase = "https://13la7e.github.io/rehomeht";
-  const devBase = `${window.location.origin}${(import.meta.env.BASE_URL || "/").replace(/\/$/, "")}`;
-  const baseForQr = import.meta.env.PROD ? prodBase : devBase;
+      // Must include /#/ for HashRouter
+      const verificationUrl = `${baseForQr}/rehomeht/#/verify?code=${verificationCode}`;
 
-  // Must include /#/ for HashRouter
-  const verificationUrl = `${baseForQr}/rehomeht/#/verify?code=${verificationCode}`;
+      console.log("=== QR CODE URL DEBUG ===");
+      console.log("mode:", import.meta.env.PROD ? "production" : "development");
+      console.log("baseForQr:", baseForQr);
+      console.log("Generated QR verification URL:", verificationUrl);
+      console.log("Verification code:", verificationCode);
 
-  console.log("=== QR CODE URL DEBUG ===");
-  console.log("mode:", import.meta.env.PROD ? "production" : "development");
-  console.log("baseForQr:", baseForQr);
-  console.log("Generated QR verification URL:", verificationUrl);
-  console.log("Verification code:", verificationCode);
-
-  setQrCodeData(verificationUrl);
+      setQrCodeData(verificationUrl);
       setSelectedReward(reward);
       setShowQRDialog(true);
-      setUserPoints(userPoints - reward.points_required);
+      setUserPoints(newPoints);
       toast.success("Reward redeemed!");
     } catch (error) {
       toast.error("Failed to redeem");

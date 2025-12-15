@@ -1,8 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Leaf, LogOut, User, Menu, X } from "lucide-react";
+import { Leaf, LogOut, User, Menu, X, History } from "lucide-react";
 import { useAuth } from "./AuthProvider";
 import { useState } from "react";
+import { ThemeToggle } from "./ThemeToggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -65,6 +66,7 @@ export const Navigation = () => {
                     My Impact
                   </Button>
                 </Link>
+                <ThemeToggle />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="rounded-full">
@@ -72,6 +74,14 @@ export const Navigation = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48 bg-background/95 backdrop-blur">
+                    <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
+                      <User className="h-4 w-4 mr-2" />
+                      My Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/history")} className="cursor-pointer">
+                      <History className="h-4 w-4 mr-2" />
+                      Donation History
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
                       <LogOut className="h-4 w-4 mr-2" />
                       Sign Out
@@ -128,6 +138,24 @@ export const Navigation = () => {
                       >
                         My Impact
                       </Button>
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-start"
+                        onClick={() => handleNavigation("/profile")}
+                      >
+                        My Profile
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-start"
+                        onClick={() => handleNavigation("/history")}
+                      >
+                        Donation History
+                      </Button>
+                      <div className="border-t pt-4 mt-4 flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Theme</span>
+                        <ThemeToggle />
+                      </div>
                       <div className="border-t pt-4 mt-4">
                         <Button 
                           variant="ghost" 
