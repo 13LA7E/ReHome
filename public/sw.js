@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rehome-v1';
+const CACHE_NAME = 'rehome-v3';
 const urlsToCache = [
   '/ReHome/',
   '/ReHome/index.html',
@@ -18,35 +18,39 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Fetch from cache, fallback to network
+// Fetch strategy:
+// - HTML navigation requests → network-first (always get latest index.html so
+//   Vite asset hashes are never stale)
+// - Everything else → cache-first with network fallback
 self.addEventListener('fetch', (event) => {
+  const { request } = event;
+
+  // For HTML navigation (the app shell), always go to network first.
+  // This prevents the SW from serving an old index.html whose JS/CSS hashes
+  // no longer exist after a redeploy, which would cause a blank white page.
+  if (request.mode === 'navigate' || request.headers.get('accept')?.includes('text/html')) {
+    event.respondWith(
+      fetch(request).catch(() => caches.match(request))
+    );
+    return;
+  }
+
+  // For all other assets (JS, CSS, images) use cache-first.
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Cache hit - return response
-        if (response) {
+    caches.match(request).then((cached) => {
+      if (cached) return cached;
+
+      return fetch(request).then((response) => {
+        if (!response || response.status !== 200 || response.type !== 'basic') {
           return response;
         }
-
-        return fetch(event.request).then(
-          (response) => {
-            // Check if valid response
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-
-            // Clone the response
-            const responseToCache = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(event.request, responseToCache);
-              });
-
-            return response;
-          }
-        );
-      })
+        const responseToCache = response.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(request, responseToCache);
+        });
+        return response;
+      });
+    })
   );
 });
 
