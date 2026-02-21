@@ -16,6 +16,13 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
+    // Prevent TF chunk from being preloaded on every page — it's huge and
+    // only needed on /upload and /multi-upload (which are lazy-loaded).
+    modulePreload: {
+      resolveDependencies(_url: string, deps: string[]) {
+        return deps.filter(dep => !dep.includes('tensorflow'));
+      },
+    },
     rollupOptions: {
       output: {
         manualChunks(id) {
