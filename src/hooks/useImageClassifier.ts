@@ -45,9 +45,14 @@ const CATEGORY_KEYWORDS: Record<string, string[]> = {
     'monitor', 'hard drive', 'usb', 'charger', 'adapter',
   ],
   ewaste: [
-    'crt', 'hard disc', 'tape player', 'vcr', 'dial telephone',
-    'pay-phone', 'typewriter', 'pager', 'fax', 'circuit', 'floppy',
-    'diskette', 'film camera', 'cassette deck',
+    // Batteries — always hazardous waste regardless of condition
+    'battery', 'electric battery', 'lithium', 'cell phone battery',
+    // Broken / end-of-life electronics
+    'crt', 'hard disc', 'hard disk', 'tape player', 'vcr',
+    'dial telephone', 'pay-phone', 'typewriter', 'pager', 'fax',
+    'circuit', 'floppy', 'diskette', 'film camera', 'cassette deck',
+    'solar cell', 'solar panel', 'power supply', 'transformer',
+    'oscilloscope', 'voltmeter',
   ],
   furniture: [
     'chair', 'couch', 'sofa', 'table', 'desk', 'bookcase', 'wardrobe',
