@@ -1,138 +1,144 @@
 import { useState, useRef, useCallback } from 'react';
 
-interface ClassificationResult {
+export interface DetectionGroup {
   category: string;
+  label: string;   // human-readable COCO class, e.g. "book", "cell phone"
+  count: number;
+}
+
+export interface ClassificationResult {
+  category: string;        // dominant category
   confidence: number;
   isReusable: boolean;
   reasoning?: string;
+  count: number;           // total objects detected
+  detections: DetectionGroup[];
 }
 
-// Dynamically imported so TF.js (~3 MB) is never bundled into the initial page load.
-// It downloads once on first classification, then the browser caches it forever.
+// ---------------------------------------------------------------
+// COCO-SSD object classes → our 5 DB categories
+// COCO has 80 classes; we map all relevant ones here.
+// ---------------------------------------------------------------
+const COCO_CATEGORY_MAP: Record<string, string> = {
+  // books
+  book: 'books',
+  // clothes / accessories
+  backpack: 'clothes', umbrella: 'clothes', handbag: 'clothes',
+  tie: 'clothes', suitcase: 'clothes',
+  // electronics
+  laptop: 'electronics', mouse: 'electronics', remote: 'electronics',
+  keyboard: 'electronics', 'cell phone': 'electronics', tv: 'electronics',
+  microwave: 'electronics', oven: 'electronics', toaster: 'electronics',
+  refrigerator: 'electronics', clock: 'electronics', 'hair drier': 'electronics',
+  scissors: 'electronics',
+  // furniture
+  chair: 'furniture', couch: 'furniture', bed: 'furniture',
+  'dining table': 'furniture', toilet: 'furniture', sink: 'furniture',
+  'potted plant': 'furniture',
+  // ewaste (batteries / hazardous — COCO doesn't have these directly;
+  // they fall through to MobileNet fallback below)
+};
+
+// MobileNet keyword fallback (for categories COCO can't detect, e.g. ewaste)
 type MobileNetModule = typeof import('@tensorflow-models/mobilenet');
 type MobileNetModel = Awaited<ReturnType<MobileNetModule['load']>>;
 
-// ---------------------------------------------------------------
-// Keyword map: ImageNet class names (lowercase) → our 5 DB categories
-// DB constraint: 'books' | 'clothes' | 'electronics' | 'ewaste' | 'furniture'
-// ---------------------------------------------------------------
-const CATEGORY_KEYWORDS: Record<string, string[]> = {
-  clothes: [
-    'jersey', 't-shirt', 'tee shirt', 'cardigan', 'sweatshirt', 'suit',
-    'bow tie', 'brassiere', 'gown', 'gown', 'lab coat', 'cloak',
-    'trench coat', 'kimono', 'sarong', 'bikini', 'swimming trunk',
-    'maillot', 'miniskirt', 'jean', 'mitten', 'sock', 'stocking',
-    'apron', 'academic gown', 'abaya', 'overskirt', 'hoopskirt',
-    'fur coat', 'raincoat', 'overcoat', 'wool', 'lace', 'shirt',
-    'blouse', 'dress', 'skirt', 'pants', 'jacket', 'coat', 'sweater',
-    'hoodie', 'uniform', 'tie', 'scarf', 'hat', 'cap', 'glove',
-    'shoe', 'boot', 'sandal', 'sneaker', 'handbag', 'backpack',
-    'sunglasses', 'purse', 'wallet', 'bib', 'vestment', 'stole',
-    'diaper', 'sunglass', 'panty', 'underwear', 'brief',
-  ],
-  books: [
-    'book jacket', 'comic book', 'menu', 'newspaper', 'crossword',
-    'envelope', 'library', 'magazine', 'atlas', 'journal',
-    'notebook', 'binder', 'puzzle',
-  ],
-  electronics: [
-    'laptop', 'computer', 'keyboard', 'mouse', 'television', 'remote',
-    'cellular', 'phone', 'camera', 'speaker', 'loudspeaker', 'headphone',
-    'microphone', 'printer', 'modem', 'router', 'radio', 'cd player',
-    'cassette player', 'telephone', 'calculator', 'ipod', 'tablet',
-    'joystick', 'projector', 'amplifier', 'screen', 'display',
-    'drone', 'smartwatch', 'wristwatch', 'earphone', 'console',
-    'monitor', 'hard drive', 'usb', 'charger', 'adapter',
-  ],
+const MOBILENET_KEYWORDS: Record<string, string[]> = {
   ewaste: [
-    // Batteries — always hazardous waste regardless of condition
     'battery', 'electric battery', 'lithium', 'cell phone battery',
-    // Broken / end-of-life electronics
     'crt', 'hard disc', 'hard disk', 'tape player', 'vcr',
     'dial telephone', 'pay-phone', 'typewriter', 'pager', 'fax',
     'circuit', 'floppy', 'diskette', 'film camera', 'cassette deck',
     'solar cell', 'solar panel', 'power supply', 'transformer',
     'oscilloscope', 'voltmeter',
   ],
+  books: ['book jacket', 'comic book', 'menu', 'newspaper', 'magazine', 'atlas', 'notebook', 'binder'],
+  clothes: [
+    'jersey', 't-shirt', 'tee shirt', 'cardigan', 'sweatshirt', 'suit', 'kimono', 'jean',
+    'fur coat', 'raincoat', 'overcoat', 'shirt', 'blouse', 'dress', 'jacket', 'coat',
+    'sweater', 'hoodie', 'sock', 'shoe', 'boot', 'sandal', 'sneaker',
+  ],
+  electronics: [
+    'laptop', 'computer', 'keyboard', 'mouse', 'television', 'remote', 'cellular', 'phone',
+    'camera', 'speaker', 'headphone', 'microphone', 'printer', 'radio', 'tablet',
+    'projector', 'screen', 'display', 'monitor', 'smartwatch', 'console',
+  ],
   furniture: [
-    'chair', 'couch', 'sofa', 'table', 'desk', 'bookcase', 'wardrobe',
-    'chest', 'cabinet', 'bench', 'stool', 'ottoman', 'shelf', 'rack',
-    'drawer', 'bed', 'mattress', 'dresser', 'armchair', 'recliner',
-    'throne', 'toilet', 'bathtub', 'sink', 'nightstand', 'lamp',
-    'dining table', 'park bench', 'rocking chair', 'barber chair',
-    'studio couch', 'china cabinet', 'file cabinet', 'bookshelf',
-    'cradle',
+    'chair', 'couch', 'sofa', 'table', 'desk', 'bookcase', 'wardrobe', 'cabinet',
+    'bench', 'stool', 'ottoman', 'shelf', 'bed', 'mattress', 'dresser', 'armchair',
+    'dining table', 'rocking chair', 'studio couch',
   ],
 };
 
-// Score top predictions against keyword map to pick the best DB category
-function mapToCategory(predictions: Array<{ className: string; probability: number }>): {
-  category: string;
-  confidence: number;
-  reasoning: string;
-} {
-  const scores: Record<string, number> = {
-    books: 0, clothes: 0, electronics: 0, ewaste: 0, furniture: 0,
-  };
-
+function mobilenetFallback(
+  predictions: Array<{ className: string; probability: number }>,
+): { category: string; confidence: number; reasoning: string } {
+  const scores: Record<string, number> = { books: 0, clothes: 0, electronics: 0, ewaste: 0, furniture: 0 };
   for (const pred of predictions) {
     const label = pred.className.toLowerCase();
-    for (const [category, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
-      for (const kw of keywords) {
-        if (label.includes(kw)) {
-          scores[category] += pred.probability;
-        }
+    for (const [cat, kws] of Object.entries(MOBILENET_KEYWORDS)) {
+      for (const kw of kws) {
+        if (label.includes(kw)) scores[cat] += pred.probability;
       }
     }
   }
-
-  const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
-  const [topCategory, topScore] = sorted[0];
+  const [topCat, topScore] = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
   const topPred = predictions[0];
-
   if (topScore === 0) {
-    // No keyword matched — use the raw MobileNet label to give useful feedback
-    return {
-      category: 'clothes',
-      confidence: 0.35,
-      reasoning: `Could not confidently categorize "${topPred.className}" — defaulted to clothes. Please adjust if needed.`,
-    };
+    return { category: 'clothes', confidence: 0.35, reasoning: `Could not categorize "${topPred.className}" — defaulted to clothes.` };
   }
-
-  // Scale confidence: clamp to [0.50, 0.99]
-  const confidence = Math.min(Math.max(topScore * 1.5, 0.5), 0.99);
-
   return {
-    category: topCategory,
-    confidence,
+    category: topCat,
+    confidence: Math.min(Math.max(topScore * 1.5, 0.5), 0.99),
     reasoning: `Identified as "${topPred.className}" (${(topPred.probability * 100).toFixed(0)}% match)`,
   };
 }
 
+type CocoSsdModule = typeof import('@tensorflow-models/coco-ssd');
+type CocoSsdModel = Awaited<ReturnType<CocoSsdModule['load']>>;
+
 export const useImageClassifier = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // Persist the model across calls — loads once, cached by the browser
-  const modelRef = useRef<MobileNetModel | null>(null);
-  const modelLoadingRef = useRef<Promise<MobileNetModel> | null>(null);
 
-  const loadModel = useCallback(async (): Promise<MobileNetModel> => {
-    if (modelRef.current) return modelRef.current;
-    // Guard against multiple concurrent load calls
-    if (!modelLoadingRef.current) {
-      modelLoadingRef.current = (async () => {
-        // Dynamic imports — TF.js only downloads when first classification runs
+  // Two cached models — loads once each, persisted across calls
+  const cocoRef = useRef<CocoSsdModel | null>(null);
+  const cocoLoadingRef = useRef<Promise<CocoSsdModel> | null>(null);
+  const mobileNetRef = useRef<MobileNetModel | null>(null);
+  const mobileNetLoadingRef = useRef<Promise<MobileNetModel> | null>(null);
+
+  const loadCoco = useCallback(async (): Promise<CocoSsdModel> => {
+    if (cocoRef.current) return cocoRef.current;
+    if (!cocoLoadingRef.current) {
+      cocoLoadingRef.current = (async () => {
+        const [tf, cocoSsd] = await Promise.all([
+          import('@tensorflow/tfjs'),
+          import('@tensorflow-models/coco-ssd'),
+        ]);
+        await tf.ready();
+        const model = await cocoSsd.load();
+        cocoRef.current = model;
+        return model;
+      })();
+    }
+    return cocoLoadingRef.current;
+  }, []);
+
+  const loadMobileNet = useCallback(async (): Promise<MobileNetModel> => {
+    if (mobileNetRef.current) return mobileNetRef.current;
+    if (!mobileNetLoadingRef.current) {
+      mobileNetLoadingRef.current = (async () => {
         const [tf, mobilenet] = await Promise.all([
           import('@tensorflow/tfjs'),
           import('@tensorflow-models/mobilenet'),
         ]);
         await tf.ready();
         const model = await mobilenet.load({ version: 2, alpha: 1.0 });
-        modelRef.current = model;
+        mobileNetRef.current = model;
         return model;
       })();
     }
-    return modelLoadingRef.current;
+    return mobileNetLoadingRef.current;
   }, []);
 
   const classifyImage = useCallback(async (imageUrl: string): Promise<ClassificationResult | null> => {
@@ -140,9 +146,7 @@ export const useImageClassifier = () => {
       setIsLoading(true);
       setError(null);
 
-      const model = await loadModel();
-
-      // Build an HTMLImageElement from the data URL / blob URL
+      // Build HTMLImageElement from data URL / blob URL
       const imgEl = await new Promise<HTMLImageElement>((resolve, reject) => {
         const img = new Image();
         img.onload = () => resolve(img);
@@ -150,14 +154,65 @@ export const useImageClassifier = () => {
         img.src = imageUrl;
       });
 
-      // Get top-5 ImageNet predictions (all run on-device via WebGL/WASM)
-      const predictions = await model.classify(imgEl, 5);
-      console.log('MobileNet predictions:', predictions);
+      // ── Step 1: COCO-SSD — detects multiple objects with bounding boxes ──
+      const cocoModel = await loadCoco();
+      const cocoDetections = await cocoModel.detect(imgEl);
+      console.log('COCO-SSD detections:', cocoDetections);
 
-      const { category, confidence, reasoning } = mapToCategory(predictions);
-      const isReusable = category !== 'ewaste';
+      // Filter detections with decent confidence and map to our categories
+      const CONFIDENCE_THRESHOLD = 0.35;
+      const mapped = cocoDetections
+        .filter(d => d.score >= CONFIDENCE_THRESHOLD && COCO_CATEGORY_MAP[d.class])
+        .map(d => ({ label: d.class, category: COCO_CATEGORY_MAP[d.class], score: d.score }));
 
-      return { category, confidence, isReusable, reasoning };
+      if (mapped.length > 0) {
+        // Group by (category + label) and count each distinct type
+        const groups = new Map<string, DetectionGroup>();
+        for (const det of mapped) {
+          const key = `${det.category}::${det.label}`;
+          if (groups.has(key)) {
+            groups.get(key)!.count += 1;
+          } else {
+            groups.set(key, { category: det.category, label: det.label, count: 1 });
+          }
+        }
+        const detections = Array.from(groups.values());
+
+        // Dominant category = the one with the most detected objects
+        const categoryTotals = new Map<string, number>();
+        for (const g of detections) {
+          categoryTotals.set(g.category, (categoryTotals.get(g.category) ?? 0) + g.count);
+        }
+        const [dominantCategory] = [...categoryTotals.entries()].sort((a, b) => b[1] - a[1])[0];
+        const totalCount = detections.reduce((s, g) => s + g.count, 0);
+        const topScore = cocoDetections[0]?.score ?? 0.8;
+        const confidence = Math.min(Math.max(topScore, 0.5), 0.99);
+
+        const labels = detections.map(g => `${g.count}× ${g.label}`).join(', ');
+        return {
+          category: dominantCategory,
+          confidence,
+          isReusable: dominantCategory !== 'ewaste',
+          count: totalCount,
+          detections,
+          reasoning: `Detected: ${labels}`,
+        };
+      }
+
+      // ── Step 2: MobileNet fallback — single-item classification ──
+      const mnModel = await loadMobileNet();
+      const predictions = await mnModel.classify(imgEl, 5);
+      console.log('MobileNet fallback predictions:', predictions);
+
+      const { category, confidence, reasoning } = mobilenetFallback(predictions);
+      return {
+        category,
+        confidence,
+        isReusable: category !== 'ewaste',
+        count: 1,
+        detections: [{ category, label: predictions[0].className.split(',')[0], count: 1 }],
+        reasoning,
+      };
 
     } catch (err) {
       console.error('On-device classification error:', err);
@@ -167,12 +222,14 @@ export const useImageClassifier = () => {
         category: 'clothes',
         confidence: 0.35,
         isReusable: true,
+        count: 1,
+        detections: [{ category: 'clothes', label: 'unknown', count: 1 }],
         reasoning: 'Classification failed — please select the correct category manually.',
       };
     } finally {
       setIsLoading(false);
     }
-  }, [loadModel]);
+  }, [loadCoco, loadMobileNet]);
 
   return { isLoading, error, classifyImage };
 };

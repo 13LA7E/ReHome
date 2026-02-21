@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Navigation } from "@/components/Navigation";
 import { Camera, Loader2, Upload, X, CheckCircle, Trash2, ArrowRight, Zap, ZapOff } from "lucide-react";
-import { useImageClassifier } from "@/hooks/useImageClassifier";
+import { useImageClassifier, ClassificationResult } from "@/hooks/useImageClassifier";
 import { z } from "zod";
 
 const itemSchema = z.object({
@@ -22,11 +22,7 @@ interface ImageData {
   id: string;
   file: File;
   preview: string;
-  classification?: {
-    category: string;
-    confidence: number;
-    isReusable: boolean;
-  };
+  classification?: ClassificationResult;
   classifying: boolean;
   awaitingFunctionalityCheck?: boolean;
 }
@@ -65,7 +61,7 @@ const MultiUpload = () => {
                   ...img,
                   classification: classification ?? undefined,
                   classifying: false,
-                  awaitingFunctionalityCheck: classification?.category === 'electronics',
+                  awaitingFunctionalityCheck: classification?.detections?.some(d => d.category === 'electronics') ?? false,
                 }
               : img
           ));
@@ -90,7 +86,14 @@ const MultiUpload = () => {
         ...img,
         awaitingFunctionalityCheck: false,
         classification: img.classification
-          ? { ...img.classification, category: isFunctional ? 'electronics' : 'ewaste', isReusable: isFunctional }
+          ? {
+              ...img.classification,
+              category: isFunctional ? 'electronics' : 'ewaste',
+              isReusable: isFunctional,
+              detections: img.classification.detections.map(d =>
+                d.category === 'electronics' ? { ...d, category: isFunctional ? 'electronics' : 'ewaste' } : d
+              ),
+            }
           : img.classification,
       };
     }));
@@ -176,8 +179,8 @@ const MultiUpload = () => {
 
         if (itemError) throw itemError;
 
-        // Each item earns 10 points
-        totalPointsEarned += 10;
+        // Each detected item earns 10 points
+        totalPointsEarned += (classification.count ?? 1) * 10;
       }
 
       // Update impact metrics
@@ -187,17 +190,19 @@ const MultiUpload = () => {
         .eq("user_id", user.id)
         .maybeSingle();
 
+      const totalItemCount = images.reduce((sum, img) => sum + (img.classification?.count ?? 1), 0);
+
       const { error: metricsError } = await supabase
         .from("impact_metrics")
         .update({
-          total_items: (currentMetrics?.total_items || 0) + images.length,
+          total_items: (currentMetrics?.total_items || 0) + totalItemCount,
           community_points: (currentMetrics?.community_points || 0) + totalPointsEarned,
         })
         .eq("user_id", user.id);
 
       if (metricsError) throw metricsError;
 
-      toast.success(`Successfully uploaded ${images.length} items! Earned ${totalPointsEarned} points!`);
+      toast.success(`Successfully uploaded ${images.length} photo${images.length > 1 ? 's' : ''}! Detected ${images.reduce((s, i) => s + (i.classification?.count ?? 1), 0)} items. Earned ${totalPointsEarned} points!`);
       navigate("/partners");
     } catch (error) {
       console.error("Error saving items:", error);
@@ -207,7 +212,8 @@ const MultiUpload = () => {
     }
   };
 
-  const totalValue = images.filter(img => img.classification).length * 10;
+  const totalItemCount = images.reduce((sum, img) => sum + (img.classification?.count ?? 1), 0);
+  const totalValue = totalItemCount * 10;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5">
@@ -273,7 +279,7 @@ const MultiUpload = () => {
                 <div className="text-center md:text-left">
                   <p className="text-xs md:text-sm text-muted-foreground mb-1">Total Items</p>
                   <p className="text-2xl md:text-3xl font-display font-bold text-primary">
-                    {images.length}
+                    {totalItemCount}
                   </p>
                 </div>
                 <div className="text-center md:text-left">
@@ -360,10 +366,23 @@ const MultiUpload = () => {
                       <>
                         <div className="flex items-center justify-between">
                           <span className="text-xs md:text-sm font-medium text-muted-foreground">Category</span>
-                          <span className="text-sm md:text-base font-display font-semibold text-foreground">
+                          <span className="text-sm md:text-base font-display font-semibold text-foreground capitalize">
                             {imageData.classification.category}
                           </span>
                         </div>
+                        {imageData.classification.count > 1 && (
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs md:text-sm font-medium text-muted-foreground">Items found</span>
+                            <span className="text-sm md:text-base font-display font-bold text-accent">
+                              {imageData.classification.count}
+                            </span>
+                          </div>
+                        )}
+                        {imageData.classification.detections.length > 0 && (
+                          <div className="text-xs text-muted-foreground mt-0.5">
+                            {imageData.classification.detections.map(d => `${d.count}× ${d.label}`).join(', ')}
+                          </div>
+                        )}
                         <div className="flex items-center justify-between">
                           <span className="text-xs md:text-sm font-medium text-muted-foreground">Confidence</span>
                           <span className="text-xs md:text-sm text-accent font-semibold">
@@ -373,7 +392,7 @@ const MultiUpload = () => {
                         <div className="flex items-center gap-2 pt-1 md:pt-2">
                           <CheckCircle className="w-3.5 h-3.5 md:w-4 md:h-4 text-green-500" />
                           <span className="text-xs md:text-sm text-green-600 dark:text-green-400 font-medium">
-                            {imageData.classification.isReusable ? "Reusable" : "Recyclable"}
+                            {imageData.classification.isReusable ? "Reusable" : "Recyclable"} · +{(imageData.classification.count ?? 1) * 10} pts
                           </span>
                         </div>
                       </>
