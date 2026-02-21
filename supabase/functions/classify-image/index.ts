@@ -22,7 +22,8 @@ Deno.serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        // Legacy edge function — app now uses ReVision AI (TensorFlow.js on-device, see src/hooks/useImageClassifier.ts)
+        model: 'gpt-4o-mini',
         messages: [
           {
             role: 'user',

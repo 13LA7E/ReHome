@@ -16,7 +16,7 @@ ReHome is a comprehensive sustainable donation platform that revolutionizes how 
 ## ✨ Features
 
 ### Core Functionality
-- 🤖 **AI-Powered Classification**: Google Gemini AI automatically categorizes donation items from photos
+- 🤖 **AI-Powered Classification**: ReVision AI automatically categorizes donation items from photos — runs entirely on-device via TensorFlow.js, no data leaves your browser
 - 📍 **Smart Partner Mapping**: Interactive map to find verified donation centers near you
 - 📊 **Impact Dashboard**: Real-time tracking of environmental impact with detailed metrics
 - 🎁 **Rewards System**: Earn points for donations and redeem exclusive rewards
@@ -110,7 +110,7 @@ The project is automatically deployed to GitHub Pages at: https://13la7e.github.
   - Row Level Security (RLS)
   - Edge Functions (Deno)
   - Storage for images
-- **Google Gemini AI** for image classification
+- **ReVision AI** (TensorFlow.js + COCO-SSD + MobileNet, fully on-device) for image classification
 - **Resend** for transactional emails
 
 ### Development Tools
@@ -157,15 +157,15 @@ Create a `.env` file in the root directory with the following:
 ```env
 VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-VITE_GEMINI_API_KEY=your_google_gemini_api_key
 VITE_APP_URL=https://13la7e.github.io/ReHome
 VITE_SUPPORT_EMAIL=support@rehome.app
 ```
 
 **Get API Keys:**
 - Supabase: https://app.supabase.com/project/_/settings/api
-- Gemini: https://makersuite.google.com/app/apikey
 - Resend: https://resend.com/api-keys (for edge functions)
+
+> **Note:** No external AI API key is needed. ReVision AI runs entirely in the browser using TensorFlow.js.
 
 ## 📱 Android App
 
@@ -266,7 +266,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [shadcn-ui](https://ui.shadcn.com/) for the beautiful component library
 - [Supabase](https://supabase.com/) for the backend infrastructure
-- [Google Gemini](https://ai.google.dev/) for AI classification
+- [TensorFlow.js](https://www.tensorflow.org/js) for powering ReVision AI (on-device classification)
 - All our donation partners and community members
 
 ## 📞 Support
