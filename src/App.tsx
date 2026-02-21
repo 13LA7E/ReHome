@@ -36,7 +36,16 @@ import SentryTest from "./pages/SentryTest";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <Sentry.ErrorBoundary fallback={<ErrorBoundary />} showDialog>
+  <Sentry.ErrorBoundary
+    fallback={({ error, componentStack }) => (
+      <div style={{ padding: '20px', fontFamily: 'monospace', background: '#fff', color: '#c00', minHeight: '100vh' }}>
+        <h1>App Error (visible in production for debugging)</h1>
+        <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: '13px' }}>
+          {String(error)}{'\n\n'}{componentStack}
+        </pre>
+      </div>
+    )}
+  >
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <ThemeProvider defaultTheme="light">
