@@ -117,12 +117,12 @@ const HowItWorks = () => {
         </div>
 
         <div className="mt-10 md:mt-14 lg:mt-16 text-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
-          <div className="inline-block p-6 md:p-8 rounded-2xl bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 border border-primary/20 shadow-lg">
+          <div className="inline-block p-6 md:p-8 rounded-2xl bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 border border-primary/20 shadow-sm">
             <p className="text-base sm:text-lg md:text-xl text-foreground font-display font-semibold mb-2">
-              Ready to make an impact?
+              Ready to start?
             </p>
             <p className="text-sm md:text-base text-muted-foreground">
-              Join thousands of users who have already donated over 10,000 items
+              ReHome is in early access. Try it now and be among our founding donors.
             </p>
           </div>
         </div>

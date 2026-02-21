@@ -1,106 +1,92 @@
 import { Link } from "react-router-dom";
-import { Leaf, Mail, Github, Twitter, Linkedin } from "lucide-react";
+import { Leaf, Mail } from "lucide-react";
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-card border-t mt-auto">
-      <div className="container mx-auto px-4 py-8 md:py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand Section */}
-          <div className="space-y-4">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="bg-primary/10 p-2 rounded-full">
+    <footer className="border-t bg-card/50 mt-auto">
+      <div className="container mx-auto px-4 py-10 md:py-14">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
+
+          {/* Brand */}
+          <div className="space-y-4 md:col-span-1">
+            <Link to="/" className="flex items-center gap-2 group">
+              <div className="bg-primary/10 p-2 rounded-xl group-hover:bg-primary/20 transition-colors">
                 <Leaf className="h-5 w-5 text-primary" />
               </div>
-              <span className="text-xl font-display font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              <span className="text-xl font-display font-bold bg-gradient-to-r from-primary to-amber-500 bg-clip-text text-transparent">
                 ReHome
               </span>
             </Link>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               Transforming household clutter into community impact, one donation at a time.
             </p>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              Early access
+            </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link to="/about" className="text-muted-foreground hover:text-primary transition-colors">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link to="/faq" className="text-muted-foreground hover:text-primary transition-colors">
-                  FAQ
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors">
-                  Contact
-                </Link>
-              </li>
-              <li>
-                <Link to="/partners" className="text-muted-foreground hover:text-primary transition-colors">
-                  Partners
-                </Link>
-              </li>
+            <h3 className="font-semibold text-foreground mb-4 text-sm uppercase tracking-wider">Product</h3>
+            <ul className="space-y-2.5 text-sm">
+              {[
+                { to: "/about", label: "About" },
+                { to: "/faq", label: "FAQ" },
+                { to: "/contact", label: "Contact" },
+                { to: "/partners", label: "Find Partners" },
+              ].map(({ to, label }) => (
+                <li key={to}>
+                  <Link to={to} className="text-muted-foreground hover:text-primary transition-colors">
+                    {label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Legal */}
           <div>
-            <h3 className="font-semibold mb-4">Legal</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors">
-                  Terms of Service
-                </Link>
-              </li>
-              <li>
-                <Link to="/privacy" className="text-muted-foreground hover:text-primary transition-colors">
-                  Privacy Policy
-                </Link>
-              </li>
+            <h3 className="font-semibold text-foreground mb-4 text-sm uppercase tracking-wider">Legal</h3>
+            <ul className="space-y-2.5 text-sm">
+              {[
+                { to: "/terms", label: "Terms of Service" },
+                { to: "/privacy", label: "Privacy Policy" },
+              ].map(({ to, label }) => (
+                <li key={to}>
+                  <Link to={to} className="text-muted-foreground hover:text-primary transition-colors">
+                    {label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Contact & Social */}
+          {/* Contact */}
           <div>
-            <h3 className="font-semibold mb-4">Connect</h3>
-            <ul className="space-y-2 text-sm mb-4">
-              <li>
-                <a 
-                  href="mailto:support@ReHome.com" 
-                  className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
-                >
-                  <Mail className="h-4 w-4" />
-                  support@ReHome.com
-                </a>
-              </li>
-            </ul>
-            {/* Social Media Icons - Placeholder */}
-            <div className="flex gap-3">
-              <div className="p-2 rounded-full bg-muted hover:bg-muted/80 transition-colors cursor-not-allowed opacity-50">
-                <Twitter className="h-4 w-4" />
-              </div>
-              <div className="p-2 rounded-full bg-muted hover:bg-muted/80 transition-colors cursor-not-allowed opacity-50">
-                <Linkedin className="h-4 w-4" />
-              </div>
-              <div className="p-2 rounded-full bg-muted hover:bg-muted/80 transition-colors cursor-not-allowed opacity-50">
-                <Github className="h-4 w-4" />
-              </div>
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">Coming soon</p>
+            <h3 className="font-semibold text-foreground mb-4 text-sm uppercase tracking-wider">Contact</h3>
+            <a
+              href="mailto:support@rehome.app"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+            >
+              <Mail className="h-4 w-4" />
+              support@rehome.app
+            </a>
+            <p className="text-xs text-muted-foreground mt-4 leading-relaxed">
+              Have a question or partnership inquiry? We read every email.
+            </p>
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="border-t mt-8 pt-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            © {currentYear} ReHome. All rights reserved. Making the world greener, one donation at a time. 🌱
+        {/* Bottom bar */}
+        <div className="border-t border-border/60 mt-10 pt-8 flex flex-col sm:flex-row justify-between items-center gap-3">
+          <p className="text-xs text-muted-foreground">
+            © {currentYear} ReHome. All rights reserved.
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Built with care for the planet 🌱
           </p>
         </div>
       </div>
