@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import * as Sentry from "@sentry/react";
+import { Suspense, lazy } from "react";
 import { AuthProvider } from "@/components/AuthProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -13,8 +14,9 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { PageTransition } from "@/components/PageTransition";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
-import Upload from "./pages/Upload";
-import MultiUpload from "./pages/MultiUpload";
+// Lazy-load TensorFlow-heavy pages so TF only loads when actually needed
+const Upload = lazy(() => import("./pages/Upload"));
+const MultiUpload = lazy(() => import("./pages/MultiUpload"));
 import Partners from "./pages/Partners";
 import ImpactNew from "./pages/ImpactNew";
 import Redeem from "./pages/Redeem";
@@ -36,16 +38,7 @@ import SentryTest from "./pages/SentryTest";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <Sentry.ErrorBoundary
-    fallback={({ error, componentStack }) => (
-      <div style={{ padding: '20px', fontFamily: 'monospace', background: '#fff', color: '#c00', minHeight: '100vh' }}>
-        <h1>App Error (visible in production for debugging)</h1>
-        <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: '13px' }}>
-          {String(error)}{'\n\n'}{componentStack}
-        </pre>
-      </div>
-    )}
-  >
+  <Sentry.ErrorBoundary fallback={<ErrorBoundary />}>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <ThemeProvider defaultTheme="light">
@@ -58,8 +51,8 @@ const App = () => (
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/auth" element={<Auth />} />
-                  <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
-                  <Route path="/multi-upload" element={<ProtectedRoute><MultiUpload /></ProtectedRoute>} />
+                  <Route path="/upload" element={<ProtectedRoute><Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" /></div>}><Upload /></Suspense></ProtectedRoute>} />
+                  <Route path="/multi-upload" element={<ProtectedRoute><Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" /></div>}><MultiUpload /></Suspense></ProtectedRoute>} />
                   <Route path="/partners" element={<ProtectedRoute><Partners /></ProtectedRoute>} />
                   <Route path="/redeem" element={<ProtectedRoute><Redeem /></ProtectedRoute>} />
                   <Route path="/verify" element={<VerifyRedemption />} />
