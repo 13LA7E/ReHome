@@ -16,23 +16,13 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    // Prevent TF chunk from being preloaded on every page — it's huge and
-    // only needed on /upload and /multi-upload (which are lazy-loaded).
-    modulePreload: {
-      resolveDependencies(_url: string, deps: string[]) {
-        return deps.filter(dep => !dep.includes('tensorflow'));
-      },
-    },
     rollupOptions: {
       output: {
         manualChunks(id) {
-          // TensorFlow.js and MobileNet in their own lazy chunk (~3.5 MB)
-          // so it only downloads when the Upload page is visited
-          if (id.includes('@tensorflow')) {
-            return 'tensorflow';
-          }
-          // Vendor chunk for large stable libraries
-          if (id.includes('node_modules')) {
+          // Keep vendor chunk for large stable libraries
+          // NOTE: Do NOT put @tensorflow here — it must stay as a true lazy
+          // async chunk so it never runs during initial page load.
+          if (id.includes('node_modules') && !id.includes('@tensorflow')) {
             return 'vendor';
           }
         },
