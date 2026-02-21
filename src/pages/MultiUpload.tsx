@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Navigation } from "@/components/Navigation";
-import { Camera, Loader2, Upload, X, CheckCircle, Trash2, ArrowRight } from "lucide-react";
+import { Camera, Loader2, Upload, X, CheckCircle, Trash2, ArrowRight, Zap, ZapOff } from "lucide-react";
 import { useImageClassifier } from "@/hooks/useImageClassifier";
 import { z } from "zod";
 
@@ -28,6 +28,7 @@ interface ImageData {
     isReusable: boolean;
   };
   classifying: boolean;
+  awaitingFunctionalityCheck?: boolean;
 }
 
 const MultiUpload = () => {
@@ -60,7 +61,12 @@ const MultiUpload = () => {
           
           setImages(prev => prev.map(img => 
             img.id === imageData.id 
-              ? { ...img, classification, classifying: false }
+              ? {
+                  ...img,
+                  classification: classification ?? undefined,
+                  classifying: false,
+                  awaitingFunctionalityCheck: classification?.category === 'electronics',
+                }
               : img
           ));
         };
@@ -75,6 +81,19 @@ const MultiUpload = () => {
         toast.error(`Failed to classify ${imageData.file.name}`);
       }
     }
+  };
+
+  const handleFunctionalityAnswer = (id: string, isFunctional: boolean) => {
+    setImages(prev => prev.map(img => {
+      if (img.id !== id) return img;
+      return {
+        ...img,
+        awaitingFunctionalityCheck: false,
+        classification: img.classification
+          ? { ...img.classification, category: isFunctional ? 'electronics' : 'ewaste', isReusable: isFunctional }
+          : img.classification,
+      };
+    }));
   };
 
   const removeImage = (id: string) => {
@@ -93,9 +112,9 @@ const MultiUpload = () => {
       return;
     }
 
-    const unclassified = images.filter(img => img.classifying || !img.classification);
+    const unclassified = images.filter(img => img.classifying || !img.classification || img.awaitingFunctionalityCheck);
     if (unclassified.length > 0) {
-      toast.error("Please wait for all images to be classified");
+      toast.error("Please answer the functionality question for all electronics");
       return;
     }
 
@@ -311,7 +330,33 @@ const MultiUpload = () => {
                   </div>
 
                   <CardContent className="p-3 md:p-4 space-y-1.5 md:space-y-2">
-                    {imageData.classification && (
+                    {imageData.awaitingFunctionalityCheck ? (
+                      <div className="space-y-2">
+                        <p className="text-xs md:text-sm font-semibold text-foreground text-center">
+                          Is this item still functional?
+                        </p>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex-1 text-xs border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-950"
+                            onClick={() => handleFunctionalityAnswer(imageData.id, true)}
+                          >
+                            <Zap className="w-3 h-3 mr-1" />
+                            Yes
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex-1 text-xs border-red-500 text-red-600 hover:bg-red-50 dark:hover:bg-red-950"
+                            onClick={() => handleFunctionalityAnswer(imageData.id, false)}
+                          >
+                            <ZapOff className="w-3 h-3 mr-1" />
+                            No
+                          </Button>
+                        </div>
+                      </div>
+                    ) : imageData.classification ? (
                       <>
                         <div className="flex items-center justify-between">
                           <span className="text-xs md:text-sm font-medium text-muted-foreground">Category</span>
@@ -332,7 +377,7 @@ const MultiUpload = () => {
                           </span>
                         </div>
                       </>
-                    )}
+                    ) : null}
                   </CardContent>
                 </Card>
               ))}
@@ -353,7 +398,7 @@ const MultiUpload = () => {
               <Button
                 size="lg"
                 onClick={handleSaveAll}
-                disabled={uploading || images.some(img => img.classifying)}
+                disabled={uploading || images.some(img => img.classifying || img.awaitingFunctionalityCheck)}
                 className="font-display font-semibold bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg hover:shadow-glow px-6 md:px-8 w-full sm:w-auto"
               >
                 {uploading ? (
