@@ -64,8 +64,9 @@ const Privacy = () => {
 
                   <h3 className="text-xl font-semibold mt-4 mb-2">2.3 AI Processing</h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    We use AI technology (Google Gemini API) to classify uploaded item images. These images 
-                    are processed to identify item types and conditions but are not used to train AI models.
+                    We use on-device AI technology (TensorFlow.js with COCO-SSD and MobileNet) to classify
+                    uploaded item images. All processing happens locally in your browser — images are never
+                    sent to any external AI service and are not used to train any models.
                   </p>
                 </section>
 
@@ -93,7 +94,7 @@ const Privacy = () => {
                   </p>
                   <ul className="list-disc pl-6 text-muted-foreground space-y-1">
                     <li><strong>With Donation Partners:</strong> We share necessary information (contact details, pickup location, item details) with verified partners to facilitate donations</li>
-                    <li><strong>Service Providers:</strong> We use third-party services (Supabase for data storage, Google Gemini for AI, Resend for emails) that may process your data</li>
+                    <li><strong>Service Providers:</strong> We use third-party services (Supabase for data storage, Resend for emails) that may process your data. AI classification runs entirely on-device via TensorFlow.js and does not involve any external service.</li>
                     <li><strong>Legal Requirements:</strong> We may disclose information if required by law, court order, or government request</li>
                     <li><strong>Business Transfers:</strong> In case of merger, acquisition, or sale, your information may be transferred</li>
                     <li><strong>With Your Consent:</strong> We may share information with your explicit permission</li>
@@ -162,7 +163,7 @@ const Privacy = () => {
                   </p>
                   <ul className="list-disc pl-6 text-muted-foreground space-y-1">
                     <li><strong>Supabase:</strong> Database, authentication, and storage services</li>
-                    <li><strong>Google Gemini API:</strong> AI image classification</li>
+                    <li><strong>TensorFlow.js (on-device):</strong> AI image classification — runs in your browser, no data sent externally</li>
                     <li><strong>Resend:</strong> Email delivery service</li>
                   </ul>
                   <p className="text-muted-foreground leading-relaxed mt-3">

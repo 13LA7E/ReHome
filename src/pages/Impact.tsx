@@ -6,58 +6,6 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 
-const impactMetrics = [
-  {
-    icon: Package,
-    label: "Total Items Donated",
-    value: "142",
-    change: "+12 this month",
-    color: "text-primary",
-    bgColor: "bg-primary/10"
-  },
-  {
-    icon: Recycle,
-    label: "Waste Diverted",
-    value: "85.4 kg",
-    change: "+8.2 kg this month",
-    color: "text-accent",
-    bgColor: "bg-accent/10"
-  },
-  {
-    icon: TreePine,
-    label: "CO₂ Saved",
-    value: "234 kg",
-    change: "+28 kg this month",
-    color: "text-primary-glow",
-    bgColor: "bg-primary/10"
-  },
-  {
-    icon: Heart,
-    label: "Lives Impacted",
-    value: "67",
-    change: "+5 people",
-    color: "text-accent",
-    bgColor: "bg-accent/10"
-  }
-];
-
-const categories = [
-  { name: "Clothes", donated: 68, progress: 85, color: "bg-primary" },
-  { name: "Books", donated: 34, progress: 60, color: "bg-accent" },
-  { name: "Electronics", donated: 22, progress: 45, color: "bg-primary-glow" },
-  { name: "Furniture", donated: 12, progress: 30, color: "bg-accent" },
-  { name: "E-waste", donated: 6, progress: 15, color: "bg-primary" }
-];
-
-const achievements = [
-  { icon: Award, title: "First Donation", description: "Made your first donation", unlocked: true },
-  { icon: TrendingUp, title: "Impact Starter", description: "Donated 10 items", unlocked: true },
-  { icon: Leaf, title: "Eco Warrior", description: "Saved 100kg of CO₂", unlocked: true },
-  { icon: Users, title: "Community Hero", description: "Helped 50 people", unlocked: true },
-  { icon: Package, title: "Century Club", description: "Donated 100 items", unlocked: true },
-  { icon: TreePine, title: "Forest Guardian", description: "Saved 500kg of CO₂", unlocked: false }
-];
-
 const Impact = () => {
   const { user } = useAuth();
   const [metrics, setMetrics] = useState({
@@ -69,6 +17,16 @@ const Impact = () => {
   });
   const [categories, setCategories] = useState<Array<{ name: string; donated: number; progress: number; color: string }>>([]);
   const [loading, setLoading] = useState(true);
+
+  // Achievements derived from real user metrics
+  const achievements = [
+    { icon: Award,      title: "First Donation",  description: "Donated your first item",     unlocked: metrics.totalItems >= 1   },
+    { icon: TrendingUp, title: "Impact Starter",  description: "Donated 10 items",            unlocked: metrics.totalItems >= 10  },
+    { icon: Leaf,       title: "Eco Warrior",     description: "Saved 100 kg of CO₂",         unlocked: metrics.co2Saved >= 100   },
+    { icon: Users,      title: "Community Hero",  description: "Helped 50 people",            unlocked: metrics.livesImpacted >= 50 },
+    { icon: Package,    title: "Century Club",    description: "Donated 100 items",           unlocked: metrics.totalItems >= 100 },
+    { icon: TreePine,   title: "Forest Guardian", description: "Saved 500 kg of CO₂",         unlocked: metrics.co2Saved >= 500   },
+  ];
 
   useEffect(() => {
     const fetchImpactData = async () => {

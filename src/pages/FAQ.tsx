@@ -28,7 +28,7 @@ const FAQ = () => {
     },
     {
       question: "How are items classified?",
-      answer: "We use Google Gemini AI technology to automatically identify and classify your items from photos. The AI analyzes the image to determine item type, category, and approximate condition, making the donation process quick and accurate."
+      answer: "We use on-device AI (TensorFlow.js with COCO-SSD and MobileNet) to automatically identify and classify your items from photos. Everything runs directly in your browser — no image data is ever sent to an external server. The AI determines item type, category, and condition, making donations quick and private."
     },
     {
       question: "Can I donate multiple items at once?",
