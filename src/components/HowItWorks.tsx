@@ -42,10 +42,11 @@ const steps = [
     title: "4. Earn & Redeem",
     description: "Track impact and earn rewards",
     details: [
-      "Earn 10 points per donated item",
-      "Convert points to QAR (100 points = 1 QAR)",
-      "Redeem for tree planting or partner discounts",
-      "Monitor your environmental impact metrics"
+      "Earn 15–45 pts per item based on type & condition",
+      "+20% bulk bonus for 5+ items in one go",
+      "+25 pts first time you donate a new category",
+      "Streak bonuses for consecutive donation days",
+      "Redeem points for tree planting or partner discounts"
     ],
     color: "from-orange-500 to-red-500",
   },

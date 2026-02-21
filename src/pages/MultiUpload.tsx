@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Navigation } from "@/components/Navigation";
 import { Camera, Loader2, Upload, X, CheckCircle, Trash2, ArrowRight, Zap, ZapOff } from "lucide-react";
 import { useImageClassifier, ClassificationResult } from "@/hooks/useImageClassifier";
+import { calcItemPoints, calcStreakBonus, calcBulkBonus, BULK_THRESHOLD, FIRST_CATEGORY_BONUS } from "@/lib/points";
 import { z } from "zod";
 
 const itemSchema = z.object({
@@ -130,35 +131,68 @@ const MultiUpload = () => {
         return;
       }
 
-      let totalPointsEarned = 0;
+      // ── Step 1: calculate base points per photo (category × condition × count) ──
+      let basePointsTotal = 0;
+      for (const img of images) {
+        if (!img.classification) continue;
+        const perItem = calcItemPoints(img.classification.category, img.classification.isReusable);
+        basePointsTotal += perItem * (img.classification.count ?? 1);
+      }
 
-      // Process each image
+      const allItemCount = images.reduce((s, i) => s + (i.classification?.count ?? 1), 0);
+
+      // ── Step 2: bulk bonus (+20% when 5+ items) ─────────────────────────────
+      const bulkBonus = allItemCount >= BULK_THRESHOLD ? calcBulkBonus(basePointsTotal) : 0;
+
+      // ── Step 3: streak bonus ────────────────────────────────────────────────
+      let streakPts = 0, streakLabel = '';
+      try {
+        const { data: recentItems } = await supabase
+          .from('items').select('created_at').eq('user_id', user.id)
+          .order('created_at', { ascending: false }).limit(30);
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        const daySet = new Set(
+          (recentItems || []).map(r => { const d = new Date(r.created_at); d.setHours(0,0,0,0); return d.getTime(); })
+        );
+        let days = 1;
+        let check = today.getTime() - 86400000;
+        while (daySet.has(check)) { days++; check -= 86400000; }
+        const sb = calcStreakBonus(days);
+        streakPts = sb.pts; streakLabel = sb.label;
+      } catch { /* ignore if DB unavailable */ }
+
+      // ── Step 4: first-time category bonus (+25 per new category) ────────────
+      let firstCatPts = 0;
+      const newCatLabels: string[] = [];
+      try {
+        const { data: existingItems } = await supabase
+          .from('items').select('category').eq('user_id', user.id);
+        const donatedCats = new Set((existingItems || []).map(i => i.category));
+        const newCats = [...new Set(
+          images.filter(i => i.classification).map(i => i.classification!.category)
+        )].filter(c => !donatedCats.has(c));
+        firstCatPts = newCats.length * FIRST_CATEGORY_BONUS;
+        newCatLabels.push(...newCats);
+      } catch { /* ignore */ }
+
+      const totalPointsEarned = basePointsTotal + bulkBonus + streakPts + firstCatPts;
+
+      // ── Step 5: upload images & save items ──────────────────────────────────
       for (const imageData of images) {
         const { file, classification } = imageData;
-        
         if (!classification) continue;
 
-        // Validate file size
-        if (file.size > 10 * 1024 * 1024) {
-          throw new Error(`File ${file.name} exceeds 10MB limit`);
-        }
+        if (file.size > 10 * 1024 * 1024) throw new Error(`File ${file.name} exceeds 10MB limit`);
 
-        // Upload image to storage
         const fileExt = file.name.split(".").pop();
         const sanitizedExt = fileExt?.replace(/[^a-zA-Z0-9]/g, '').toLowerCase().slice(0, 10) || 'jpg';
         const fileName = `${user.id}/${Date.now()}-${Math.random().toString(36).substring(7)}.${sanitizedExt}`;
-        
-        const { error: uploadError } = await supabase.storage
-          .from("item-images")
-          .upload(fileName, file);
 
+        const { error: uploadError } = await supabase.storage.from("item-images").upload(fileName, file);
         if (uploadError) throw uploadError;
 
-        const { data: { publicUrl } } = supabase.storage
-          .from("item-images")
-          .getPublicUrl(fileName);
+        const { data: { publicUrl } } = supabase.storage.from("item-images").getPublicUrl(fileName);
 
-        // Validate item data before insertion
         const itemData = {
           user_id: user.id,
           image_url: publicUrl,
@@ -166,43 +200,34 @@ const MultiUpload = () => {
           confidence: classification.confidence,
           is_reusable: classification.isReusable,
         };
-
         itemSchema.parse(itemData);
 
-        // Save item to database
-        const { error: itemError } = await supabase
-          .from("items")
-          .insert({
-            ...itemData,
-            status: "pending",
-          });
-
+        const { error: itemError } = await supabase.from("items").insert({ ...itemData, status: "pending" });
         if (itemError) throw itemError;
-
-        // Each detected item earns 10 points
-        totalPointsEarned += (classification.count ?? 1) * 10;
       }
 
-      // Update impact metrics
+      // ── Step 6: update impact metrics ───────────────────────────────────────
       const { data: currentMetrics } = await supabase
-        .from("impact_metrics")
-        .select("total_items, community_points")
-        .eq("user_id", user.id)
-        .maybeSingle();
-
-      const totalItemCount = images.reduce((sum, img) => sum + (img.classification?.count ?? 1), 0);
+        .from("impact_metrics").select("total_items, community_points").eq("user_id", user.id).maybeSingle();
 
       const { error: metricsError } = await supabase
         .from("impact_metrics")
         .update({
-          total_items: (currentMetrics?.total_items || 0) + totalItemCount,
+          total_items: (currentMetrics?.total_items || 0) + allItemCount,
           community_points: (currentMetrics?.community_points || 0) + totalPointsEarned,
         })
         .eq("user_id", user.id);
-
       if (metricsError) throw metricsError;
 
-      toast.success(`Successfully uploaded ${images.length} photo${images.length > 1 ? 's' : ''}! Detected ${images.reduce((s, i) => s + (i.classification?.count ?? 1), 0)} items. Earned ${totalPointsEarned} points!`);
+      const bonusParts = [
+        bulkBonus   > 0 ? `Bulk +${bulkBonus}`              : '',
+        streakPts   > 0 ? `${streakLabel} +${streakPts}`    : '',
+        firstCatPts > 0 ? `New category +${firstCatPts}`   : '',
+      ].filter(Boolean);
+      toast.success(
+        `Detected ${allItemCount} items · Earned ${totalPointsEarned} pts!` +
+        (bonusParts.length ? ` (${bonusParts.join(', ')})` : '')
+      );
       navigate("/partners");
     } catch (error) {
       console.error("Error saving items:", error);
@@ -213,7 +238,12 @@ const MultiUpload = () => {
   };
 
   const totalItemCount = images.reduce((sum, img) => sum + (img.classification?.count ?? 1), 0);
-  const totalValue = totalItemCount * 10;
+  const basePoints = images.reduce((sum, img) => {
+    if (!img.classification) return sum;
+    return sum + calcItemPoints(img.classification.category, img.classification.isReusable) * (img.classification.count ?? 1);
+  }, 0);
+  const bulkEligible = totalItemCount >= BULK_THRESHOLD;
+  const totalValue = basePoints + (bulkEligible ? calcBulkBonus(basePoints) : 0);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5">
@@ -225,7 +255,7 @@ const MultiUpload = () => {
             Donate Multiple Items
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground">
-            Upload photos of items you want to donate. Each item earns you 10 points!
+            Upload photos of items you want to donate. Earn more for bulkier items, reusable condition, streaks & new categories!
           </p>
         </div>
 
@@ -289,10 +319,13 @@ const MultiUpload = () => {
                   </p>
                 </div>
                 <div className="text-center md:text-left">
-                  <p className="text-xs md:text-sm text-muted-foreground mb-1">Equivalent Value</p>
-                  <p className="text-2xl md:text-3xl font-display font-bold text-primary">
-                    {(totalValue / 100).toFixed(2)} QAR
+                  <p className="text-xs md:text-sm text-muted-foreground mb-1">
+                    {bulkEligible ? '🎉 Bulk Bonus' : 'Bonus Points'}
                   </p>
+                  <p className="text-2xl md:text-3xl font-display font-bold text-green-500">
+                    {bulkEligible ? `+${calcBulkBonus(basePoints)}` : 'On save →'}
+                  </p>
+                  {bulkEligible && <p className="text-xs text-muted-foreground">+20% for 5+ items</p>}
                 </div>
               </div>
             </CardContent>
@@ -392,7 +425,7 @@ const MultiUpload = () => {
                         <div className="flex items-center gap-2 pt-1 md:pt-2">
                           <CheckCircle className="w-3.5 h-3.5 md:w-4 md:h-4 text-green-500" />
                           <span className="text-xs md:text-sm text-green-600 dark:text-green-400 font-medium">
-                            {imageData.classification.isReusable ? "Reusable" : "Recyclable"} · +{(imageData.classification.count ?? 1) * 10} pts
+                            {imageData.classification.isReusable ? "Reusable" : "Recyclable"} · +{calcItemPoints(imageData.classification.category, imageData.classification.isReusable) * (imageData.classification.count ?? 1)} pts
                           </span>
                         </div>
                       </>

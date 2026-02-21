@@ -131,7 +131,6 @@ const Redeem = () => {
     }
   };
 
-  const qatarRiyals = (userPoints / 100).toFixed(2);
 
   if (loading) {
     return (
@@ -220,12 +219,15 @@ const Redeem = () => {
                 <p className="text-sm text-muted-foreground mb-2">Community Points</p>
                 <p className="text-6xl font-display font-bold text-primary">{userPoints}</p>
               </div>
-              <div className="p-6 rounded-2xl bg-accent/10 border border-accent/20">
-                <p className="text-sm text-muted-foreground mb-2">Equivalent Value</p>
-                <p className="text-6xl font-display font-bold text-accent">
-                  {qatarRiyals} <span className="text-2xl">QAR</span>
-                </p>
-                <p className="text-xs text-muted-foreground mt-2">100 points = 1 QAR</p>
+              <div className="p-6 rounded-2xl bg-accent/10 border border-accent/20 space-y-1">
+                <p className="text-sm font-semibold text-muted-foreground mb-2">How to earn more</p>
+                <p className="text-xs text-muted-foreground">🪑 Furniture · 30 pts (×1.5 if reusable)</p>
+                <p className="text-xs text-muted-foreground">💻 Electronics · 25 pts (×1.5 if reusable)</p>
+                <p className="text-xs text-muted-foreground">📚 Books / 👕 Clothes · 15 pts (×1.5)</p>
+                <p className="text-xs text-muted-foreground">♻️ E-waste · 5 pts</p>
+                <p className="text-xs text-primary font-medium mt-2">+20% bulk bonus for 5+ items</p>
+                <p className="text-xs text-primary font-medium">+25 pts first time per category</p>
+                <p className="text-xs text-primary font-medium">+10–50 pts for donation streaks</p>
               </div>
             </div>
           </CardHeader>
@@ -258,9 +260,7 @@ const Redeem = () => {
                         <p className="text-3xl font-display font-bold text-primary">
                           {reward.points_required} <span className="text-sm">pts</span>
                         </p>
-                        <p className="text-xs text-muted-foreground">
-                          ≈ {(reward.points_required / 100).toFixed(2)} QAR
-                        </p>
+
                       </div>
                       <Button 
                         onClick={() => handleRedeem(reward)} 
