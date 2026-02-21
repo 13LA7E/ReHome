@@ -1,93 +1,106 @@
-import { Leaf, Recycle, BadgeCheck, LineChart, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/components/AuthProvider";
+import { Button } from "./ui/button";
+import { Leaf, Users, Recycle, TrendingUp, ArrowRight } from "lucide-react";
 
 const benefits = [
   {
     icon: Leaf,
-    title: "Extend item lifespans",
-    body: "Clothes, books, furniture, and electronics get matched to people and organisations that will actually use them — keeping waste out of landfill.",
-    accent: "bg-primary/10 text-primary",
+    title: "Less Landfill Waste",
+    description: "Every rehomed item is one less piece of landfill. We track your cumulative carbon savings against average disposal data.",
+    iconBg: "from-emerald-400 to-primary",
+    borderColor: "from-emerald-400 to-primary",
+  },
+  {
+    icon: Users,
+    title: "Community Impact",
+    description: "Your donations feed directly into local food banks, shelters, and upcycle workshops — visible on the community board.",
+    iconBg: "from-sky-400 to-blue-500",
+    borderColor: "from-sky-400 to-blue-500",
   },
   {
     icon: Recycle,
-    title: "Responsible e-waste routing",
-    body: "Broken electronics are flagged as e-waste and routed to certified recycling partners so hazardous materials are handled safely.",
-    accent: "bg-sky-500/10 text-sky-500",
+    title: "Circular Economy",
+    description: "Items that can't be donated are routed to certified recyclers so materials are recovered rather than wasted.",
+    iconBg: "from-amber-400 to-orange-400",
+    borderColor: "from-amber-400 to-orange-400",
   },
   {
-    icon: BadgeCheck,
-    title: "Vetted donation network",
-    body: "Every partner on our map is manually verified. You always know exactly where your items are going and who they're helping.",
-    accent: "bg-amber-500/10 text-amber-500",
-  },
-  {
-    icon: LineChart,
-    title: "Your personal ledger",
-    body: "A private dashboard shows every item you've donated, all points earned, and your cumulative environmental contribution over time.",
-    accent: "bg-violet-500/10 text-violet-500",
+    icon: TrendingUp,
+    title: "Tracked Progress",
+    description: "Your personal Impact dashboard updates after every donation with real numbers — not estimates, not approximations.",
+    iconBg: "from-violet-400 to-purple-500",
+    borderColor: "from-violet-400 to-purple-500",
   },
 ];
 
 const ImpactPreview = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   return (
-    <section className="py-16 md:py-24 relative overflow-hidden">
-      {/* Subtle background tint */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.03] to-transparent pointer-events-none" />
+    <section className="relative py-20 md:py-28 overflow-hidden">
 
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-6xl mx-auto">
+      {/* Background blobs */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div
+          className="blob-float-reverse absolute -bottom-32 -left-20 w-[560px] h-[560px] rounded-full"
+          style={{ background: "radial-gradient(circle, hsl(158 84% 50% / 0.13) 0%, transparent 70%)" }}
+        />
+        <div
+          className="blob-float absolute top-0 right-[-60px] w-[420px] h-[420px] rounded-full"
+          style={{ background: "radial-gradient(circle, hsl(200 80% 60% / 0.10) 0%, transparent 70%)" }}
+        />
+      </div>
 
-          {/* Header */}
-          <div className="text-center mb-12 md:mb-16 space-y-4">
-            <span className="inline-block text-xs font-semibold uppercase tracking-widest text-primary bg-primary/10 px-4 py-1.5 rounded-full">
-              Why it matters
+      <div className="relative max-w-6xl mx-auto px-4 space-y-14">
+
+        {/* Section header */}
+        <div className="text-center space-y-3">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full liquid-glass text-primary text-sm font-semibold fade-in-up">
+            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            Real-World Impact
+          </div>
+          <h2 className="fade-in-up delay-100 text-3xl md:text-5xl font-display font-bold text-foreground tracking-tight">
+            Your Donations{" "}
+            <span className="bg-gradient-to-r from-primary via-emerald-400 to-amber-400 bg-clip-text text-transparent">
+              Actually Matter
             </span>
-            <h2 className="fade-in-up text-3xl sm:text-4xl md:text-5xl font-display font-bold text-foreground px-4">
-              Every Item Has a Better Fate
-            </h2>
-            <p className="fade-in-up delay-100 text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
-              ReHome connects unused household items with the people and places that need them most —
-              transparently, locally, and with zero guesswork.
-            </p>
-          </div>
+          </h2>
+          <p className="fade-in-up delay-200 text-lg text-muted-foreground max-w-xl mx-auto">
+            Every item rehomed has a traceable positive footprint — on your community and the planet.
+          </p>
+        </div>
 
-          {/* Benefits grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6 mb-12 md:mb-16">
-            {benefits.map((b, i) => {
-              const Icon = b.icon;
-              return (
-                <div
-                  key={b.title}
-                  className={`glass-card rounded-2xl p-6 md:p-8 flex gap-5 scale-in delay-${(i + 2) * 100} group`}
-                >
-                  <div className={`w-11 h-11 rounded-xl ${b.accent} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}>
-                    <Icon className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-display font-semibold text-foreground text-base mb-1.5">{b.title}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{b.body}</p>
-                  </div>
+        {/* Benefit cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {benefits.map((b, i) => {
+            const Icon = b.icon;
+            return (
+              <div
+                key={b.title}
+                className={"glass-card gradient-border-animated rounded-2xl p-6 flex flex-col gap-4 group scale-in delay-" + ((i + 1) * 100)}
+              >
+                <div className={"w-11 h-11 rounded-xl bg-gradient-to-br " + b.iconBg + " flex items-center justify-center shadow-md group-hover:scale-110 group-hover:shadow-lg transition-all duration-300"}>
+                  <Icon className="w-5 h-5 text-white" />
                 </div>
-              );
-            })}
-          </div>
+                {/* Gradient left accent bar */}
+                <div className={"h-0.5 w-8 rounded-full bg-gradient-to-r " + b.borderColor} />
+                <h3 className="font-display font-semibold text-foreground text-base">{b.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{b.description}</p>
+              </div>
+            );
+          })}
+        </div>
 
-          {/* CTA */}
-          <div className="text-center">
-            <Button
-              size="lg"
-              onClick={() => navigate(user ? "/impact" : "/auth")}
-              className="rounded-full px-8 py-6 text-base font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
-            >
-              {user ? "View My Impact Dashboard" : "Start Donating Today"}
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-          </div>
+        {/* CTA */}
+        <div className="text-center fade-in-up">
+          <Button
+            size="lg"
+            onClick={() => navigate("/impact")}
+            className="relative overflow-hidden px-8 py-6 text-base font-semibold rounded-full shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-r from-primary to-emerald-500 border-0 text-white shimmer"
+          >
+            See Your Impact Dashboard
+            <ArrowRight className="w-5 h-5 ml-2" />
+          </Button>
         </div>
       </div>
     </section>

@@ -5,7 +5,9 @@ export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t bg-card/50 mt-auto">
+    <footer className="relative bg-card/50 mt-auto overflow-hidden">
+      {/* Gradient top accent */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
       <div className="container mx-auto px-4 py-10 md:py-14">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
 

@@ -470,44 +470,46 @@ html {
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06),
-              inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  transition: all 0.3s ease;
+              0 1px 0 rgba(255, 255, 255, 0.9) inset,
+              0 -1px 0 rgba(0, 0, 0, 0.04) inset;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@supports not (backdrop-filter: blur(16px)) {
+@supports not (backdrop-filter: blur(20px)) {
   .glass-card {
     background: rgba(255, 255, 255, 0.97);
   }
 }
 
 .glass-card:hover {
-  background: rgba(255, 255, 255, 0.85);
-  border-color: rgba(255, 255, 255, 0.8);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 36px rgba(0, 0, 0, 0.09),
-              inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.9);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.10),
+              0 1px 0 rgba(255, 255, 255, 1) inset;
 }
 
 .liquid-glass {
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.12) 0%,
-    rgba(255, 255, 255, 0.06) 100%
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.14) 100%
   );
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
-              inset 0 1px 1px rgba(255, 255, 255, 0.3),
-              inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08),
+              inset 0 1px 1px rgba(255, 255, 255, 0.4),
+              inset 0 -1px 1px rgba(0, 0, 0, 0.06);
 }
 
-@supports not (backdrop-filter: blur(20px)) {
+@supports not (backdrop-filter: blur(24px)) {
   .liquid-glass {
     background: linear-gradient(
       135deg,
@@ -518,20 +520,144 @@ html {
 }
 
 .glass-nav {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(32px) saturate(180%);
-  -webkit-backdrop-filter: blur(32px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08),
-              0 1px 0 rgba(255, 255, 255, 0.5) inset;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset,
+              0 4px 24px rgba(0, 0, 0, 0.06);
 }
 
-@supports not (backdrop-filter: blur(32px)) {
+@supports not (backdrop-filter: blur(40px)) {
   .glass-nav {
     background: rgba(255, 255, 255, 0.98);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   }
 }
+
+/* ── Animated gradient border ───────────────── */
+.gradient-border-animated {
+  position: relative;
+  border-radius: inherit;
+}
+.gradient-border-animated::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg,
+    hsl(var(--primary)),
+    hsl(var(--accent)),
+    hsl(var(--primary))
+  );
+  background-size: 200% 200%;
+  animation: gradientShift 4s ease infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.gradient-border-animated:hover::before {
+  opacity: 1;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+
+/* ── Blob / orb animations ───────────────────── */
+.blob-float {
+  animation: blobFloat 8s ease-in-out infinite;
+  will-change: transform;
+}
+.blob-float-reverse {
+  animation: blobFloat 10s ease-in-out infinite reverse;
+  will-change: transform;
+}
+.blob-float-slow {
+  animation: blobFloat 14s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes blobFloat {
+  0%, 100% { transform: translate(0px, 0px) scale(1); }
+  25%       { transform: translate(20px, -15px) scale(1.04); }
+  50%       { transform: translate(-10px, 25px) scale(0.97); }
+  75%       { transform: translate(-20px, -10px) scale(1.02); }
+}
+
+/* ── Float class ──────────────────────────────── */
+.float {
+  animation: floatUp 3s ease-in-out infinite;
+}
+.float-delayed {
+  animation: floatUp 3s ease-in-out 1.5s infinite;
+}
+
+@keyframes floatUp {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+/* ── Shimmer ──────────────────────────────────── */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.35) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: shimmerSlide 2.5s ease infinite;
+}
+@keyframes shimmerSlide {
+  to { transform: translateX(100%); }
+}
+
+/* ── Glow pulse ring ─────────────────────────── */
+.glow-ring {
+  position: relative;
+}
+.glow-ring::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  border: 2px solid hsl(var(--primary) / 0.3);
+  animation: glowPulse 2s ease-in-out infinite;
+}
+@keyframes glowPulse {
+  0%, 100% { opacity: 0;    transform: scale(1);    }
+  50%       { opacity: 1;    transform: scale(1.06); }
+}
+
+/* ── Number badge spin-in ────────────────────── */
+.spin-in {
+  animation: spinIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  opacity: 0;
+}
+@keyframes spinIn {
+  from { opacity: 0; transform: rotate(-15deg) scale(0.7); }
+  to   { opacity: 1; transform: rotate(0deg) scale(1); }
+}
+
+/* ── Extra delay utilities ────────────────────── */
+.delay-700 { animation-delay: 700ms; }
+.delay-800 { animation-delay: 800ms; }
+.delay-900 { animation-delay: 900ms; }
 
 /* Dark mode glassmorphism */
 .dark .glass {
@@ -546,19 +672,23 @@ html {
 }
 
 .dark .glass-card {
-  background: rgba(20, 27, 50, 0.7);
-  border-color: rgba(255, 255, 255, 0.07);
+  background: rgba(15, 22, 46, 0.72);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
-@supports not (backdrop-filter: blur(16px)) {
+@supports not (backdrop-filter: blur(20px)) {
   .dark .glass-card {
-    background: rgba(20, 27, 50, 0.97);
+    background: rgba(15, 22, 46, 0.97);
   }
 }
 
 .dark .glass-card:hover {
-  background: rgba(20, 27, 50, 0.85);
-  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(20, 30, 60, 0.85);
+  border-color: rgba(255, 255, 255, 0.13);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4),
+              inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .dark .liquid-glass {
@@ -581,16 +711,15 @@ html {
 }
 
 .dark .glass-nav {
-  background: rgba(16, 22, 44, 0.85);
-  border-color: rgba(255, 255, 255, 0.07);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5),
-              0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  background: rgba(12, 18, 38, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset,
+              0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
-@supports not (backdrop-filter: blur(32px)) {
+@supports not (backdrop-filter: blur(40px)) {
   .dark .glass-nav {
-    background: rgba(0, 0, 0, 0.95);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.96);
   }
 }
 
