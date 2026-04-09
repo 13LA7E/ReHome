@@ -247,9 +247,9 @@ After running migration:
 
 ## 📚 Documentation Files
 
-- `PHASE2_IMPLEMENTATION.md` - Detailed technical guide
-- `PHASE2_PROGRESS.md` - Progress tracking
-- `PHASE2_QUICK_START.md` - Fast setup guide
+- `docs/archive/PHASE2_IMPLEMENTATION.md` - Detailed technical guide
+- `docs/archive/PHASE2_PROGRESS.md` - Progress tracking
+- `docs/archive/PHASE2_QUICK_START.md` - Fast setup guide
 - `FINAL_INTEGRATION.md` - This file
 
 ---

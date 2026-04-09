@@ -197,13 +197,18 @@ Transform clutter into community impact through AI-powered sustainable giving wi
 ├── Documentation Files
 │   ├── README.md            # Main project documentation
 │   ├── PROJECT_INDEX.md     # This file
-│   ├── PHASE1_COMPLETE.md   # Phase 1 completion report
-│   ├── PHASE2_COMPLETE.md   # Phase 2 completion report
-│   ├── PHASE2_IMPLEMENTATION.md # Technical implementation guide
 │   ├── DEPLOYMENT.md        # Deployment instructions
-│   ├── SENTRY_SETUP_GUIDE.md # Error tracking setup
-│   ├── SUPABASE_MIGRATION_GUIDE.md # Database setup
-│   └── Various BUGFIX_*.md  # Bug fix documentation
+│   ├── /docs/setup          # Active setup and operations guides
+│   │   ├── SENTRY_SETUP_GUIDE.md
+│   │   ├── SUPABASE_MIGRATION_GUIDE.md
+│   │   ├── GITHUB_PAGES_SETUP.md
+│   │   └── MIGRATION_GUIDE.md
+│   ├── /docs/archive        # Historical phase reports and bugfix logs
+│   │   ├── PHASE1_COMPLETE.md
+│   │   ├── PHASE2_COMPLETE.md
+│   │   ├── PHASE2_IMPLEMENTATION.md
+│   │   └── BUGFIX_*.md
+│   └── FINAL_INTEGRATION.md # Final phase integration checklist
 │
 └── .env.example             # Environment variables template
 ```
@@ -703,7 +708,7 @@ Return JSON: {category, confidence, reasoning}
 **Edge Function**: [supabase/functions/send-pickup-email/index.ts](supabase/functions/send-pickup-email/index.ts)
 
 ### Sentry (Error Tracking)
-**Setup**: Follow [SENTRY_SETUP_GUIDE.md](SENTRY_SETUP_GUIDE.md)  
+**Setup**: Follow [docs/setup/SENTRY_SETUP_GUIDE.md](docs/setup/SENTRY_SETUP_GUIDE.md)  
 **Features**: Error tracking, performance monitoring, session replay  
 **DSN**: Set via environment  
 **Test Page**: `/sentry-test`

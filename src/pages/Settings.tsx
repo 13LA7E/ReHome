@@ -247,7 +247,7 @@ const Settings = () => {
                   Username and avatar features are not available yet. Please run the database migration in Supabase.
                   <br />
                   <a 
-                    href="https://github.com/13LA7E/ReHome/blob/main/MIGRATION_GUIDE.md" 
+                    href="https://github.com/13LA7E/ReHome/blob/main/docs/setup/MIGRATION_GUIDE.md" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-primary hover:underline font-medium mt-2 inline-block"

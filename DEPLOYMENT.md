@@ -33,8 +33,8 @@
 
 **New Files Created:**
 - `.env.example` - Environment variables template
-- `PHASE1_COMPLETE.md` - Detailed completion report
-- `PHASE1_FIXES_SUMMARY.md` - Summary of fixes
+- `docs/archive/PHASE1_COMPLETE.md` - Detailed completion report
+- `docs/archive/PHASE1_FIXES_SUMMARY.md` - Summary of fixes
 - `src/components/CookieConsent.tsx` - Cookie consent banner
 - `src/components/ErrorBoundary.tsx` - Error boundary component
 - `src/components/Footer.tsx` - Site footer
