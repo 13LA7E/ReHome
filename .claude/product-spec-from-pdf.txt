@@ -1,0 +1,46 @@
+ReHome Technical/Product Brief (working extract)
+Version 1.0 - April 2026
+
+1) Stack and Runtime
+- Frontend: React 18 + TypeScript + Vite
+- UI: Tailwind CSS + shadcn/ui
+- Mobile shell: Capacitor (Android)
+- Backend: Supabase (Postgres + Auth + Storage + Edge Functions)
+- AI: TensorFlow.js on-device classification (ReVision AI)
+- Email: Resend
+
+2) MVP Scope (3-day sprint)
+- Donor flow: auth -> scan/capture -> AI-assisted review -> NGO pick -> schedule -> submit
+- NGO flow: inbox -> view details -> accept/decline
+- Pickup confirmation via signed link (no dedicated driver app)
+- Points and rewards loop for demo readiness
+
+3) Data Model Targets
+Core tables:
+profiles, ngos, ngo_members, donations, donation_items, pickups,
+partners, rewards, redemptions, points_ledger, impact_events, audit_log
+
+4) Security/Policy Highlights
+- RLS default deny on every public table
+- Role-based route access using profile role
+- Edge Functions for privileged writes and transitions
+- Signed pickup confirmation links (short-lived JWT)
+
+5) Lifecycle
+- donation status progression: draft -> posted -> accepted -> scheduled -> picked_up -> confirmed
+- points awarded only after pickup confirmation
+
+6) API/Function Surface
+- fn_submit_donation
+- fn_ngo_accept
+- fn_confirm_pickup
+- fn_redeem
+- additional support functions for scheduling, impact, dashboards
+
+7) Out of Scope (MVP)
+- Full driver app
+- Full partner admin CRUD
+- iOS release
+- Advanced multi-language support
+
+Use this file as a quick planner reference. Source-of-truth implementation details should be verified against code in `src/` and SQL in `supabase/migrations/`.
